@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|c:\\users\\aygul\\onedrive\\desktop\\web project\\universitydecisionhub\\backend\\universitydecisionhub.api\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|solutionrelative:backend\\universitydecisionhub.api\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Backend\\UniversityDecisionHub.Api\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Backend\\UniversityDecisionHub.Api\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-10T14:34:27.762Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{c6f34f0d-7ae5-4f3a-be61-fe0c21ae9eb8}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
