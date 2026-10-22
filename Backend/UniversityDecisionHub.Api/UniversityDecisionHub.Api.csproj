@@ -4,9 +4,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>bd07215d-ac33-424f-80db-828c102737f0</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
       <PrivateAssets>all</PrivateAssets>
@@ -21,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Common\" />
-    <Folder Include="Features\Courses\" />
     <Folder Include="Features\Alumni\" />
     <Folder Include="Features\Authentication\" />
     <Folder Include="Features\Reviews\" />

@@ -3,8 +3,35 @@
   "WorkspaceRootPath": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|c:\\users\\aygul\\onedrive\\desktop\\web project\\universitydecisionhub\\backend\\universitydecisionhub.api\\migrations\\20261013171125_initialcourses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|solutionrelative:backend\\universitydecisionhub.api\\migrations\\20261013171125_initialcourses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|c:\\users\\aygul\\onedrive\\desktop\\web project\\universitydecisionhub\\backend\\universitydecisionhub.api\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|solutionrelative:backend\\universitydecisionhub.api\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|c:\\users\\aygul\\onedrive\\desktop\\web project\\universitydecisionhub\\backend\\universitydecisionhub.api\\features\\courses\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|solutionrelative:backend\\universitydecisionhub.api\\features\\courses\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|c:\\users\\aygul\\onedrive\\desktop\\web project\\universitydecisionhub\\backend\\universitydecisionhub.api\\features\\courses\\dtos\\coursedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|solutionrelative:backend\\universitydecisionhub.api\\features\\courses\\dtos\\coursedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|c:\\users\\aygul\\onedrive\\desktop\\web project\\universitydecisionhub\\backend\\universitydecisionhub.api\\features\\courses\\dtos\\coursecreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|solutionrelative:backend\\universitydecisionhub.api\\features\\courses\\dtos\\coursecreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|c:\\users\\aygul\\onedrive\\desktop\\web project\\universitydecisionhub\\backend\\universitydecisionhub.api\\universitydecisionhub.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|solutionrelative:backend\\universitydecisionhub.api\\universitydecisionhub.api.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|c:\\users\\aygul\\onedrive\\desktop\\web project\\universitydecisionhub\\backend\\universitydecisionhub.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6CC8DC76-F10C-40A8-AD92-5C6B172D9559}|Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.csproj|solutionrelative:backend\\universitydecisionhub.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\aygul\\AppData\\Roaming\\Microsoft\\UserSecrets\\bd07215d-ac33-424f-80db-828c102737f0\\secrets.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,20 +41,109 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Program.cs",
+              "RelativeDocumentMoniker": "Backend\\UniversityDecisionHub.Api\\Program.cs",
+              "ToolTip": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Program.cs",
+              "RelativeToolTip": "Backend\\UniversityDecisionHub.Api\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-13T16:35:38.182Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "20261013171125_InitialCourses.cs",
+              "DocumentMoniker": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Migrations\\20261013171125_InitialCourses.cs",
+              "RelativeDocumentMoniker": "Backend\\UniversityDecisionHub.Api\\Migrations\\20261013171125_InitialCourses.cs",
+              "ToolTip": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Migrations\\20261013171125_InitialCourses.cs",
+              "RelativeToolTip": "Backend\\UniversityDecisionHub.Api\\Migrations\\20261013171125_InitialCourses.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-13T17:11:25.691Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CourseController.cs",
+              "DocumentMoniker": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Features\\Courses\\CourseController.cs",
+              "RelativeDocumentMoniker": "Backend\\UniversityDecisionHub.Api\\Features\\Courses\\CourseController.cs",
+              "ToolTip": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Features\\Courses\\CourseController.cs",
+              "RelativeToolTip": "Backend\\UniversityDecisionHub.Api\\Features\\Courses\\CourseController.cs",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAwwKUAAABwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-13T11:44:53.927Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "Backend\\UniversityDecisionHub.Api\\Data\\ApplicationDbContext.cs",
               "ToolTip": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Data\\ApplicationDbContext.cs",
               "RelativeToolTip": "Backend\\UniversityDecisionHub.Api\\Data\\ApplicationDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-10T14:34:27.762Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-13T11:33:55.145Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UniversityDecisionHub.Api.http",
+              "DocumentMoniker": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.http",
+              "RelativeDocumentMoniker": "Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.http",
+              "ToolTip": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.http",
+              "RelativeToolTip": "Backend\\UniversityDecisionHub.Api\\UniversityDecisionHub.Api.http",
+              "ViewState": "AgIAABQAAAAAAAAAAAAuwCoAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2026-10-13T17:20:34.142Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CourseCreateDto.cs",
+              "DocumentMoniker": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Features\\Courses\\Dtos\\CourseCreateDto.cs",
+              "RelativeDocumentMoniker": "Backend\\UniversityDecisionHub.Api\\Features\\Courses\\Dtos\\CourseCreateDto.cs",
+              "ToolTip": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Features\\Courses\\Dtos\\CourseCreateDto.cs",
+              "RelativeToolTip": "Backend\\UniversityDecisionHub.Api\\Features\\Courses\\Dtos\\CourseCreateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-13T17:38:18.486Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CourseDto.cs",
+              "DocumentMoniker": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Features\\Courses\\Dtos\\CourseDto.cs",
+              "RelativeDocumentMoniker": "Backend\\UniversityDecisionHub.Api\\Features\\Courses\\Dtos\\CourseDto.cs",
+              "ToolTip": "C:\\Users\\aygul\\OneDrive\\Desktop\\web project\\UniversityDecisionHub\\Backend\\UniversityDecisionHub.Api\\Features\\Courses\\Dtos\\CourseDto.cs",
+              "RelativeToolTip": "Backend\\UniversityDecisionHub.Api\\Features\\Courses\\Dtos\\CourseDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-13T17:38:44.164Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "secrets.json",
+              "DocumentMoniker": "C:\\Users\\aygul\\AppData\\Roaming\\Microsoft\\UserSecrets\\bd07215d-ac33-424f-80db-828c102737f0\\secrets.json",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\bd07215d-ac33-424f-80db-828c102737f0\\secrets.json",
+              "ToolTip": "C:\\Users\\aygul\\AppData\\Roaming\\Microsoft\\UserSecrets\\bd07215d-ac33-424f-80db-828c102737f0\\secrets.json",
+              "RelativeToolTip": "..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\bd07215d-ac33-424f-80db-828c102737f0\\secrets.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAB3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-10-13T16:30:41.365Z"
             }
           ]
         }

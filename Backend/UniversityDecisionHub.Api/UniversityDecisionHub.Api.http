@@ -4,3 +4,75 @@ GET {{UniversityDecisionHub.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+### Create a sample course
+
+POST https://localhost:7214/api/courses
+Content-Type: application/json
+
+{
+  "CourseCode": "CS101",
+  "CourseName": "Introduction to Computer Science",
+  "DepartmentId": 1,
+  "CourseCredit": 3,
+  "Ects": 6,
+  "RecommendedStudyYear": 1,
+  "IsActive": true,
+  "IsElective": false,
+  "prerequisiteCourseIds": []
+}
+### Negative credits should be rejected
+POST https://localhost:7214/api/courses
+Content-Type: application/json
+
+{
+  "courseCode": "TEST-INVALID",
+  "courseName": "Invalid Credit Test",
+  "courseCredit": -1,
+  "ects": 6,
+  "recommendedStudyYear": 1,
+  "isActive": true,
+  "isElective": false,
+  "departmentId": 1,
+  "prerequisiteCourseIds": []
+}
+
+### Get all courses
+GET https://localhost:7214/api/courses
+Accept: application/json
+
+### Get the existing course
+GET https://localhost:7214/api/courses/1
+Accept: application/json
+
+### Get a nonexistent course
+GET https://localhost:7214/api/courses/999999
+Accept: application/json
+### Missing recommended year should return 400
+POST https://localhost:7214/api/courses
+Content-Type: application/json
+
+{
+  "courseCode": "TEST-NO-YEAR",
+  "courseName": "Missing year test",
+  "departmentId": 1,
+  "courseCredit": 3,
+  "ects": 6
+}
+
+### Zero department should return 400
+POST https://localhost:7214/api/courses
+Content-Type: application/json
+
+{
+  "courseCode": "TEST-DEPARTMENT",
+  "courseName": "Invalid department test",
+  "departmentId": 0,
+  "recommendedStudyYear": 1,
+  "courseCredit": 3,
+  "ects": 6
+}
+
+### Unsupported filter should return 400 instead of silently ignoring it
+GET https://localhost:7214/api/courses?semester=Fall
+Accept: application/json
