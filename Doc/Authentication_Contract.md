@@ -229,4 +229,14 @@ The machine this was written on has only the .NET 9 SDK and no PostgreSQL, so th
 - 23 instructor checks and 11 identity-claim checks from the earlier rounds (not re-run after this change, except the administrator instructor write and the claims probe, which passed).
 - The Register and My profile pages were driven in a browser.
 
+Those ad-hoc checks are now kept in the repository as `Tests/UniversityDecisionHub.AccountChecks` (86 checks: registration, login, the 10-per-minute limit, stored hashes, current-user profile, administrator boundaries, user management, import, instructor validation and the fields the two detail pages read). Run them with:
+
+```powershell
+dotnet run --project Tests/UniversityDecisionHub.AccountChecks
+```
+
+They host the real controllers and authentication setup on a random local port with in-memory SQLite, so they need neither PostgreSQL nor a migration. All 86 passed when the same source files were compiled for .NET 9; the `net10.0` project itself has not been built yet.
+
+`Tests/UniversityDecisionHub.CourseChecks` still expects two entity types and no pending model changes. Both expectations stop holding now that `UserAccounts` and `Instructors` are in the model without a migration; they need updating together with Aygül's migration.
+
 Still to do on a machine with .NET 10 and PostgreSQL: build the solution, apply Aygül's migration, and repeat the requests in `UniversityDecisionHub.Api.http`.
