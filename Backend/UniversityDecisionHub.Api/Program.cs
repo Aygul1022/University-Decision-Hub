@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using UniversityDecisionHub.Api.Data;
 using UniversityDecisionHub.Api.Features.Authentication;
+using UniversityDecisionHub.Api.Features.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +30,17 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 
 var app = builder.Build();
 
-// dotnet run -- make-admin someone@example.com
+// One-off commands that run against the configured database and exit, instead of starting the web server:
+//   dotnet run -- make-admin someone@example.com
+//   dotnet run -- import-users "C:\path\outside\the\repository\users.csv"
 if (args.Length == 2 && args[0] == AdminCommand.Name)
 {
     Environment.ExitCode = await AdminCommand.RunAsync(app.Services, args[1]);
+    return;
+}
+if (args.Length == 2 && args[0] == UserImportCommand.Name)
+{
+    Environment.ExitCode = await UserImportCommand.RunAsync(app.Services, args[1]);
     return;
 }
 

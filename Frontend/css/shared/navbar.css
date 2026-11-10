@@ -81,8 +81,7 @@
   color: var(--color-red-dark);
 }
 
-.navbar-user {
-  padding: 6px 4px 6px 12px;
+.navbar-account .navbar-user {
   font-weight: 600;
   overflow-wrap: anywhere;
 }

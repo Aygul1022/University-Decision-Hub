@@ -83,7 +83,8 @@ const Site = (function () {
     const account = element("ul", "navbar-account");
     const user = Session.user;
     if (user) {
-      const name = element("span", "navbar-user", user.fullName);
+      // The name opens the user's own profile page.
+      const name = link(user.fullName, Site.url("Pages/auth/profile.html"), "navbar-user");
       if (user.isAdministrator) name.appendChild(element("span", "navbar-role", "Administrator"));
       account.appendChild(listItem(name));
 

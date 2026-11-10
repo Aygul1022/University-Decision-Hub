@@ -79,7 +79,7 @@ Accept: application/json
 
 ### ---------------- Authentication (synthetic test data only) ----------------
 
-### Register a student
+### Complete registration (the person must already be on the list: import-users or POST api/admin/users)
 POST http://localhost:5154/api/auth/register
 Content-Type: application/json
 
@@ -91,7 +91,7 @@ Content-Type: application/json
   "studyYear": 2
 }
 
-### Same email in another case should return 409
+### Registering the same account again should return 409
 POST http://localhost:5154/api/auth/register
 Content-Type: application/json
 

@@ -12,11 +12,11 @@ One shared model, in `Features/Users/UserAccount.cs`; mapping in `Data/Configura
 | `FullName` | `character varying(150)` | no | Trimmed |
 | `Email` | `character varying(254)` | no | As typed (trimmed); shown in the UI |
 | `NormalizedEmail` | `character varying(254)` | no | `Email.Trim().ToUpperInvariant()`; **unique index** `IX_UserAccounts_NormalizedEmail` |
-| `PasswordHash` | `text` | no | Hash only — see section 2 |
+| `PasswordHash` | `text` | **yes** | Null until the person completes registration; then hash only — see section 2 |
 | `DepartmentId` | `integer` | no | Positive; becomes a foreign key when the Department entity exists |
 | `StudyYear` | `integer` | no | 1–6 (validated in the API) |
 | `IsAdministrator` | `boolean` | no | Default `false`; never set from a request |
-| `CreatedAtUtc` | `timestamp with time zone` | no | Set at registration |
+| `CreatedAtUtc` | `timestamp with time zone` | no | Set when the account is created (import or administrator) |
 
 Compared with the fields discussed earlier (`UserId, FullName, Email, DepartmentId, StudyYear, IsAdministrator`), three columns are new: `NormalizedEmail`, `PasswordHash`, `CreatedAtUtc`. The unique index moves from `Email` to `NormalizedEmail`.
 
@@ -29,7 +29,7 @@ Compared with the fields discussed earlier (`UserId, FullName, Email, Department
 
 - Stored in exactly one column, `PasswordHash`, produced by ASP.NET Core Identity's `PasswordHasher<UserAccount>` (PBKDF2-HMAC-SHA512, 100 000 iterations, a random salt per user embedded in the value).
 - The plain password is never stored, logged or returned. No API response contains `PasswordHash` or `NormalizedEmail`.
-- Rules: 8–128 characters. Wrong password and unknown email give the same `401` answer.
+- Rules: 8–128 characters. Wrong password, unknown email and an account that has not completed registration all give the same `401` answer.
 - Register and login share a limit of 10 attempts per minute per client address (`429` afterwards).
 - Nobody — including administrators and whoever imports data — ever sets or knows another person's password. There are no default or shared passwords.
 
@@ -39,28 +39,58 @@ Compared with the fields discussed earlier (`UserId, FullName, Email, Department
 
 ## 4. How accounts are created
 
-FR02 allows accounts to be registered *or* seeded, and decision D04 leaves seed-account activation open. What is implemented is registration only; the points below are Ozan's proposal for closing D04, not a team decision yet.
+Team decision (replaces the earlier registration-only proposal and the activation-code proposal): **accounts are defined in advance, and each person completes registration themselves.**
 
-- **Everyone registers through the Register screen** (`POST /api/auth/register`). No student account is created in advance.
-- **Survey answers are not turned into accounts.** A survey row has no password, and this release has no email verification, so a pre-created profile could be claimed by anyone who knows the address. The real name/email/department/year data should not be loaded into `UserAccounts`.
-- Because there are no pre-created accounts, there is no "set your password on first login" flow. If the team later wants pre-created profiles, that needs email verification first and is a separate piece of work.
-- **Administrators:** register normally, then on the machine that runs the backend:
+1. An account is created without a password, in one of two ways:
+   - the private user list is imported into the local database with `import-users` (section 7), or
+   - an administrator adds a single person with `POST /api/admin/users`.
+2. The person opens the Register screen and enters full name, email, department, year of study, password and repeated password.
+3. The backend looks the account up by email and compares name, department and year with the stored record. The name comparison ignores letter case, extra spaces and Turkish diacritics; department and year must be equal.
+4. If everything matches and the account has no password yet, the password hash is stored and the person is logged in.
+5. Afterwards the person can change their name, department and year on the My profile page (`PUT /api/auth/me`). Review eligibility must read these values from the database at submission time.
 
-  ```powershell
-  dotnet run --project Backend/UniversityDecisionHub.Api -- make-admin someone@example.com
-  ```
+Rejected:
 
-  The person then logs in again to get an administrator token. Nothing in the HTTP API can grant this.
+| Situation | Answer |
+|---|---|
+| Email not on the list, or name / department / year different | `404`, one message for all of these |
+| Account already has a password | `409` |
+| Missing or invalid field, password shorter than 8 | `400` |
+
+There is no open registration: a person who is not on the list cannot create an account.
+
+**Known limitation, accepted by the team:** this checks that the details match the list; it does not prove the person owns the email address. Someone who knows another student's name, email, department and year could register that account first. The first registration wins, the real owner then gets `409`, and an administrator has to step in. Email verification would close this gap and is a separate decision.
+
+**Administrators:** a team member completes registration like everyone else, then on the machine that runs the backend:
+
+```powershell
+dotnet run --project Backend/UniversityDecisionHub.Api -- make-admin someone@example.com
+```
+
+The person then logs in again to get an administrator token. Nothing in the HTTP API can grant this, and neither the import file nor the add-user endpoint has an administrator field.
+
+**Open points for the team:**
+
+- **Graduates.** Two people on the current list answered "Mezun" instead of a year. `StudyYear` must be 1–6, so the import rejects those rows until the team decides how graduates are stored.
+- **Department IDs.** The import file needs the numeric `DepartmentId` used in the database (Aygül's Department table), not the department name typed in the form.
 
 ## 5. Endpoints
 
-| Request | Body | Success | Errors |
-|---|---|---|---|
-| `POST /api/auth/register` | `fullName, email, password, departmentId, studyYear` | `201` + `{ token, expiresAtUtc, user }` | `400` validation, `409` email exists, `429` |
-| `POST /api/auth/login` | `email, password` | `200` + `{ token, expiresAtUtc, user }` | `401`, `429` |
-| `GET /api/auth/me` | — (token required) | `200` + `user` | `401` |
+| Request | Who | Body | Success | Errors |
+|---|---|---|---|---|
+| `POST /api/auth/register` | anyone on the list | `fullName, email, password, departmentId, studyYear` | `201` + `{ token, expiresAtUtc, user }` | `400`, `404` no match, `409` already registered, `429` |
+| `POST /api/auth/login` | registered user | `email, password` | `200` + `{ token, expiresAtUtc, user }` | `401`, `429` |
+| `GET /api/auth/me` | logged in | — | `200` + `user` | `401` |
+| `PUT /api/auth/me` | logged in | `fullName, departmentId, studyYear` | `200` + `user` | `400`, `401` |
+| `GET /api/admin/users` | administrator | — | `200` + list of `managedUser` | `401`, `403` |
+| `GET /api/admin/users/{id}` | administrator | — | `200` + `managedUser` | `401`, `403`, `404` |
+| `POST /api/admin/users` | administrator | `fullName, email, departmentId, studyYear` | `201` + `managedUser` | `400`, `401`, `403`, `409` email exists |
+| `PUT /api/admin/users/{id}` | administrator | `fullName, email, departmentId, studyYear` | `200` + `managedUser` | `400`, `401`, `403`, `404`, `409` |
 
 `user` is `{ userId, fullName, email, departmentId, studyYear, isAdministrator }`.
+`managedUser` is the same plus `hasCompletedRegistration` (false while the person has not chosen a password).
+
+No endpoint accepts or returns a password hash, and no endpoint lets one person set another person's password. There is no delete-user endpoint: reviews will reference their authors.
 
 The token is a JWT valid for 120 minutes. Send it on every protected request:
 
@@ -97,6 +127,17 @@ Existing course endpoints are unchanged and still unprotected; their owners add 
 
 ## 7. Local setup for each teammate
 
+**Importing the private user list** (each teammate, into their own local database only):
+
+```powershell
+dotnet run --project Backend/UniversityDecisionHub.Api -- import-users "C:\path\outside\the\repository\users.csv"
+```
+
+- UTF-8 text, comma or semicolon separated, first line exactly `FullName,Email,DepartmentId,StudyYear`. A template with synthetic rows is in `Doc/users_import_template.csv`.
+- No password, hash or administrator column. Rows with a missing value, an invalid email, a non-numeric department or a year outside 1–6 are rejected and reported by line number.
+- Emails already in the database are skipped, so the command can be run again safely.
+- **The real file must stay outside the repository.** `.gitignore` also blocks `private-data/` and `*.private.csv` as a safety net.
+
 ```powershell
 cd Backend/UniversityDecisionHub.Api
 dotnet user-secrets set "Jwt:Key" "<any 32+ random characters>"
@@ -127,7 +168,8 @@ Pages:
 
 | Page | Open as | Notes |
 |---|---|---|
-| `Pages/auth/login.html`, `register.html` | — | Register asks for a department *number* until a Departments endpoint exists |
+| `Pages/auth/login.html`, `register.html` | — | Register completes a pre-defined account; it asks for a department *number* until a Departments endpoint exists |
+| `Pages/auth/profile.html` | — | Logged-in user edits name, department and year; reached from the name in the navbar |
 | `Pages/courses/course-detail.html` | `?id=<CourseId>` | Reads Aygül's `GET /api/courses/{id}`; no second Course model |
 | `Pages/reviews/instructors.html` | — | Name and department filters, empty state |
 | `Pages/reviews/instructor-detail.html` | `?id=<InstructorId>` | Profile and course reviews are separate sections (UI05) |
@@ -162,12 +204,12 @@ There is no DELETE: offerings and reviews will reference instructors and must ke
 
 | Requirement | Status |
 |---|---|
-| FR02 accounts | Registration and login done. Seeded accounts: not implemented, see section 4 (D04 open) |
+| FR02 accounts | Accounts are defined in advance (import or administrator) and completed by their owner at Register; see section 4 |
 | FR03 profiles | Department and study year are required at registration. Non-student accounts: unresolved in the requirements, not implemented |
 | FR07 author identity | `User.GetUserId()` from the token; never from the request body |
 | FR09 / FR11 administrator-only actions | `AuthPolicies.Administrator`; used by instructor writes. Course writes are still unprotected (Aygül's endpoints) |
 | FR12 instructor pages | Navigation entry, list and detail done. **Associated courses are not shown yet** — they need Aygül's offerings; reviews are reached through Sami's page |
-| FR13 profile changes | No profile-edit endpoint: who may change department/year is an open decision |
+| FR13 profile changes | `PUT /api/auth/me` lets the user change name, department and year; eligibility is rechecked from the database at submission |
 | DR01, DR04 | Sections 1 and 9 |
 | UI01 / UI03 header | Shared navbar done; the landing page itself is Sami's |
 | UI02 | Palette done; logo missing |
@@ -181,4 +223,10 @@ Choices made where the requirements leave a decision open — say so if the team
 
 ## 11. Verification so far
 
-The machine this was written on has only the .NET 9 SDK and no PostgreSQL, so the real `net10.0` solution was **not** built or run there. The same source files were compiled in a temporary .NET 9 project against SQLite and exercised over HTTP: 19 authentication checks passed (register, duplicate email in another case, validation, login, identical 401s, `/me`, tampered token, 403 for students on an admin-only endpoint, `make-admin`, rate limit, CORS preflight, hash-only storage, database-level unique index) and 23 instructor checks passed (public reads, 401/403 for anonymous and student writes, administrator create/update, validation, 404s, sorting, combined filters, no delete). The five pages and the navbar were driven in a browser, logged out and logged in, including the return-after-login link. Still to do on a machine with .NET 10 and PostgreSQL: build the solution, apply Aygül's migration, and repeat the requests in `UniversityDecisionHub.Api.http`.
+The machine this was written on has only the .NET 9 SDK and no PostgreSQL, so the real `net10.0` solution was **not** built or run there. The same source files were compiled in a temporary .NET 9 project against SQLite and exercised over HTTP with synthetic data:
+
+- 36 account checks: import (added / skipped / rejected rows, safe re-run), registration that matches or fails on each field, the same `404` for every kind of mismatch, no login before registration, a second registration cannot replace the password, profile update, user management as anonymous / student / administrator, an administrator-added user completing registration, hashes never returned and `NULL` for unregistered accounts.
+- 23 instructor checks and 11 identity-claim checks from the earlier rounds (not re-run after this change, except the administrator instructor write and the claims probe, which passed).
+- The Register and My profile pages were driven in a browser.
+
+Still to do on a machine with .NET 10 and PostgreSQL: build the solution, apply Aygül's migration, and repeat the requests in `UniversityDecisionHub.Api.http`.
