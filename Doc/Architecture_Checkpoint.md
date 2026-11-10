@@ -17,15 +17,17 @@ This checkpoint adapts the existing course CRUD work to the revised plan. It doe
 The following folders contain `.gitkeep` markers, not new feature code:
 
 - `Features/Departments` — Aygül: faculty/department catalog and relationships.
-- `Features/Users`, `Features/Authentication` — Sami: accounts, profiles and authentication/authorization.
-- `Features/Instructors` — Sami: instructor profiles and catalog endpoints.
-- `Features/Offerings` — Aygül: teaching periods and instructor assignments.
-- `Features/Reviews` — Ozan: review operations/search; Aygül owns the shared eligibility logic.
+- `Features/Users`, `Features/Authentication` — Ozan: accounts, profiles and access control.
+- `Features/Instructors` — Ozan: instructor records and detail APIs.
+- `Features/Offerings` — Aygül: teaching periods and assignments.
+- `Features/Reviews` — Aygül: model/submission/eligibility; Sami: reading/search and administrator operations.
 - `Data/Configurations`, `Data/Seeding` — future coordinated database work.
 
-Ümran assists Aygül with a small source-documented catalog dataset and checks for missing/duplicate values. Sami may help with data checks. See `Team_Work_Plan.md` for the detailed allocation and shared-file boundaries.
+Database workload approved on 23 October 2026: Ümran 45%, Aygül 30%, Ozan 25%. This supersedes Ümran's earlier smaller data-support allocation and applies only to database work. See `Team_Work_Plan.md` for detailed responsibilities.
 
 ## Existing fields retained deliberately
+
+Approved 24 October 2026: keep `CourseId` as the internal identifier, `CourseCode` as the full official code (for example `COME 327`), and `RecommendedStudyYear` as the eligibility value. Do not introduce a separate `CourseNumber` field. The existing `(DepartmentId, CourseCode)` uniqueness rule remains unchanged. This decision needs no code or database migration.
 
 `CourseCode`, `CourseCredit`, `Ects`, `IsActive`, `IsElective`, `CourseDescription`, and prerequisite collections keep their existing names. The department/code unique index remains intact. `IsActive` is still the legacy catalog field; semester-specific availability will be implemented with offerings later. `DepartmentName` remains unpopulated until the department relationship exists.
 
@@ -56,4 +58,4 @@ Verification recorded for this checkpoint: 16 checks passed; all four manual req
 
 ## Git handoff
 
-The shared remote is https://github.com/Aygul1022/University-Decision-Hub.git. Aygül approved publication on a review branch; merging into main and applying database migrations are separate steps. A new `.gitignore` prevents new IDE/build artifacts from being added, but previously tracked `.vs`, `obj`, and `.csproj.user` files are still tracked. Do not use `git add .`; stage only reviewed source, migration, placeholder, documentation, and test files. Tracked artifact cleanup is a separate decision. Existing uncommitted work predates this checkpoint and must be preserved.
+The shared remote is https://github.com/Aygul1022/University-Decision-Hub.git. Aygül approved publication, but the branch-creation permission request was declined; publication remains pending. Merging into main and applying database migrations are separate steps. A new `.gitignore` prevents new IDE/build artifacts from being added, but previously tracked `.vs`, `obj`, and `.csproj.user` files are still tracked. Do not use `git add .`; stage only reviewed source, migration, placeholder, documentation, and test files. Tracked artifact cleanup is a separate decision. Existing uncommitted work predates this checkpoint and must be preserved.

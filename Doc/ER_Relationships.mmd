@@ -1,0 +1,14 @@
+erDiagram
+    FACULTY ||--|{ DEPARTMENT : contains
+    DEPARTMENT |o--o{ USER_ACCOUNT : student_affiliation
+    DEPARTMENT ||--o{ COURSE : offers
+    DEPARTMENT ||--|{ INSTRUCTOR : includes
+
+    COURSE ||--o{ COURSE_OFFERING : has
+    COURSE_OFFERING ||--o{ OFFERING_INSTRUCTOR : has_assignments
+    INSTRUCTOR ||--o{ OFFERING_INSTRUCTOR : teaches
+
+    USER_ACCOUNT ||--o{ REVIEW : writes
+    COURSE ||--o{ REVIEW : receives
+    COURSE_OFFERING ||--o{ REVIEW : provides_period
+    OFFERING_INSTRUCTOR ||--o{ REVIEW : provides_instructor_context

@@ -1,3 +1,4 @@
+using UniversityDecisionHub.Api.Features.Reviews;
 using Microsoft.EntityFrameworkCore;
 using UniversityDecisionHub.Api.Data;
 
@@ -10,6 +11,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<IReviewSubmissionService, ReviewSubmissionService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
