@@ -12,7 +12,9 @@ namespace UniversityDecisionHub.Api.Features.Authentication
     // ---- Shared contract for the other modules -------------------------------------------
     //   Any logged-in user:   [Authorize]
     //   Administrators only:  [Authorize(Policy = AuthPolicies.Administrator)]
+    //                         [Authorize(Roles = AuthRoles.Administrator)] works as well
     //   Who is calling:       int? userId = User.GetUserId();
+    //                         (the same value as User.FindFirstValue(ClaimTypes.NameIdentifier))
     // ---------------------------------------------------------------------------------------
     public static class AuthPolicies
     {
@@ -24,6 +26,8 @@ namespace UniversityDecisionHub.Api.Features.Authentication
         public const string Administrator = "Administrator";
     }
 
+    // Short names written into the token. After validation ASP.NET Core exposes them under the
+    // standard names: "sub" as ClaimTypes.NameIdentifier and "role" as ClaimTypes.Role.
     public static class AuthClaims
     {
         public const string UserId = "sub";
@@ -39,7 +43,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication
     {
         // UserAccount.UserId of the authenticated caller, or null for an anonymous request.
         public static int? GetUserId(this ClaimsPrincipal principal) =>
-            int.TryParse(principal.FindFirstValue(AuthClaims.UserId), out var id) ? id : null;
+            int.TryParse(principal.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : null;
     }
 
     public static class AuthenticationSetup
@@ -69,7 +73,8 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.MapInboundClaims = false;
+                    // Keeps the standard mapping, so other modules can read ClaimTypes.NameIdentifier and ClaimTypes.Role.
+                    options.MapInboundClaims = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -80,8 +85,8 @@ namespace UniversityDecisionHub.Api.Features.Authentication
                         IssuerSigningKey = jwt.SigningKey(),
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.FromMinutes(1),
-                        NameClaimType = AuthClaims.UserId,
-                        RoleClaimType = AuthClaims.Role
+                        NameClaimType = ClaimTypes.NameIdentifier,
+                        RoleClaimType = ClaimTypes.Role
                     };
                 });
 

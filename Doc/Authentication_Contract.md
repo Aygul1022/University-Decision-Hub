@@ -76,10 +76,20 @@ using UniversityDecisionHub.Api.Features.Authentication;
 
 [Authorize]                                           // any logged-in user
 [Authorize(Policy = AuthPolicies.Administrator)]      // administrators only
+[Authorize(Roles = "Administrator")]                  // the same check, written with the role name
 
 int? userId = User.GetUserId();                       // UserAccount.UserId of the caller
 var profile = await _db.UserAccounts.FindAsync(userId); // department / study year for eligibility
 ```
+
+The identity uses the standard claim types, so code that does not use the helpers works too:
+
+| What | Claim | Value |
+|---|---|---|
+| Who is calling | `ClaimTypes.NameIdentifier` | The database `UserAccount.UserId`, as text |
+| Administrator | `ClaimTypes.Role` | `"Administrator"` (absent for ordinary users) |
+
+`User.FindFirstValue(ClaimTypes.NameIdentifier)` and `User.IsInRole("Administrator")` therefore both work. The value comes from the signed token, never from the request body, so a user cannot act under another user's id.
 
 Read department and study year from the database (as above), not from the token — the token only carries the user id and the administrator role. An administrator flag changed with `make-admin` takes effect at that person's next login.
 
