@@ -76,3 +76,55 @@ Content-Type: application/json
 ### Unsupported filter should return 400 instead of silently ignoring it
 GET https://localhost:7214/api/courses?semester=Fall
 Accept: application/json
+
+### ---------------- Authentication (synthetic test data only) ----------------
+
+### Register a student
+POST http://localhost:5154/api/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Test Student",
+  "email": "test.student@example.com",
+  "password": "synthetic-Pass-1",
+  "departmentId": 1,
+  "studyYear": 2
+}
+
+### Same email in another case should return 409
+POST http://localhost:5154/api/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Test Student",
+  "email": "TEST.Student@Example.com",
+  "password": "synthetic-Pass-1",
+  "departmentId": 1,
+  "studyYear": 2
+}
+
+### Log in (copy "token" from the response into @token below)
+POST http://localhost:5154/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test.student@example.com",
+  "password": "synthetic-Pass-1"
+}
+
+### Wrong password should return 401
+POST http://localhost:5154/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test.student@example.com",
+  "password": "not-the-password"
+}
+
+### Current user profile
+@token = paste-token-here
+GET http://localhost:5154/api/auth/me
+Authorization: Bearer {{token}}
+
+### Without a token should return 401
+GET http://localhost:5154/api/auth/me

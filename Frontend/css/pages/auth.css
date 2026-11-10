@@ -1,0 +1,204 @@
+/* Login and Register pages. Everything is scoped under .auth-page so it cannot leak into other pages. */
+.auth-page {
+  --auth-ink: #1c2434;
+  --auth-muted: #5b6577;
+  --auth-line: #d5dae3;
+  --auth-surface: #ffffff;
+  --auth-backdrop: #f2f4f8;
+  --auth-accent: #1f4fd8;
+  --auth-accent-dark: #173ca6;
+  --auth-danger: #b42318;
+  --auth-danger-soft: #fdecea;
+  --auth-success: #17663a;
+  --auth-success-soft: #e7f5ec;
+
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  background: var(--auth-backdrop);
+  color: var(--auth-ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.auth-page *,
+.auth-page *::before,
+.auth-page *::after {
+  box-sizing: inherit;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  background: var(--auth-surface);
+  border: 1px solid var(--auth-line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(28, 36, 52, 0.06);
+}
+
+.auth-brand {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: var(--auth-accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.auth-card h1 {
+  margin: 0 0 4px;
+  font-size: 1.625rem;
+  line-height: 1.25;
+}
+
+.auth-lead {
+  margin: 0 0 24px;
+  color: var(--auth-muted);
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--auth-line);
+  border-radius: 8px;
+  background: var(--auth-surface);
+  color: inherit;
+  font: inherit;
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.primary-button:focus-visible,
+.link-button:focus-visible,
+.auth-card a:focus-visible {
+  outline: 3px solid rgba(31, 79, 216, 0.35);
+  outline-offset: 1px;
+  border-color: var(--auth-accent);
+}
+
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"] {
+  border-color: var(--auth-danger);
+}
+
+.field-hint,
+.field-error {
+  margin: 4px 0 0;
+  font-size: 0.8125rem;
+}
+
+.field-hint {
+  color: var(--auth-muted);
+}
+
+.field-error {
+  color: var(--auth-danger);
+}
+
+.field-error:empty {
+  display: none;
+}
+
+.form-message {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+}
+
+.form-message.error {
+  background: var(--auth-danger-soft);
+  color: var(--auth-danger);
+}
+
+.form-message.success {
+  background: var(--auth-success-soft);
+  color: var(--auth-success);
+}
+
+.primary-button {
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--auth-accent);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background: var(--auth-accent-dark);
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.session-banner {
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--auth-success-soft);
+  color: var(--auth-success);
+  font-size: 0.9375rem;
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.auth-switch {
+  margin: 20px 0 0;
+  color: var(--auth-muted);
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--auth-accent);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 20px;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

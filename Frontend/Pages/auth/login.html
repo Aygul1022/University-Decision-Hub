@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in · University Decision Hub</title>
+  <link rel="stylesheet" href="../../css/shared/global.css">
+  <link rel="stylesheet" href="../../css/pages/auth.css">
+</head>
+<body class="auth-page">
+  <main class="auth-card">
+    <a class="auth-brand" href="../../index.html">University Decision Hub</a>
+    <h1>Log in</h1>
+    <p class="auth-lead">Read every course review and share your own.</p>
+
+    <div class="session-banner" data-session-banner hidden>
+      You are logged in as <strong data-session-name></strong>.
+      <button type="button" class="link-button" data-logout>Log out</button>
+    </div>
+
+    <form data-auth-form="login" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required>
+        <p class="field-error" data-error-for="email"></p>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <p class="field-error" data-error-for="password"></p>
+      </div>
+
+      <p class="form-message" data-form-message role="alert" hidden></p>
+
+      <button type="submit" class="primary-button">Log in</button>
+    </form>
+
+    <p class="auth-switch">No account yet? <a href="register.html">Create one</a></p>
+  </main>
+
+  <script src="../../js/shared/api.js"></script>
+  <script src="../../js/pages/auth.js"></script>
+</body>
+</html>
