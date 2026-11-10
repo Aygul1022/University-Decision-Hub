@@ -29,8 +29,14 @@
   function fill(profile) {
     form.elements.email.value = profile.email;
     form.elements.fullName.value = profile.fullName;
-    form.elements.departmentId.value = profile.departmentId;
-    form.elements.studyYear.value = profile.studyYear;
+    // Both are null for an account without a student profile.
+    form.elements.departmentId.value = profile.departmentId ?? "";
+    form.elements.studyYear.value = profile.studyYear ?? "";
+  }
+
+  // An empty field is sent as null, not as 0.
+  function optionalNumber(text) {
+    return text.trim() === "" ? null : Number(text);
   }
 
   // Keeps the copy of the profile used by the navbar in step with what the server stored.
@@ -62,13 +68,13 @@
 
     const values = {
       fullName: form.elements.fullName.value.trim(),
-      departmentId: Number(form.elements.departmentId.value),
-      studyYear: Number(form.elements.studyYear.value),
+      departmentId: optionalNumber(form.elements.departmentId.value),
+      studyYear: optionalNumber(form.elements.studyYear.value),
     };
 
     const errors = {};
     if (values.fullName.length < 2) errors.fullName = ["Enter your full name."];
-    if (!(values.departmentId >= 1)) errors.departmentId = ["Enter your department number."];
+    if (values.departmentId !== null && !(values.departmentId >= 1)) errors.departmentId = ["Enter a valid department number."];
     showFieldErrors(errors);
     if (Object.keys(errors).length) {
       showFormMessage("Please correct the highlighted fields.", "error");

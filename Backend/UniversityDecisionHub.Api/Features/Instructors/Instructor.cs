@@ -11,7 +11,7 @@ namespace UniversityDecisionHub.Api.Features.Instructors
         // Optional, for example "Assoc. Prof. Dr.". Null when unknown.
         public string? AcademicTitle { get; set; }
 
-        // Becomes a foreign key once the Department entity exists.
+        // Foreign key to Departments.
         public int DepartmentId { get; set; }
     }
 }

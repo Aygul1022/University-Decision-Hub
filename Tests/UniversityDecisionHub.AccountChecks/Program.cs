@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
@@ -16,10 +17,15 @@ using UniversityDecisionHub.Api.Data;
 using UniversityDecisionHub.Api.Features.Authentication;
 using UniversityDecisionHub.Api.Features.Authentication.Dtos;
 using UniversityDecisionHub.Api.Features.Courses;
+using UniversityDecisionHub.Api.Features.Departments;
+using UniversityDecisionHub.Api.Features.Faculties;
+using UniversityDecisionHub.Api.Features.Offerings;
+using UniversityDecisionHub.Api.Features.Reviews;
 using UniversityDecisionHub.Api.Features.Users;
 using UniversityDecisionHub.Api.Features.Users.Dtos;
 
-// Account, administrator-boundary, instructor and detail-page checks (Ozan's module).
+// Account, administrator-boundary, instructor and detail-page checks (Ozan's module), plus the
+// hand-over to review submission: the token identifies the author and an incomplete profile is refused.
 //
 //   dotnet run --project Tests/UniversityDecisionHub.AccountChecks
 //
@@ -57,6 +63,8 @@ builder.Services.AddControllers().ConfigureApplicationPartManager(manager =>
         manager.ApplicationParts.Add(new AssemblyPart(apiAssembly));
 });
 builder.Services.AddUdhAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<IReviewSubmissionService, ReviewSubmissionService>();
 
 // Same order as the API's Program.cs.
 await using var app = builder.Build();
@@ -92,8 +100,10 @@ const string PasswordTwo = "synthetic-pass-two";
 const string EmailOne = "yigit.sahin@example.com";
 const string EmailTwo = "student.two@example.com";
 const string EmailNever = "never.registered@example.com";
+const string EmailStaff = "staff.member@example.com";
+const string PasswordStaff = "synthetic-pass-staff";
 
-UserAccount Listed(string fullName, string email, int departmentId, int studyYear) => new()
+UserAccount Listed(string fullName, string email, int? departmentId, int? studyYear) => new()
 {
     FullName = fullName, Email = email, NormalizedEmail = UserAccount.NormalizeEmail(email),
     DepartmentId = departmentId, StudyYear = studyYear, CreatedAtUtc = DateTime.UtcNow
@@ -102,10 +112,21 @@ UserAccount Listed(string fullName, string email, int departmentId, int studyYea
 var courseId = await Db(async db =>
 {
     await db.Database.EnsureCreatedAsync();
+    // Users, instructors and courses reference Departments, so five synthetic departments come first.
+    db.Faculties.Add(new Faculty
+    {
+        FacultyName = "Synthetic Faculty",
+        Departments = Enumerable.Range(1, 5).Select(n => new Department
+        {
+            DepartmentId = n, DepartmentCode = "DEP" + n, DepartmentName = "Synthetic Department " + n
+        }).ToList()
+    });
+    await db.SaveChangesAsync();
     db.UserAccounts.AddRange(
         Listed("Yiğit Şahin", EmailOne, 1, 3),
         Listed("Student Two", EmailTwo, 2, 4),
-        Listed("Never Registered", EmailNever, 1, 1));
+        Listed("Never Registered", EmailNever, 1, 1),
+        Listed("Staff Member", EmailStaff, null, null)); // no student profile
     var course = new Course
     {
         CourseCode = "CS101", CourseName = "Introduction to Computing", CourseDescription = "Synthetic course.",
@@ -164,12 +185,23 @@ Check(registerTwo.Status == 201 && registerTwo.Json.GetProperty("user").GetPrope
     "Registration ignores an isAdministrator value in the request");
 Check(!await Db(db => db.UserAccounts.AnyAsync(u => u.IsAdministrator)), "No administrator exists after public registrations");
 
-// auth request 6/10
-var shortPassword = await Post("/api/auth/register", new
+// auth request 6/10 — an account without department and year completes registration and is logged in
+var registerStaff = await Post("/api/auth/register", new
 {
-    fullName = "Never Registered", email = EmailNever, departmentId = 1, studyYear = 1, password = "1234567"
+    fullName = "Staff Member", email = EmailStaff, departmentId = (int?)null, studyYear = (int?)null, password = PasswordStaff
 });
-Check(shortPassword.Status == 400, "A 7-character password is rejected (400)");
+var tokenStaff = registerStaff.Text("token") ?? "";
+Check(registerStaff.Status == 201 && tokenStaff.Length > 0, "An account without department and year can register and log in");
+
+// Checked on the request type itself, to keep the 10 register/login requests for the cases above.
+bool Valid(object dto) => Validator.TryValidateObject(dto, new ValidationContext(dto), [], true);
+RegisterRequest Request(string password, int? studyYear = 1) => new()
+{
+    FullName = "Never Registered", Email = EmailNever, DepartmentId = 1, StudyYear = studyYear, Password = password
+};
+Check(Valid(Request("12345678")) && !Valid(Request("1234567")), "A 7-character password is rejected; 8 characters are accepted");
+Check(!Valid(Request("12345678", studyYear: 0)) && !Valid(Request("12345678", studyYear: 7)) && Valid(Request("12345678", studyYear: null)),
+    "Study year may be empty, but 0 and 7 are rejected");
 
 // auth request 7/10
 var login = await Post("/api/auth/login", new { email = "YIGIT.SAHIN@EXAMPLE.COM", password = PasswordOne });
@@ -214,7 +246,7 @@ Check(hashOne != null && hashOne != PasswordOne && !hashOne.Contains(PasswordOne
 Check(hashOne != null && app.Services.GetRequiredService<IPasswordHasher<UserAccount>>()
         .VerifyHashedPassword(stored[EmailOne], hashOne, PasswordOne) != PasswordVerificationResult.Failed,
     "The stored hash verifies the first password, so the rejected second registration did not replace it");
-Check(stored[EmailNever].PasswordHash == null, "A rejected registration stores no password");
+Check(stored[EmailNever].PasswordHash == null, "An account that has not registered has no password");
 
 // ================================================================ current user
 Check((await Get("/api/auth/me")).Status == 401, "GET /api/auth/me without a token is rejected (401)");
@@ -248,6 +280,12 @@ Check(meAfter.Json.GetProperty("departmentId").GetInt32() == 2 && meAfter.Json.G
     "The profile is read from the database, so an old token sees the new department and year");
 Check((await Put("/api/auth/me", new { fullName = "Yiğit Şahin", departmentId = 1, studyYear = 9 }, tokenOne)).Status == 400,
     "PUT /api/auth/me rejects study year 9 (400)");
+Check((await Put("/api/auth/me", new { fullName = "Yiğit Şahin Kaya", departmentId = 999, studyYear = 4 }, tokenOne)).Status == 400,
+    "PUT /api/auth/me rejects a department that does not exist (400)");
+var meStaff = await Get("/api/auth/me", tokenStaff);
+Check(meStaff.Status == 200 && meStaff.Json.GetProperty("departmentId").ValueKind == JsonValueKind.Null
+      && meStaff.Json.GetProperty("studyYear").ValueKind == JsonValueKind.Null,
+    "The profile of an account without department and year shows both as null");
 Check((await Put("/api/auth/me", new { fullName = "Yiğit Şahin", departmentId = 1, studyYear = 3 })).Status == 401,
     "PUT /api/auth/me without a token is rejected (401)");
 
@@ -258,7 +296,7 @@ Check((await Get("/api/admin/users", staleTokenTwo)).Status == 403,
     "User list: a token issued before make-admin has no administrator access (403)");
 
 var users = await Get("/api/admin/users", adminToken);
-Check(users.Status == 200 && users.Json.GetArrayLength() == 3, "User list: an administrator sees all three accounts");
+Check(users.Status == 200 && users.Json.GetArrayLength() == 4, "User list: an administrator sees all four accounts");
 Check(users.HasNoPrivateFields(PasswordOne), "User list has no password, hash or normalized email");
 Check(users.Json.EnumerateArray().Single(u => u.GetProperty("email").GetString() == EmailNever)
         .GetProperty("hasCompletedRegistration").GetBoolean() == false,
@@ -279,6 +317,9 @@ var duplicate = await Post("/api/admin/users", new { fullName = "Other Name", em
 Check(duplicate.Status == 409, "Add user: the same email in another letter case is a duplicate (409)");
 Check((await Post("/api/admin/users", new { fullName = "Bad Email", email = "not-an-email", departmentId = 1, studyYear = 1 }, adminToken)).Status == 400,
     "Add user: an invalid email is rejected (400)");
+
+Check((await Post("/api/admin/users", new { fullName = "Wrong Department", email = "wrong.department@example.com", departmentId = 999, studyYear = 1 }, adminToken)).Status == 400,
+    "Add user: a department that does not exist is rejected (400)");
 
 var takeEmail = await Put("/api/admin/users/" + newUserId, new { fullName = "New Person", email = EmailOne, departmentId = 1, studyYear = 2 }, adminToken);
 Check(takeEmail.Status == 409, "Edit user: changing the email to one that is in use is rejected (409)");
@@ -303,7 +344,9 @@ await File.WriteAllLinesAsync(csvPath,
     "Imported Person,imported.person@example.com,2,1",
     "Yiğit Şahin,YIGIT.SAHIN@example.com,1,3",
     "Broken Year,broken.year@example.com,1,x",
-    "Year Nine,year.nine@example.com,1,9"
+    "Year Nine,year.nine@example.com,1,9",
+    "No Profile,no.profile@example.com,,",
+    "Wrong Department,wrong.department@example.com,999,1"
 ]);
 var output = new StringWriter();
 Console.SetOut(output);
@@ -319,13 +362,17 @@ finally
     File.Delete(csvPath);
 }
 var importText = output.ToString();
-Check(firstImport == 2 && importText.Contains("1 added, 1 already present, 2 rejected"),
-    "Import adds the new row, skips the existing email and rejects the two invalid rows");
-Check(secondImport == 2 && importText.Contains("0 added, 2 already present, 2 rejected"), "Running the import again adds nothing");
+Check(firstImport == 2 && importText.Contains("2 added, 1 already present, 3 rejected"),
+    "Import adds the two new rows, skips the existing email and rejects the three invalid rows");
+Check(secondImport == 2 && importText.Contains("0 added, 3 already present, 3 rejected"), "Running the import again adds nothing");
+Check(await Db(db => db.UserAccounts.AnyAsync(u => u.Email == "no.profile@example.com" && u.DepartmentId == null && u.StudyYear == null)),
+    "Import accepts a row with empty department and year");
+Check(!await Db(db => db.UserAccounts.AnyAsync(u => u.Email == "wrong.department@example.com")),
+    "Import rejects a department that does not exist");
 Check(!importText.Contains("@"), "Import output reports line numbers only, no email addresses");
 Check(await Db(db => db.UserAccounts.AnyAsync(u => u.Email == "imported.person@example.com" && u.PasswordHash == null && !u.IsAdministrator)),
     "An imported account has no password and is not an administrator");
-Check(await Db(db => db.UserAccounts.CountAsync()) == 5, "Five accounts exist: three listed, one added, one imported");
+Check(await Db(db => db.UserAccounts.CountAsync()) == 7, "Seven accounts exist: four listed, one added, two imported");
 
 // ================================================================ model-level guarantees
 Check(UserAccount.NormalizeName("  yiğit   ŞAHİN ") == UserAccount.NormalizeName("Yigit Sahin"),
@@ -361,6 +408,7 @@ var invalidInstructors = new (object Body, string Why)[]
     (new { fullName = "Valid Name", academicTitle = new string('t', 51), departmentId = 3 }, "a 51-character title"),
     (new { fullName = "Valid Name", departmentId = 0 }, "department 0"),
     (new { fullName = "Valid Name" }, "a missing department"),
+    (new { fullName = "Valid Name", departmentId = 999 }, "a department that does not exist"),
 };
 foreach (var (body, why) in invalidInstructors)
     Check((await Post("/api/instructors", body, adminToken)).Status == 400, "Add instructor: " + why + " is rejected (400)");
@@ -390,6 +438,8 @@ Check(changed.Status == 200 && changed.Text("fullName") == "Ada Yılmaz Öztürk
 Check((await Put("/api/instructors/999999", change, adminToken)).Status == 404, "Edit instructor: an unknown id is not found (404)");
 Check((await Put("/api/instructors/" + adaId, new { fullName = " ", departmentId = 5 }, adminToken)).Status == 400,
     "Edit instructor: a blank name is rejected (400)");
+Check((await Put("/api/instructors/" + adaId, new { fullName = "Ada Yılmaz Öztürk", departmentId = 999 }, adminToken)).Status == 400,
+    "Edit instructor: a department that does not exist is rejected (400)");
 Check((await Send(HttpMethod.Delete, "/api/instructors/" + adaId, null, adminToken)).Status == 405,
     "Instructors cannot be deleted, even by an administrator (405)");
 
@@ -409,6 +459,36 @@ Check(courseDetail.PropertyNames().IsSupersetOf(
         ["courseCode", "courseName", "isElective", "departmentId", "recommendedStudyYear", "courseCredit", "ects", "courseDescription"]),
     "The course response has every field course-detail.html displays");
 Check((await Get("/api/courses/999999")).Status == 404, "Course detail: an unknown id is not found (404)");
+
+// ================================================================ hand-over to review submission
+// Student one is now in department 2, year 4 (changed through PUT /api/auth/me above).
+var (reviewCourseId, offeringId) = await Db(async db =>
+{
+    var course = new Course
+    {
+        CourseCode = "CS402", CourseName = "Synthetic Seminar", DepartmentId = 2, RecommendedStudyYear = 4,
+        CourseCredit = 3, Ects = 6, IsActive = true
+    };
+    db.Courses.Add(course);
+    await db.SaveChangesAsync();
+    var offering = new CourseOffering { CourseId = course.CourseId, AcademicYear = "2025-2026", Semester = "Fall", Status = "Completed" };
+    db.CourseOfferings.Add(offering);
+    await db.SaveChangesAsync();
+    db.OfferingInstructors.Add(new OfferingInstructor { OfferingId = offering.OfferingId, InstructorId = adaId });
+    await db.SaveChangesAsync();
+    return (course.CourseId, offering.OfferingId);
+});
+var review = new { courseId = reviewCourseId, offeringId, instructorId = adaId, reviewText = "Synthetic review text." };
+
+Check((await Post("/api/reviews", review)).Status == 401, "Review: anonymous is rejected (401)");
+Check((await Post("/api/reviews", review, tokenStaff)).Status == 403,
+    "Review: an account without department and year can log in but cannot write a review (403)");
+var submitted = await Post("/api/reviews", review, tokenOne);
+Check(submitted.Status == 201 && submitted.Json.GetProperty("userId").GetInt32() == stored[EmailOne].UserId,
+    "Review: an eligible student submits one, and the author is the user in the token");
+Check((await Post("/api/reviews", review, tokenOne)).Status == 409, "Review: a second review for the same course is rejected (409)");
+Check((await Post("/api/reviews", new { review.courseId, review.offeringId, review.instructorId, review.reviewText, userId = 1 }, adminToken)).Status == 400,
+    "Review: a userId in the request body is rejected (400)");
 
 // ---------------------------------------------------------------- result
 await app.StopAsync();

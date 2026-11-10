@@ -52,6 +52,8 @@ namespace UniversityDecisionHub.Api.Features.Instructors
         [Authorize(Policy = AuthPolicies.Administrator)]
         public async Task<ActionResult<InstructorDto>> Post([FromBody] InstructorSaveDto dto)
         {
+            if (!await DepartmentExists(dto.DepartmentId)) return UnknownDepartment();
+
             var instructor = new Instructor();
             Apply(dto, instructor);
 
@@ -68,11 +70,22 @@ namespace UniversityDecisionHub.Api.Features.Instructors
         {
             var instructor = await _db.Instructors.FirstOrDefaultAsync(i => i.InstructorId == id);
             if (instructor == null) return NotFound();
+            if (!await DepartmentExists(dto.DepartmentId)) return UnknownDepartment();
 
             Apply(dto, instructor);
             await _db.SaveChangesAsync();
 
             return Ok(InstructorDto.From(instructor));
+        }
+
+        // DepartmentId is a foreign key; an unknown one is answered with 400 instead of a database error.
+        private Task<bool> DepartmentExists(int departmentId) =>
+            _db.Departments.AnyAsync(d => d.DepartmentId == departmentId);
+
+        private ActionResult UnknownDepartment()
+        {
+            ModelState.AddModelError(nameof(InstructorSaveDto.DepartmentId), "This department does not exist.");
+            return ValidationProblem(ModelState);
         }
 
         private static void Apply(InstructorSaveDto dto, Instructor instructor)

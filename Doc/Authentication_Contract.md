@@ -13,17 +13,24 @@ One shared model, in `Features/Users/UserAccount.cs`; mapping in `Data/Configura
 | `Email` | `character varying(254)` | no | As typed (trimmed); shown in the UI |
 | `NormalizedEmail` | `character varying(254)` | no | `Email.Trim().ToUpperInvariant()`; **unique index** `IX_UserAccounts_NormalizedEmail` |
 | `PasswordHash` | `text` | **yes** | Null until the person completes registration; then hash only — see section 2 |
-| `DepartmentId` | `integer` | no | Positive; becomes a foreign key when the Department entity exists |
-| `StudyYear` | `integer` | no | 1–6 (validated in the API) |
+| `DepartmentId` | `integer` | **yes** | Foreign key to `Departments`. Null for an account without a student profile |
+| `StudyYear` | `integer` | **yes** | 1–6 when given (validated in the API) |
 | `IsAdministrator` | `boolean` | no | Default `false`; never set from a request |
 | `CreatedAtUtc` | `timestamp with time zone` | no | Set when the account is created (import or administrator) |
 
 Compared with the fields discussed earlier (`UserId, FullName, Email, DepartmentId, StudyYear, IsAdministrator`), three columns are new: `NormalizedEmail`, `PasswordHash`, `CreatedAtUtc`. The unique index moves from `Email` to `NormalizedEmail`.
 
-**Migration status: none has been created.** Aygül owns migration order, so the models are in the code but the migration for `UserAccounts` and `Instructors` (section 9) still has to be created/updated by her to match these tables. Until then:
+**Department and year are optional for logging in and required for writing a review.** An account with either one empty can register, log in and edit its profile; `ReviewEligibility` refuses its review with `403` until both are filled in. A `DepartmentId` that is given must exist in `Departments`; otherwise the API answers `400`.
 
-- the auth and instructor endpoints fail against a real database (the tables do not exist);
-- `Tests/UniversityDecisionHub.CourseChecks` reports two failures that are expected until the migration lands: "Only the two original course entities are implemented" and "Migration snapshot matches current model". Those two checks should be updated together with the migration.
+**One email, one account.** Uniqueness is enforced by the database on `NormalizedEmail`, so the same address in another letter case cannot become a second account. The older unique index on `Email` is replaced by this one.
+
+**Migration status (integration branch `integration/auth-catalog`).** `AddReviewSubmission` already creates `UserAccounts` and `AddAcademicCatalog` creates `Instructors`; neither table is created again. One follow-up migration is still **to be generated on a machine with the .NET 10 SDK**, in Aygül's order:
+
+```powershell
+dotnet ef migrations add AddAccountFields --project Backend/UniversityDecisionHub.Api
+```
+
+It should only: add `NormalizedEmail`, `PasswordHash` and `CreatedAtUtc` to `UserAccounts`; drop `IX_UserAccounts_Email` and create the unique `IX_UserAccounts_NormalizedEmail`; and shorten `FullName`/`Email`/`AcademicTitle` from `text` to the lengths in sections 1 and 9. If `UserAccounts` already holds rows, `NormalizedEmail` must be filled (`upper(btrim("Email"))`) before the unique index is created. Until this migration exists, the auth endpoints fail against a real database and `CourseChecks` reports "Migration snapshot matches current model" as failing.
 
 ## 2. Passwords
 
@@ -71,7 +78,7 @@ The person then logs in again to get an administrator token. Nothing in the HTTP
 
 **Open points for the team:**
 
-- **Graduates.** Two people on the current list answered "Mezun" instead of a year. `StudyYear` must be 1–6, so the import rejects those rows until the team decides how graduates are stored.
+- **Graduates.** Two people on the current list answered "Mezun" instead of a year. They can now be imported with an empty `StudyYear`: they can log in but cannot write reviews. Whether graduates should be able to review is still a team decision.
 - **Department IDs.** The import file needs the numeric `DepartmentId` used in the database (Aygül's Department table), not the department name typed in the form.
 
 ## 5. Endpoints
@@ -134,7 +141,7 @@ dotnet run --project Backend/UniversityDecisionHub.Api -- import-users "C:\path\
 ```
 
 - UTF-8 text, comma or semicolon separated, first line exactly `FullName,Email,DepartmentId,StudyYear`. A template with synthetic rows is in `Doc/users_import_template.csv`.
-- No password, hash or administrator column. Rows with a missing value, an invalid email, a non-numeric department or a year outside 1–6 are rejected and reported by line number.
+- No password, hash or administrator column. `DepartmentId` and `StudyYear` may be empty. Rows with an invalid email, a non-numeric or unknown department, or a year outside 1–6 are rejected and reported by line number.
 - Emails already in the database are skipped, so the command can be run again safely.
 - **The real file must stay outside the repository.** `.gitignore` also blocks `private-data/` and `*.private.csv` as a safety net.
 
@@ -229,14 +236,14 @@ The machine this was written on has only the .NET 9 SDK and no PostgreSQL, so th
 - 23 instructor checks and 11 identity-claim checks from the earlier rounds (not re-run after this change, except the administrator instructor write and the claims probe, which passed).
 - The Register and My profile pages were driven in a browser.
 
-Those ad-hoc checks are now kept in the repository as `Tests/UniversityDecisionHub.AccountChecks` (86 checks: registration, login, the 10-per-minute limit, stored hashes, current-user profile, administrator boundaries, user management, import, instructor validation and the fields the two detail pages read). Run them with:
+Those ad-hoc checks are now kept in the repository as `Tests/UniversityDecisionHub.AccountChecks` (registration, login, the 10-per-minute limit, stored hashes, current-user profile, administrator boundaries, user management, import, instructor validation and the fields the two detail pages read). Run them with:
 
 ```powershell
 dotnet run --project Tests/UniversityDecisionHub.AccountChecks
 ```
 
-They host the real controllers and authentication setup on a random local port with in-memory SQLite, so they need neither PostgreSQL nor a migration. All 86 passed when the same source files were compiled for .NET 9; the `net10.0` project itself has not been built yet.
+They host the real controllers and authentication setup on a random local port with in-memory SQLite, so they need neither PostgreSQL nor a migration. After the merge with the catalog and review branch there are 100 checks; they also cover accounts without department and year, unknown departments, and review submission through `POST /api/reviews` with a real token (anonymous `401`, incomplete profile `403`, eligible student `201` with the author taken from the token, duplicate `409`). All 100 passed when the same source files were compiled for .NET 9; the `net10.0` project itself has not been built yet.
 
-`Tests/UniversityDecisionHub.CourseChecks` still expects two entity types and no pending model changes. Both expectations stop holding now that `UserAccounts` and `Instructors` are in the model without a migration; they need updating together with Aygül's migration.
+`Tests/UniversityDecisionHub.CourseChecks` (Aygül's, updated on her branch) expects no pending model changes; that one check fails until the follow-up migration in section 1 is generated.
 
 Still to do on a machine with .NET 10 and PostgreSQL: build the solution, apply Aygül's migration, and repeat the requests in `UniversityDecisionHub.Api.http`.

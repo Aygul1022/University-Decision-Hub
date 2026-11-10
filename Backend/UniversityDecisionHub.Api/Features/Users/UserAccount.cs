@@ -26,9 +26,11 @@ namespace UniversityDecisionHub.Api.Features.Users
         // The plain password is never stored and this value is never returned by the API.
         public string? PasswordHash { get; set; }
 
-        // Student profile. Becomes a foreign key once the Department entity exists.
-        public int DepartmentId { get; set; }
-        public int StudyYear { get; set; }
+        // Student profile. Both are optional: an account without them can still log in,
+        // but cannot submit a review (ReviewEligibility requires both).
+        // DepartmentId is a foreign key to Departments.
+        public int? DepartmentId { get; set; }
+        public int? StudyYear { get; set; }
 
         // Never set from a request body. Granted only with the `make-admin` command.
         public bool IsAdministrator { get; set; }

@@ -42,6 +42,8 @@ namespace UniversityDecisionHub.Api.Features.Users
         [HttpPost]
         public async Task<ActionResult<ManagedUserDto>> Post([FromBody] ManagedUserSaveDto dto)
         {
+            if (!await DepartmentExists(dto.DepartmentId)) return UnknownDepartment();
+
             var normalizedEmail = UserAccount.NormalizeEmail(dto.Email);
             if (await _db.UserAccounts.AnyAsync(u => u.NormalizedEmail == normalizedEmail))
                 return Conflict(EmailTaken);
@@ -81,6 +83,7 @@ namespace UniversityDecisionHub.Api.Features.Users
         {
             var user = await _db.UserAccounts.FirstOrDefaultAsync(u => u.UserId == id);
             if (user == null) return NotFound();
+            if (!await DepartmentExists(dto.DepartmentId)) return UnknownDepartment();
 
             var normalizedEmail = UserAccount.NormalizeEmail(dto.Email);
             if (normalizedEmail != user.NormalizedEmail
@@ -106,6 +109,16 @@ namespace UniversityDecisionHub.Api.Features.Users
             }
 
             return Ok(ManagedUserDto.From(user));
+        }
+
+        // DepartmentId is a foreign key; an unknown one is answered with 400 instead of a database error.
+        private async Task<bool> DepartmentExists(int? departmentId) =>
+            departmentId == null || await _db.Departments.AnyAsync(d => d.DepartmentId == departmentId);
+
+        private ActionResult UnknownDepartment()
+        {
+            ModelState.AddModelError(nameof(ManagedUserSaveDto.DepartmentId), "This department does not exist.");
+            return ValidationProblem(ModelState);
         }
     }
 }

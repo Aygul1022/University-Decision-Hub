@@ -12,6 +12,9 @@ namespace UniversityDecisionHub.Api.Features.Users
     // The file is UTF-8 text with this header (comma or semicolon separated):
     //   FullName,Email,DepartmentId,StudyYear
     //
+    // DepartmentId and StudyYear may be left empty (for example a graduate or a non-student account);
+    // a DepartmentId that is given must exist in the Departments table.
+    //
     // It must never contain passwords or administrator flags, and it must never be committed.
     // Imported accounts have no password; each person completes registration themselves.
     // Running the command again is safe: emails that already exist are left untouched.
@@ -47,6 +50,7 @@ namespace UniversityDecisionHub.Api.Features.Users
             using var scope = services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var existing = (await db.UserAccounts.Select(u => u.NormalizedEmail).ToListAsync()).ToHashSet();
+            var departments = (await db.Departments.Select(d => d.DepartmentId).ToListAsync()).ToHashSet();
 
             int added = 0, alreadyPresent = 0, rejected = 0;
             for (var i = 1; i < lines.Length; i++)
@@ -58,6 +62,13 @@ namespace UniversityDecisionHub.Api.Features.Users
                 if (problem != null)
                 {
                     Console.WriteLine($"Line {i + 1}: rejected - {problem}");
+                    rejected++;
+                    continue;
+                }
+
+                if (row.DepartmentId != null && !departments.Contains(row.DepartmentId.Value))
+                {
+                    Console.WriteLine($"Line {i + 1}: rejected - this DepartmentId does not exist.");
                     rejected++;
                     continue;
                 }
@@ -98,10 +109,17 @@ namespace UniversityDecisionHub.Api.Features.Users
             row = new ManagedUserSaveDto();
             if (values.Length != Columns.Length)
                 return $"expected {Columns.Length} values but found {values.Length}.";
-            if (!int.TryParse(values[2], out var departmentId))
-                return "DepartmentId is not a number.";
-            if (!int.TryParse(values[3], out var studyYear))
-                return "StudyYear is not a number.";
+            int? departmentId = null, studyYear = null;
+            if (values[2].Length > 0)
+            {
+                if (!int.TryParse(values[2], out var parsedDepartment)) return "DepartmentId is not a number.";
+                departmentId = parsedDepartment;
+            }
+            if (values[3].Length > 0)
+            {
+                if (!int.TryParse(values[3], out var parsedYear)) return "StudyYear is not a number.";
+                studyYear = parsedYear;
+            }
 
             row = new ManagedUserSaveDto { FullName = values[0], Email = values[1], DepartmentId = departmentId, StudyYear = studyYear };
 

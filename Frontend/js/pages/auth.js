@@ -52,10 +52,15 @@
       if (values.fullName.length < 2) errors.fullName = ["Enter your full name."];
       if (values.password && values.password.length < 8) errors.password = ["Use at least 8 characters."];
       if (values.password !== form.elements.confirmPassword.value) errors.confirmPassword = ["The two passwords do not match."];
-      if (!(values.departmentId >= 1)) errors.departmentId = ["Enter your department number."];
-      if (!(values.studyYear >= 1 && values.studyYear <= 6)) errors.studyYear = ["Choose your year of study."];
+      // Department and year are optional: an account without them can log in but cannot write reviews.
+      if (values.departmentId !== null && !(values.departmentId >= 1)) errors.departmentId = ["Enter a valid department number."];
     }
     return errors;
+  }
+
+  // An empty field is sent as null, not as 0.
+  function optionalNumber(text) {
+    return text.trim() === "" ? null : Number(text);
   }
 
   function readValues() {
@@ -65,8 +70,8 @@
     };
     if (mode === "register") {
       values.fullName = form.elements.fullName.value.trim();
-      values.departmentId = Number(form.elements.departmentId.value);
-      values.studyYear = Number(form.elements.studyYear.value);
+      values.departmentId = optionalNumber(form.elements.departmentId.value);
+      values.studyYear = optionalNumber(form.elements.studyYear.value);
     }
     return values;
   }
