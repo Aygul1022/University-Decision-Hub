@@ -1,0 +1,6 @@
+interface:
+  display_name: "University Implementation Log"
+  short_description: "Record UniversityDecisionHub implementation progress"
+  default_prompt: "Use $university-implementation-log to record the latest implementation and verification results."
+policy:
+  allow_implicit_invocation: true
