@@ -1,0 +1,99 @@
+/* Shared header rendered by js/shared/navbar.js. */
+.navbar {
+  background: var(--color-red);
+  color: var(--color-white);
+}
+
+.navbar-inner {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+}
+
+.navbar a,
+.navbar button {
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+.navbar :focus-visible {
+  outline-color: var(--color-white);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.navbar-links,
+.navbar-account {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navbar-links {
+  flex: 1 1 auto;
+}
+
+.navbar-links a,
+.navbar-account a,
+.navbar-account button {
+  display: block;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  cursor: pointer;
+}
+
+.navbar-links a:hover,
+.navbar-account a:hover,
+.navbar-account button:hover {
+  background: var(--color-red-dark);
+  color: var(--color-white);
+}
+
+.navbar-links a[aria-current="page"] {
+  background: var(--color-red-dark);
+  font-weight: 600;
+}
+
+.navbar-account .navbar-register {
+  background: var(--color-white);
+  color: var(--color-red);
+  font-weight: 600;
+}
+
+.navbar-account .navbar-register:hover {
+  background: var(--color-cream);
+  color: var(--color-red-dark);
+}
+
+.navbar-user {
+  padding: 6px 4px 6px 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.navbar-role {
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--color-cream);
+  color: var(--color-red-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: middle;
+}

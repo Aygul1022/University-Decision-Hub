@@ -1,13 +1,31 @@
-// Login and Register pages. Requires js/shared/api.js to be loaded first.
+// Login and Register pages. Requires js/shared/api.js and js/shared/navbar.js to be loaded first.
 (function () {
-  const AFTER_LOGIN_URL = "../../index.html";
-
   const form = document.querySelector("form[data-auth-form]");
   if (!form) return;
 
   const mode = form.dataset.authForm; // "login" or "register"
   const formMessage = form.querySelector("[data-form-message]");
   const submitButton = form.querySelector("button[type=submit]");
+
+  // ?next=Pages/reviews/reviews.html  -> where to go after a successful login (see Site.membersUrl).
+  const requestedNext = new URLSearchParams(window.location.search).get("next");
+  const next = Site.isSafeNextPath(requestedNext) ? requestedNext : null;
+  const afterLoginUrl = Site.url(next || "index.html");
+
+  if (next) {
+    const notice = document.querySelector("[data-next-notice]");
+    if (notice) notice.hidden = false;
+    // Keep the destination when switching between the Login and Register pages.
+    document.querySelectorAll("a[data-keep-next]").forEach((anchor) => {
+      anchor.href = anchor.getAttribute("href") + "?next=" + encodeURIComponent(next);
+    });
+  }
+
+  // Someone who is already logged in has nothing to do here.
+  if (Session.isLoggedIn) {
+    window.location.replace(afterLoginUrl);
+    return;
+  }
 
   function showFormMessage(text, kind) {
     formMessage.textContent = text;
@@ -70,23 +88,11 @@
       const result = await apiFetch("/api/auth/" + mode, { method: "POST", body: values });
       Session.save(result);
       showFormMessage("Welcome, " + result.user.fullName + ". Redirecting…", "success");
-      window.location.href = AFTER_LOGIN_URL;
+      window.location.href = afterLoginUrl;
     } catch (error) {
       showFieldErrors(error.fieldErrors || {});
       showFormMessage(error.message || "Something went wrong. Please try again.", "error");
       submitButton.disabled = false;
     }
   });
-
-  // Someone who is already logged in sees who they are and can log out from here.
-  const current = Session.user;
-  const banner = document.querySelector("[data-session-banner]");
-  if (current && banner) {
-    banner.hidden = false;
-    banner.querySelector("[data-session-name]").textContent = current.fullName;
-    banner.querySelector("[data-logout]").addEventListener("click", () => {
-      Session.clear();
-      banner.hidden = true;
-    });
-  }
 })();

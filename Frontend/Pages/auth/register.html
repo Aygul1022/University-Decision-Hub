@@ -5,77 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create account · University Decision Hub</title>
   <link rel="stylesheet" href="../../css/shared/global.css">
+  <link rel="stylesheet" href="../../css/shared/navbar.css">
   <link rel="stylesheet" href="../../css/pages/auth.css">
 </head>
-<body class="auth-page">
-  <main class="auth-card">
-    <a class="auth-brand" href="../../index.html">University Decision Hub</a>
-    <h1>Create your account</h1>
-    <p class="auth-lead">Your department and year decide which courses you can review.</p>
+<body>
+  <main class="auth-shell">
+    <div class="auth-card">
+      <h1>Create your account</h1>
+      <p class="auth-lead">Your department and year decide which courses you can review.</p>
 
-    <div class="session-banner" data-session-banner hidden>
-      You are logged in as <strong data-session-name></strong>.
-      <button type="button" class="link-button" data-logout>Log out</button>
+      <form data-auth-form="register" novalidate>
+        <div class="field">
+          <label for="fullName">Full name</label>
+          <input id="fullName" name="fullName" type="text" autocomplete="name" maxlength="150" required>
+          <p class="field-error" data-error-for="fullName"></p>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required>
+          <p class="field-error" data-error-for="email"></p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <!-- Becomes a department list once the Departments endpoint exists. -->
+            <label for="departmentId">Department number</label>
+            <input id="departmentId" name="departmentId" type="number" min="1" step="1" inputmode="numeric" required>
+            <p class="field-error" data-error-for="departmentId"></p>
+          </div>
+
+          <div class="field">
+            <label for="studyYear">Year of study</label>
+            <select id="studyYear" name="studyYear" required>
+              <option value="">Choose…</option>
+              <option value="1">1st year</option>
+              <option value="2">2nd year</option>
+              <option value="3">3rd year</option>
+              <option value="4">4th year</option>
+              <option value="5">5th year</option>
+              <option value="6">6th year</option>
+            </select>
+            <p class="field-error" data-error-for="studyYear"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required>
+          <p class="field-hint">At least 8 characters.</p>
+          <p class="field-error" data-error-for="password"></p>
+        </div>
+
+        <div class="field">
+          <label for="confirmPassword">Repeat password</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
+          <p class="field-error" data-error-for="confirmPassword"></p>
+        </div>
+
+        <p class="form-message" data-form-message role="alert" hidden></p>
+
+        <button type="submit" class="button">Create account</button>
+      </form>
+
+      <p class="auth-switch">Already registered? <a href="login.html" data-keep-next>Log in</a></p>
     </div>
-
-    <form data-auth-form="register" novalidate>
-      <div class="field">
-        <label for="fullName">Full name</label>
-        <input id="fullName" name="fullName" type="text" autocomplete="name" maxlength="150" required>
-        <p class="field-error" data-error-for="fullName"></p>
-      </div>
-
-      <div class="field">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required>
-        <p class="field-error" data-error-for="email"></p>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
-          <!-- Becomes a department list once the Departments endpoint exists. -->
-          <label for="departmentId">Department number</label>
-          <input id="departmentId" name="departmentId" type="number" min="1" step="1" inputmode="numeric" required>
-          <p class="field-error" data-error-for="departmentId"></p>
-        </div>
-
-        <div class="field">
-          <label for="studyYear">Year of study</label>
-          <select id="studyYear" name="studyYear" required>
-            <option value="">Choose…</option>
-            <option value="1">1st year</option>
-            <option value="2">2nd year</option>
-            <option value="3">3rd year</option>
-            <option value="4">4th year</option>
-            <option value="5">5th year</option>
-            <option value="6">6th year</option>
-          </select>
-          <p class="field-error" data-error-for="studyYear"></p>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required>
-        <p class="field-hint">At least 8 characters.</p>
-        <p class="field-error" data-error-for="password"></p>
-      </div>
-
-      <div class="field">
-        <label for="confirmPassword">Repeat password</label>
-        <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
-        <p class="field-error" data-error-for="confirmPassword"></p>
-      </div>
-
-      <p class="form-message" data-form-message role="alert" hidden></p>
-
-      <button type="submit" class="primary-button">Create account</button>
-    </form>
-
-    <p class="auth-switch">Already registered? <a href="login.html">Log in</a></p>
   </main>
 
   <script src="../../js/shared/api.js"></script>
+  <script src="../../js/shared/navbar.js"></script>
   <script src="../../js/pages/auth.js"></script>
 </body>
 </html>

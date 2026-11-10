@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using UniversityDecisionHub.Api.Data.Configurations;
 using UniversityDecisionHub.Api.Features.Courses;
+using UniversityDecisionHub.Api.Features.Instructors;
 using UniversityDecisionHub.Api.Features.Users;
 
 //TRY TO UNDERSTAND THE CODE: This code defines the ApplicationDbContext class, which is a subclass of DbContext from Entity Framework Core. It represents the database context for the application and provides access to the Courses and CoursePrerequisites tables in the database. The OnModelCreating method is overridden to configure the relationships between the Course and CoursePrerequisite entities, including defining composite keys and foreign key constraints. Additionally, there are commented-out lines that suggest how to map database column names if they differ from the property names in the entity classes.
@@ -15,12 +16,14 @@ namespace UniversityDecisionHub.Api.Data
         public DbSet<Course> Courses { get; set; } = null!;
         public DbSet<CoursePrerequisite> CoursePrerequisites { get; set; } = null!;
         public DbSet<UserAccount> UserAccounts { get; set; } = null!;
+        public DbSet<Instructor> Instructors { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new UserAccountConfiguration());
+            modelBuilder.ApplyConfiguration(new InstructorConfiguration());
 
             modelBuilder.Entity<Course>()
                 .HasIndex(c => new { c.DepartmentId, c.CourseCode })

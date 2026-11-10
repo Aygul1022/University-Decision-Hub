@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instructors · University Decision Hub</title>
+  <link rel="stylesheet" href="../../css/shared/global.css">
+  <link rel="stylesheet" href="../../css/shared/navbar.css">
+  <link rel="stylesheet" href="../../css/pages/catalog-detail.css">
+</head>
+<body>
+  <main class="page" data-page="instructor-list">
+    <h1>Instructors</h1>
+    <p class="page-lead">Find an instructor to see their profile and the reviews of the courses they taught.</p>
+
+    <form class="search-form" data-search-form>
+      <div class="field">
+        <label for="query">Name</label>
+        <input id="query" name="query" type="search" maxlength="150" autocomplete="off">
+      </div>
+      <div class="field narrow">
+        <!-- Becomes a department list once the Departments endpoint exists. -->
+        <label for="departmentId">Department number</label>
+        <input id="departmentId" name="departmentId" type="number" min="1" step="1" inputmode="numeric">
+      </div>
+      <button type="submit" class="button">Search</button>
+    </form>
+
+    <p class="notice" data-status role="status">Loading instructors…</p>
+    <p class="result-count" data-result-count hidden></p>
+    <ul class="instructor-list" data-results></ul>
+  </main>
+
+  <script src="../../js/shared/api.js"></script>
+  <script src="../../js/shared/navbar.js"></script>
+  <script src="../../js/pages/instructors.js"></script>
+</body>
+</html>

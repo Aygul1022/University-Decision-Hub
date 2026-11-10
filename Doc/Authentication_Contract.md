@@ -1,6 +1,6 @@
-# Authentication and user accounts — contract for the team
+# Accounts, authentication and instructors — contract for the team
 
-Owner: Ozan. This describes what the code in `Features/Users` and `Features/Authentication` does today, and what the other modules can rely on.
+Owner: Ozan. This describes what the code in `Features/Users`, `Features/Authentication` and `Features/Instructors` does today, what the other modules can rely on, and which requirement IDs (Requirements v0.2) each part answers.
 
 ## 1. The `UserAccount` model (table `UserAccounts`)
 
@@ -20,9 +20,9 @@ One shared model, in `Features/Users/UserAccount.cs`; mapping in `Data/Configura
 
 Compared with the fields discussed earlier (`UserId, FullName, Email, DepartmentId, StudyYear, IsAdministrator`), three columns are new: `NormalizedEmail`, `PasswordHash`, `CreatedAtUtc`. The unique index moves from `Email` to `NormalizedEmail`.
 
-**Migration status: none has been created.** Aygül owns migration order, so the model is in the code but the `UserAccounts` migration still has to be created/updated by her to match the table above. Until then:
+**Migration status: none has been created.** Aygül owns migration order, so the models are in the code but the migration for `UserAccounts` and `Instructors` (section 9) still has to be created/updated by her to match these tables. Until then:
 
-- the auth endpoints fail against a real database (the table does not exist);
+- the auth and instructor endpoints fail against a real database (the tables do not exist);
 - `Tests/UniversityDecisionHub.CourseChecks` reports two failures that are expected until the migration lands: "Only the two original course entities are implemented" and "Migration snapshot matches current model". Those two checks should be updated together with the migration.
 
 ## 2. Passwords
@@ -38,6 +38,8 @@ Compared with the fields discussed earlier (`UserId, FullName, Email, Department
 `NormalizedEmail` is computed by `UserAccount.NormalizeEmail(email)` on every register and login, and the database enforces uniqueness on it. `Ali@X.com` and `ali@x.com` are the same account. Any import or SQL script that inserts users must fill `NormalizedEmail` the same way: `UPPER(TRIM("Email"))`.
 
 ## 4. How accounts are created
+
+FR02 allows accounts to be registered *or* seeded, and decision D04 leaves seed-account activation open. What is implemented is registration only; the points below are Ozan's proposal for closing D04, not a team decision yet.
 
 - **Everyone registers through the Register screen** (`POST /api/auth/register`). No student account is created in advance.
 - **Survey answers are not turned into accounts.** A survey row has no password, and this release has no email verification, so a pre-created profile could be claimed by anyone who knows the address. The real name/email/department/year data should not be loaded into `UserAccounts`.
@@ -96,11 +98,77 @@ Shared-file changes made for authentication: `Program.cs` (auth services, CORS f
 
 ## 8. Frontend
 
-- `Frontend/Pages/auth/login.html`, `register.html`, `css/pages/auth.css`, `js/pages/auth.js`.
-- `Frontend/js/shared/api.js` gives every page `apiFetch(path, { method, body })`, which adds the token automatically, and `Session` (`Session.user`, `Session.isLoggedIn`, `Session.clear()`).
-- The Register page asks for a department *number* until a Departments endpoint exists.
-- The backend address defaults to `http://localhost:5154`.
+Every page loads the shared files in this order:
 
-## 9. Verification so far
+```html
+<link rel="stylesheet" href="../../css/shared/global.css">
+<link rel="stylesheet" href="../../css/shared/navbar.css">
+...
+<script src="../../js/shared/api.js"></script>
+<script src="../../js/shared/navbar.js"></script>
+```
 
-The machine this was written on has only the .NET 9 SDK and no PostgreSQL, so the real `net10.0` solution was **not** built or run there. The same source files were compiled in a temporary .NET 9 project against SQLite and exercised over HTTP: 19 checks passed (register, duplicate email in another case, validation, login, identical 401s, `/me`, tampered token, 403 for students on an admin-only endpoint, `make-admin`, rate limit, CORS preflight, hash-only storage, database-level unique index), and both pages were driven in a browser. Still to do on a machine with .NET 10 and PostgreSQL: build the solution, apply Aygül's migration, and repeat the requests in `UniversityDecisionHub.Api.http`.
+- `css/shared/global.css` — the red / white / cream palette as CSS variables (UI02), base typography, `.page`, `.card`, `.button`, `.notice`. The university logo is not included; no asset has been chosen yet.
+- `js/shared/api.js` — `apiFetch(path, { method, body })`, which adds the token automatically, and `Session` (`Session.user`, `Session.isLoggedIn`, `Session.clear()`). The backend address defaults to `http://localhost:5154`.
+- `js/shared/navbar.js` — inserts the header by itself: Read Reviews, Write a Review, Instructors (UI03), and Log in / Register at the upper right, or the user's name and Log out when logged in. Pages write no navbar HTML.
+- `Site.membersUrl("Pages/reviews/reviews.html")` gives the page itself to a logged-in user and the login page to a visitor, who is returned to that page after logging in (FR01 "More Reviews redirects to login"). Sami can use it for the landing-page link.
+
+Pages:
+
+| Page | Open as | Notes |
+|---|---|---|
+| `Pages/auth/login.html`, `register.html` | — | Register asks for a department *number* until a Departments endpoint exists |
+| `Pages/courses/course-detail.html` | `?id=<CourseId>` | Reads Aygül's `GET /api/courses/{id}`; no second Course model |
+| `Pages/reviews/instructors.html` | — | Name and department filters, empty state |
+| `Pages/reviews/instructor-detail.html` | `?id=<InstructorId>` | Profile and course reviews are separate sections (UI05) |
+
+Links to Sami's Read Reviews page use `reviews.html?courseCode=<code>` and `reviews.html?instructorId=<id>`. **These parameter names are a proposal — Sami, please confirm or tell me the names you use.** Until `reviews.html` and `review-form.html` exist, those navigation links lead to a missing page.
+
+## 9. Instructors
+
+Table `Instructors` (DR04), model in `Features/Instructors/Instructor.cs`:
+
+| Column | PostgreSQL type | Null | Notes |
+|---|---|---|---|
+| `InstructorId` | `integer`, identity | no | Primary key |
+| `FullName` | `character varying(150)` | no | Trimmed; not unique (two people can share a name) |
+| `AcademicTitle` | `character varying(50)` | yes | Blank input is stored as null |
+| `DepartmentId` | `integer` | no | Positive; indexed; becomes a foreign key when the Department entity exists |
+
+An instructor is a catalog record, not a login account; there is no link to `UserAccounts`.
+
+| Request | Who | Success | Errors |
+|---|---|---|---|
+| `GET /api/instructors?query=&departmentId=` | anyone | `200` + list sorted by name (`[]` when nothing matches) | `400` invalid filter |
+| `GET /api/instructors/{id}` | anyone | `200` + instructor | `404` |
+| `POST /api/instructors` | administrator | `201` + instructor | `400`, `401`, `403` |
+| `PUT /api/instructors/{id}` | administrator | `200` + instructor | `400`, `401`, `403`, `404` |
+
+Body for POST/PUT: `{ fullName, academicTitle, departmentId }`. Response: `{ instructorId, fullName, academicTitle, departmentId }`.
+
+There is no DELETE: offerings and reviews will reference instructors and must keep their history (AT07). Aygül's `OfferingInstructor` can reference `Instructors.InstructorId` directly.
+
+## 10. Requirement coverage and what is still open
+
+| Requirement | Status |
+|---|---|
+| FR02 accounts | Registration and login done. Seeded accounts: not implemented, see section 4 (D04 open) |
+| FR03 profiles | Department and study year are required at registration. Non-student accounts: unresolved in the requirements, not implemented |
+| FR07 author identity | `User.GetUserId()` from the token; never from the request body |
+| FR09 / FR11 administrator-only actions | `AuthPolicies.Administrator`; used by instructor writes. Course writes are still unprotected (Aygül's endpoints) |
+| FR12 instructor pages | Navigation entry, list and detail done. **Associated courses are not shown yet** — they need Aygül's offerings; reviews are reached through Sami's page |
+| FR13 profile changes | No profile-edit endpoint: who may change department/year is an open decision |
+| DR01, DR04 | Sections 1 and 9 |
+| UI01 / UI03 header | Shared navbar done; the landing page itself is Sami's |
+| UI02 | Palette done; logo missing |
+
+Choices made where the requirements leave a decision open — say so if the team wants otherwise:
+
+- Basic instructor profiles are readable **without login** (FR12 leaves this open); reviews stay behind login.
+- Static prerequisite links are **not** displayed on the course detail page (D09 open).
+- Department names are shown as "Department 3" until a Departments endpoint exists.
+- No page links to the course detail page yet: the course list page has no owner in the allocation.
+
+## 11. Verification so far
+
+The machine this was written on has only the .NET 9 SDK and no PostgreSQL, so the real `net10.0` solution was **not** built or run there. The same source files were compiled in a temporary .NET 9 project against SQLite and exercised over HTTP: 19 authentication checks passed (register, duplicate email in another case, validation, login, identical 401s, `/me`, tampered token, 403 for students on an admin-only endpoint, `make-admin`, rate limit, CORS preflight, hash-only storage, database-level unique index) and 23 instructor checks passed (public reads, 401/403 for anonymous and student writes, administrator create/update, validation, 404s, sorting, combined filters, no delete). The five pages and the navbar were driven in a browser, logged out and logged in, including the return-after-login link. Still to do on a machine with .NET 10 and PostgreSQL: build the solution, apply Aygül's migration, and repeat the requests in `UniversityDecisionHub.Api.http`.

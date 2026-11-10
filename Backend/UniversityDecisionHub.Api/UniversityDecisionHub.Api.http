@@ -128,3 +128,63 @@ Authorization: Bearer {{token}}
 
 ### Without a token should return 401
 GET http://localhost:5154/api/auth/me
+
+### ---------------- Instructors (synthetic test data only) ----------------
+
+### List instructors (no login needed)
+GET http://localhost:5154/api/instructors
+Accept: application/json
+
+### Search by name and department
+GET http://localhost:5154/api/instructors?query=kaya&departmentId=1
+Accept: application/json
+
+### Create without a token should return 401
+POST http://localhost:5154/api/instructors
+Content-Type: application/json
+
+{
+  "fullName": "Test Instructor",
+  "academicTitle": "Dr.",
+  "departmentId": 1
+}
+
+### Create as administrator (a student token returns 403)
+POST http://localhost:5154/api/instructors
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fullName": "Test Instructor",
+  "academicTitle": "Dr.",
+  "departmentId": 1
+}
+
+### Blank name should return 400
+POST http://localhost:5154/api/instructors
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fullName": " ",
+  "departmentId": 1
+}
+
+### Instructor detail
+GET http://localhost:5154/api/instructors/1
+Accept: application/json
+
+### Update as administrator
+PUT http://localhost:5154/api/instructors/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fullName": "Test Instructor",
+  "academicTitle": "Assoc. Prof. Dr.",
+  "departmentId": 1
+}
+
+### Nonexistent instructor should return 404
+GET http://localhost:5154/api/instructors/999999
+Accept: application/json
