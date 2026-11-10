@@ -112,6 +112,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication
         }
 
         // PUT api/auth/me  -> the logged-in user updates their own name, department and year.
+        // Department and year may be left empty; such an account can log in but cannot write reviews.
         // Review eligibility reads these values from the database at submission time, so a change
         // applies to the next submission. Email, password and administrator status are not editable here.
         [HttpPut("me")]
@@ -123,6 +124,12 @@ namespace UniversityDecisionHub.Api.Features.Authentication
 
             var user = await _db.UserAccounts.FirstOrDefaultAsync(u => u.UserId == userId.Value);
             if (user == null) return Unauthorized();
+
+            if (request.DepartmentId != null && !await _db.Departments.AnyAsync(d => d.DepartmentId == request.DepartmentId))
+            {
+                ModelState.AddModelError(nameof(request.DepartmentId), "This department does not exist.");
+                return ValidationProblem(ModelState);
+            }
 
             user.FullName = request.FullName.Trim();
             user.DepartmentId = request.DepartmentId;

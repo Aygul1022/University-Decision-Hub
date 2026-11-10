@@ -31,15 +31,17 @@
 
         <div class="field-row">
           <div class="field">
-            <!-- Becomes a department list once the Departments endpoint exists. -->
+            <!-- Can become a department list: GET /api/departments now exists. -->
             <label for="departmentId">Department number</label>
-            <input id="departmentId" name="departmentId" type="number" min="1" step="1" inputmode="numeric" required>
+            <input id="departmentId" name="departmentId" type="number" min="1" step="1" inputmode="numeric">
+            <p class="field-hint">Students only. Needed to write reviews.</p>
             <p class="field-error" data-error-for="departmentId"></p>
           </div>
 
           <div class="field">
             <label for="studyYear">Year of study</label>
-            <select id="studyYear" name="studyYear" required>
+            <select id="studyYear" name="studyYear">
+              <option value="">Not a student</option>
               <option value="1">1st year</option>
               <option value="2">2nd year</option>
               <option value="3">3rd year</option>

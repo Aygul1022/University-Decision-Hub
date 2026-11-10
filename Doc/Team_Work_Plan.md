@@ -1,104 +1,175 @@
 # University Decision Hub team work plan
 
-Approved allocation updated 23 October 2026. This document supersedes the earlier task split.
+## Starting point and tools
 
-## Current checkpoint
+The course-only checkpoint is the shared starting point. It contains course CRUD, course DTOs, prerequisite relationships, the recommended-study-year field, migrations and course checks. Accounts, authentication, faculties/departments, instructors, offerings and reviews are not implemented; their folders are placeholders. The `AddRecommendedStudyYear` migration has not been applied to every local database yet.
 
-Only course CRUD and its DTOs, relationships, recommended-year migration, and course checks are implemented. Other feature folders are placeholders. The new migration has not been applied to the database by the assistant. The GitHub push was blocked when branch-creation permission was declined; do not assume the local checkpoint is on main or a published branch.
+- **Backend:** C# / ASP.NET Core (.NET 10) with Entity Framework Core and PostgreSQL, developed in **Visual Studio**.
+- **Frontend:** HTML and CSS (plus small `fetch` scripts in `Frontend/js` to call the API), developed in **VS Code**.
 
-## Database allocation
+The intended backend/frontend difficulty order is **Aygül > Sami > Ozan > Ümran**, with comparable overall workloads for the first three. The database work is divided separately (see below).
 
-These percentages apply only to database work: **Ümran 45%, Aygül 30%, Ozan 25%**. They are workload estimates, not percentages of the entire software project. Sami has no primary database allocation.
+## Database work: Ümran 45%, Aygül 30%, Ozan 25%
 
-### Ümran 
+These percentages apply only to the database work, not to the backend and frontend tasks. Sami does not take part in the database work; he uses the shared entities and sends schema or index requests to Aygül.
 
-1. Prepare a data dictionary for every table: field name, meaning, sample value, required/optional status, and format.
-2. Collect source-documented faculties, departments, courses, recommended course years, instructors, teaching periods, and teaching assignments.
-3. Organize the agreed sample dataset into consistent spreadsheets or CSV files.
-4. Check missing values, duplicate codes within departments, inconsistent names, and invalid assignments. Flag uncertainty rather than inventing values.
-5. Analyze normalization with Aygül: identify functional dependencies, repeated data, and documented exceptions.
-6. Compare imported database records against the prepared source dataset and produce a data-quality report.
+| Person | Share | Main responsibility |
+|---|---:|---|
+| **Ümran** | **45%** | Data requirements, data preparation, quality checks and normalization analysis |
+| **Aygül** | **30%** | Technical implementation of the relational design, EF Core configuration and migration management |
+| **Ozan** | **25%** | User and instructor data design, SQL queries and database tests |
 
-Deliverables: data dictionary, clean data files, source list, normalization notes, and data-quality report. No machine learning, API development, authentication, migration execution, or deployment responsibility. Do not collect real passwords or identity documents as sample data.
+### Ümran — 45%
 
-### Aygül
+1. Write the **data dictionary** for every table: field name, description, example value, whether it is required, and the expected format.
+2. Collect faculty, department, course, instructor and course-period information, and record the source of each entry.
+3. Organize the data in shared templates:
+   - Faculties and departments
+   - Courses and their recommended study years
+   - Instructors
+   - Course–academic year–semester records
+   - Course–instructor assignments per semester
+4. Check for missing values, duplicate course codes within a department, inconsistent names and wrong assignments.
+5. Flag uncertain values instead of guessing them, and resolve them with the team.
+6. Carry out the normalization analysis with Aygül: document repeated data, functional dependencies and design exceptions.
+7. After import, compare the source data with the database and write a short data-quality report.
 
-1. Translate approved data requirements into the ER diagram and relational schema.
-2. Lead the technical design of Faculty, Department, Course, CourseOffering, OfferingInstructor, and Review relationships.
-3. Implement EF mappings, primary/foreign/composite keys, nullability and unique constraints.
-4. Enforce one review per author/course in the database, including consistency between the reviewed course, offering and assigned instructor.
-5. Coordinate migrations and prepare the approved import/seed process for Ümran's data.
-6. Verify migration compatibility, preservation of existing records, and backend/database integration.
+**Deliverables:** data dictionary, cleaned data files, source list, normalization notes and data-quality report. No data-science or machine-learning work is expected.
 
-Deliverables: ER diagram, relational schema, EF configuration, migrations and import procedure. Do not independently invent missing data. Coordinate all migration generation/application; other members propose changes rather than applying competing migrations.
+### Aygül — 30%
 
-### Ozan 
+1. Turn Ümran's data dictionary and the approved requirements into the **ER diagram and relational schema**.
+2. Lead the technical design of:
+   - `Faculty`, `Department`, `Course`
+   - `CourseOffering`, `OfferingInstructor`
+   - `Review` relationships and database constraints
+3. Apply the primary key, foreign key, composite key, unique and null rules.
+4. Enforce **one review per user per course** in the database.
+5. Build the relationships that keep a review's course, offering and instructor consistent with each other.
+6. Manage the EF Core configuration and the migration order. Prepare the import/seed process for Ümran's data.
+7. Check backend integration and that existing data is preserved after migrations.
 
-1. Design User and Instructor data fields and relationships with Aygül, contributing their definitions to Ümran's data dictionary.
-2. Define email uniqueness, student department/study-year fields, and instructor department references.
-3. Prepare report SQL queries for courses by department, reviews by course/instructor/year, offering instructors, and combined filters.
-4. Prepare and execute database constraint tests: duplicate department/course codes, nonexistent references, repeat author/course reviews, invalid offering/instructor pairs, and agreed deletion behavior.
-5. Prepare suitable test data with Ümran and document expected versus observed results.
+**Deliverables:** ER diagram, relational schema, EF configurations, migration files and the data-loading method.
 
-Deliverables: User/Instructor data design, SQL query files and database test report. Migration coordination remains with Aygül.
+### Ozan — 25%
 
-## Software implementation allocation
+1. Design the fields and relationships of the `User` and `Instructor` tables, and contribute them to Ümran's data dictionary.
+2. Agree with Aygül on user email uniqueness, student department/year fields and the instructor–department link.
+3. Write SQL queries for the report:
+   - Courses by department
+   - Reviews by course and by instructor
+   - Reviews by academic year
+   - Instructors who teach a given offering
+   - Combined search filters
+4. Write and run database tests:
+   - Is a duplicate course code in the same department rejected?
+   - Can a foreign key point to a record that does not exist?
+   - Can the same user add a second review for the same course?
+   - Can a review be created for an instructor not assigned to the course?
+   - Does deleting a record keep references intact?
+5. Prepare the test data with Ümran and record expected and actual results.
 
-The intended software difficulty order remains Aygül > Sami > Ozan, with similar overall workloads. The separate database allocation above gives Ümran the largest database workload.
+**Deliverables:** user/instructor data design, SQL query files and the database test report.
+
+### How the database work fits together
+
+- **Ümran** owns what the data means and makes sure it is prepared correctly.
+- **Aygül** turns that design into a working database and application model.
+- **Ozan** checks that it is usable through queries and correct through tests.
+- **Aygül coordinates all migrations in a single order.** The three of them do not create separate migrations and apply them to the same database.
+- The student year/department eligibility check happens in the backend. The database protects relationships and uniqueness.
+- Each person writes the report section for their own part.
+
+**First shared step:** the three of them approve the table and field list. Then Ümran starts the data dictionary, Aygül the relationships, and Ozan the user/instructor fields and test scenarios.
+
+## Backend and frontend work
 
 ### Aygül — catalog, review submission and integration
 
-- Maintain existing Course code and implement Faculty/Department and offering/assignment APIs.
-- Own Review model and create DTO in agreement with Sami, plus the review-submission service/controller.
-- Enforce authenticated author identity, matching department, sufficient study year, one review per course, and valid assigned-instructor context before submission. Unknown course years must not grant eligibility.
-- Coordinate integration; each teammate fixes their own module.
-- Later UI: Write a Review, course/period/instructor selection, submission feedback, and administrator catalog/offering forms.
-- Test catalog integrity, eligibility boundaries, invalid assignments, duplicate submissions and integration.
+Backend:
 
-Primary areas: Features/Departments, Features/Courses, Features/Offerings; creation/model files in Features/Reviews; Data and Migrations.
+1. Implement **Faculty and Department** and their relationship.
+2. Maintain and extend the existing **Course** model and endpoints.
+3. Implement **CourseOffering** and **OfferingInstructor** (academic year, semester, assigned instructors).
+4. Implement the shared **Review model and create-review DTO**; agree the response format with Sami.
+5. Implement **review submission**:
+   - Identify the author from the authenticated account (Ozan's contract).
+   - Check that the student and course departments match.
+   - Check that the student's year meets the course's recommended year. A missing year never grants eligibility.
+   - Reject a second review for the same course.
+   - Validate that the selected instructor teaches the selected offering.
+   - Save the review and publish it immediately.
+6. Coordinate integration. Each teammate fixes their own module.
 
-### Sami — review reading, search and administrator review operations
+Frontend (later): **Write a Review** page with course → academic year → semester → instructor selection, validation messages and confirmation; simple administrator catalog and offering-assignment forms.
 
-- Own review list/detail APIs and reading/search DTOs; require authentication for the complete collection.
-- Implement course-code, department, instructor and academic-year filtering, pagination and empty-result handling.
-- Implement administrator-only review editing/deletion using Ozan's authorization mechanism. Ordinary authors cannot edit/delete their own reviews.
-- Agree deletion/resubmission behavior with Aygül before implementation; no policy was finalized by the interrupted implementation.
-- Later UI: Read Reviews, filters/results/details, administrator review controls, public landing page with three sample reviews and login redirect for More Reviews.
-- Test reading access, filters, pagination, published-review visibility and administrator permissions.
+Working areas: `Features/Departments/`, `Features/Courses/`, `Features/Offerings/`, `Features/Reviews/Review.cs`, `ReviewCreateDto.cs`, `ReviewSubmissionService.cs`, `ReviewSubmissionController.cs`, `Data/`, `Migrations/`, `Frontend/Pages/reviews/review-form.html`.
 
-Primary area: reading/query/administration files in Features/Reviews and corresponding frontend pages. Aygül owns submission; avoid duplicate routes or shared-file edits without coordination.
+Tests: department/course relationships and duplicate course codes; student-year and department eligibility; duplicate reviews, including concurrent submissions; invalid instructor/offering combinations; migration and integration checks.
 
-### Ozan — accounts, instructor records and detail pages
+### Sami — review reading, searching and administrator review management
 
-- Implement registration/login, secure password handling, student profiles and current-user identity.
-- Supply shared administrator authorization. Public registration must not grant administrator access.
-- Implement Instructor list/detail/create/update endpoints with administrator-only writes and shared department references.
-- Later UI: Register, Login, Course Detail, Instructor List/Detail, shared navigation and login-state display.
-- Reuse Aygül's Course APIs and Sami's filtered review APIs; do not duplicate Course or Review models.
-- Test authentication, duplicate accounts, privilege boundaries, private-field exclusion, instructor validation and detail-page integration.
+Backend:
 
-Primary areas: Features/Authentication, Features/Users, Features/Instructors, frontend auth/course-detail/instructor pages. Authentication configuration in Program.cs is coordinated with Aygül.
+1. Implement **review list and review detail** endpoints. The full review collection requires authentication.
+2. Filters: course code, department, instructor, academic year. Add pagination and a consistent empty-result response.
+3. Define the review-reading DTOs with Aygül.
+4. Implement **administrator-only review editing and deletion** using Ozan's authorization. Ordinary users cannot edit or delete reviews, including their own.
+5. Agree deletion/resubmission behavior with Aygül before implementing it.
 
-## Shared rules and handoffs
+Frontend (later): **Read Reviews** page (search fields, filters, results, pagination, empty states), review detail, administrator review-management controls, the public landing page with the purpose statement and three sample reviews, and **More Reviews** navigation that sends visitors to login.
 
-- Ümran owns data preparation/meaning; Aygül owns technical schema integration; Ozan verifies queries and constraints.
-- One shared User and Instructor model owned by Ozan; one Department/Course/Offering model owned by Aygül; one Review model owned by Aygül with Sami's agreed reading/administration needs.
-- Ozan supplies current-user profile and authorization; Aygül supplies catalog, teaching context and valid review creation; Sami supplies retrieval and management of published reviews.
-- Backend logic enforces department/year eligibility. Database constraints enforce uniqueness and reference integrity. Both are required.
-- Coordinate Program.cs, ApplicationDbContext.cs, migrations, dependencies and shared DTO contracts before editing/merging.
-- Preserve the existing folder layout. New filenames and services are proposed responsibilities, not claims that those features already exist.
-- Use approved test data and separate authorized test databases. Each owner records reproducible tests; unexecuted checks remain pending.
-- Each person writes their own report section and fixes their own integration failures.
+Working areas: `Features/Reviews/ReviewReadDto.cs`, `ReviewSearchParams.cs`, `ReviewQueryService.cs`, `ReviewReadController.cs`, `ReviewAdministrationController.cs`, `Frontend/Pages/reviews/`, `Frontend/index.html`. Agree routes with Aygül so controllers do not declare duplicate endpoints.
 
-## Sequence
+Tests: anonymous users cannot read the full collection; filters return the correct records; pagination and empty results; published reviews appear; ordinary users cannot edit/delete; administrators can perform the agreed operations.
 
-1. Approve table/field definitions: Ümran begins the data dictionary; Aygül models relationships; Ozan designs User/Instructor fields and database tests.
-2. Build catalog and account foundations; Sami designs review reading contracts with Aygül while dependencies are developed.
-3. Add offerings, review creation, reading/search and administrator operations; coordinate migrations and imports.
-4. Test integrated backend behavior, then implement the assigned frontend views using stable API contracts.
+### Ozan — login, registration, instructor records and detail pages
 
-Student planner, prerequisite checking, alumni/email verification, feedback delivery, multilingual support, comparison and career filtering remain deferred. No new implementation is authorized merely by recording this allocation.
+Backend:
 
-## Git handoff
+1. Implement **registration and login** with ASP.NET Core Identity; passwords are hashed by the framework.
+2. Student profile fields: full name, email, department, year of study.
+3. Supply the authenticated user ID and profile to the other modules.
+4. Provide the shared **administrator authorization mechanism**. Public registration cannot grant administrator privileges.
+5. Implement **Instructor** records with list/detail/create/update endpoints. Writes are administrator-only. Instructor records are separate from login accounts.
+6. Use Aygül's course endpoints rather than creating another Course model.
 
-Publication remains pending. After authorized publication, agree whether to merge the checkpoint into main or branch from it explicitly. Use feature branches and reviewed pull requests, preserve teammates' work, and exclude credentials and IDE/build artifacts. Pushing source code does not apply database migrations.
+Frontend (later): **Register** and **Login** pages, **Course detail** page, **Instructor list and detail** pages, shared header/navigation and login-state display, links from course/instructor details to Sami's filtered review page.
+
+Working areas: `Features/Authentication/`, `Features/Users/`, `Features/Instructors/`, `Frontend/Pages/auth/`, `Frontend/Pages/courses/course-detail.html`, `Frontend/Pages/reviews/instructors.html`, `Frontend/Pages/reviews/instructor-detail.html`, `Frontend/js/shared/`. The page placeholders end in `.html.txt`; convert only the pages you start implementing.
+
+Tests: valid and invalid registration/login; duplicate accounts; password hashes never returned; registration cannot create an administrator; current-user profile returns the correct department/year; instructor validation and administrator-only writes; course/instructor detail screens use the correct records.
+
+Email verification, alumni documents, password recovery and social login are not part of this first assignment.
+
+### Ümran
+
+Ümran's work in this release is the database work above. Not responsible for APIs, authentication, EF configuration, migrations or deployment. Do not prepare real student passwords, identity documents or private student records as sample data.
+
+## How the review workflow connects
+
+| Step | Owner |
+|---|---|
+| Identify the logged-in student and their profile | Ozan |
+| Supply course, period and assigned-instructor information | Aygül |
+| Validate eligibility and save a new review | Aygül |
+| Retrieve, filter and display published reviews | Sami |
+| Edit/delete reviews as an administrator | Sami, using Ozan's authorization |
+| Enforce relationships and uniqueness in the database | Aygül |
+| Test database constraints and report queries | Ozan |
+| Check that imported data is complete and consistent | Ümran |
+
+## Collaboration rules
+
+- One shared User, Course, Instructor and Review model. No duplicate models.
+- Agree DTOs and routes before working in parallel.
+- Coordinate edits to `Program.cs`, `ApplicationDbContext.cs` and migrations. Aygül sets the migration order.
+- Each person tests and documents their own work. Aygül coordinates integration but does not finish other people's tasks.
+- Build the backend contracts first; start the matching pages once they are stable.
+- Keep deferred features (planner, prerequisite checking, alumni verification, email-domain verification, comparison, career filtering, multilingual interface) out of this first release.
+
+First shared milestone: **a registered student can log in, submit one eligible course review, and another registered user can find and read it.**
+
+## Git collaboration
+
+The checkpoint and this plan have not been pushed to GitHub yet. Use separate feature branches and small pull requests. Never force-push a shared branch, commit secrets or include IDE/build artifacts (`.vs/`, `bin/`, `obj/`). Each teammate applies approved migrations only to their own database; pushing code does not update anyone's database.

@@ -14,10 +14,12 @@ namespace UniversityDecisionHub.Api.Features.Users.Dtos
         [Required, EmailAddress, StringLength(UserAccountConfiguration.EmailMaxLength)]
         public string Email { get; set; } = string.Empty;
 
+        // Optional; when given it must be an existing department.
         [Range(1, int.MaxValue, ErrorMessage = "DepartmentId must be a positive number.")]
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
 
+        // Optional; when given it must be 1-6.
         [Range(1, 6, ErrorMessage = "StudyYear must be between 1 and 6.")]
-        public int StudyYear { get; set; }
+        public int? StudyYear { get; set; }
     }
 }

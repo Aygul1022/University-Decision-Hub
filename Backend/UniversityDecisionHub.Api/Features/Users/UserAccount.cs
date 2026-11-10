@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-namespace UniversityDecisionHub.Api.Features.Users;
-// Shared profile foundation. Authentication/password storage belongs to the account module.
-public class UserAccount
-{
-    public int UserId { get; set; }
-    public string FullName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public int? DepartmentId { get; set; }
-    public int? StudyYear { get; set; }
-    public bool IsAdministrator { get; set; }
-=======
 using System.Text;
 
 namespace UniversityDecisionHub.Api.Features.Users
@@ -38,9 +26,11 @@ namespace UniversityDecisionHub.Api.Features.Users
         // The plain password is never stored and this value is never returned by the API.
         public string? PasswordHash { get; set; }
 
-        // Student profile. Becomes a foreign key once the Department entity exists.
-        public int DepartmentId { get; set; }
-        public int StudyYear { get; set; }
+        // Student profile. Both are optional: an account without them can still log in,
+        // but cannot submit a review (ReviewEligibility requires both).
+        // DepartmentId is a foreign key to Departments.
+        public int? DepartmentId { get; set; }
+        public int? StudyYear { get; set; }
 
         // Never set from a request body. Granted only with the `make-admin` command.
         public bool IsAdministrator { get; set; }
@@ -85,5 +75,4 @@ namespace UniversityDecisionHub.Api.Features.Users
             return result.ToString();
         }
     }
->>>>>>> origin/feature/auth-review-integration
 }

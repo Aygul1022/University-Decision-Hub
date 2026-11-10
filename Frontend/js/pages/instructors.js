@@ -12,7 +12,7 @@
     status.hidden = !text;
   }
 
-  // The department name will come from the Departments endpoint; until then show its number.
+  // GET /api/departments can supply the name; until the pages use it, show the number.
   function departmentLabel(instructor) {
     return "Department " + instructor.departmentId;
   }
