@@ -24,3 +24,25 @@
 ## Data preparation rule
 
 No official catalogue data, real student data, or CSV import file will be finalized until the final field names and migration structure are confirmed.
+
+## Approved policy decisions 
+
+### Pre-created users
+
+- Some approved users from the controlled project dataset may be created in the system before they use the application.
+- Real user data must remain private and must not be committed to GitHub.
+- Plaintext passwords must never be stored in CSV files, source code, GitHub, reports, or database records.
+- The exact first-login and password-creation method for pre-created accounts is still an open technical decision. Ozan will propose the secure implementation, and Aygül will coordinate the related database migration.
+
+### Administrator access
+
+- Authorized project-team accounts may receive the `Administrator` role through a controlled process.
+- Public registration must never allow a user to assign themselves the `Administrator` role.
+- Administrators may manage approved pre-created user accounts.
+- Sensitive fields such as PasswordHash and other authentication secrets must never be returned by APIs or included in data files.
+
+### Review moderation
+
+- Administrators may review, edit, or delete reviews containing profanity, insults, or inappropriate content.
+- Sami owns review moderation behavior; Ozan owns authentication and administrator authorization; Aygül owns the final database fields and migration coordination.
+- The final database design must document how moderation actions are recorded.
