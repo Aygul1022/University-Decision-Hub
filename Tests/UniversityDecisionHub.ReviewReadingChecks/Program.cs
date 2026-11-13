@@ -75,4 +75,61 @@ Check(sql.Contains("\"ReviewText\"", StringComparison.Ordinal)
     && sql.Contains("\"AcademicYear\"", StringComparison.Ordinal),
     "SQL projection includes review text and academic year");
 
+
+ // Deterministic examples verify actual filtering and paging behavior, not only DTO annotations.
+var sampleReviews = new[]
+{
+    new ReviewReadDto { ReviewId = 1, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
+        AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 10) },
+    new ReviewReadDto { ReviewId = 2, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
+        AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 11) },
+    new ReviewReadDto { ReviewId = 3, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 4,
+        AcademicYear = "2025-2026", CreatedAt = new DateTime(2026, 10, 12) },
+    new ReviewReadDto { ReviewId = 4, CourseCode = "COME 211", DepartmentId = 1, InstructorId = 3,
+        AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 13) },
+    new ReviewReadDto { ReviewId = 5, CourseCode = "MATH 101", DepartmentId = 2, InstructorId = 5,
+        AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 14) },
+    new ReviewReadDto { ReviewId = 6, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
+        AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 11) },
+    new ReviewReadDto { ReviewId = 7, CourseCode = "SOME 333", DepartmentId = 2, InstructorId = 3,
+        AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 15) }
+}.AsQueryable();
+
+static int[] Ids(IQueryable<ReviewReadDto> rows) => rows.Select(r => r.ReviewId).ToArray();
+static bool Matches(IQueryable<ReviewReadDto> rows, params int[] expected) =>
+    Ids(rows).Order().SequenceEqual(expected.Order());
+
+Check(Matches(ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { CourseCode = " come " }),
+    1, 2, 3, 4, 6), "Course code search is trimmed, partial and case-insensitive");
+Check(Matches(ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { DepartmentId = 1 }),
+    1, 2, 3, 4, 6), "Department filter selects only matching reviews");
+Check(Matches(ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { InstructorId = 3 }),
+    1, 2, 4, 6, 7), "Instructor filter selects only matching reviews");
+Check(Matches(ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { AcademicYear = "2025-2026" }),
+    3), "Academic-year filter uses exact year");
+var combined = new ReviewReadQuery {
+    CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3, AcademicYear = "2026-2027"
+};
+Check(Matches(ReviewReadFiltering.Apply(sampleReviews, combined), 1, 2, 6),
+    "All four filters combine with AND");
+Check(!ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { CourseCode = "UNKNOWN" }).Any(),
+    "Unmatched search returns an empty collection");
+Check(Ids(ReviewReadFiltering.Page(sampleReviews, new ReviewReadQuery { PageSize = 2 }))
+    .SequenceEqual(new[] { 7, 5 }), "First page returns newest two reviews");
+Check(Ids(ReviewReadFiltering.Page(sampleReviews, new ReviewReadQuery { Page = 2, PageSize = 2 }))
+    .SequenceEqual(new[] { 4, 3 }), "Second page returns next two reviews");
+Check(Ids(ReviewReadFiltering.Page(sampleReviews, new ReviewReadQuery { Page = 3, PageSize = 2 }))
+    .SequenceEqual(new[] { 6, 2 }), "Same-timestamp reviews use descending review ID as tiebreaker");
+Check(Ids(ReviewReadFiltering.Page(sampleReviews, new ReviewReadQuery { Page = 10, PageSize = 2 }))
+    .Length == 0, "Page beyond results is empty");
+
+var filteredSql = ReviewReadFiltering.Page(
+    ReviewReadFiltering.Apply(query, combined),
+    new ReviewReadQuery { Page = 2, PageSize = 2 }).ToQueryString();
+Check(filteredSql.Contains("WHERE", StringComparison.OrdinalIgnoreCase)
+    && filteredSql.Contains("ORDER BY", StringComparison.OrdinalIgnoreCase)
+    && filteredSql.Contains("LIMIT", StringComparison.OrdinalIgnoreCase)
+    && filteredSql.Contains("OFFSET", StringComparison.OrdinalIgnoreCase),
+    "Combined PostgreSQL query translates filters, sorting and paging without connecting");
+
 Console.WriteLine($"{passed} Review Reading checks passed. No database connection or migration application was performed.");
