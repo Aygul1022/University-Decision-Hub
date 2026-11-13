@@ -19,9 +19,11 @@
         <input id="query" name="query" type="search" maxlength="150" autocomplete="off">
       </div>
       <div class="field narrow">
-        <!-- Becomes a department list once the Departments endpoint exists. -->
-        <label for="departmentId">Department number</label>
-        <input id="departmentId" name="departmentId" type="number" min="1" step="1" inputmode="numeric">
+        <!-- Options are added from GET /api/departments (js/shared/departments.js). -->
+        <label for="departmentId">Department</label>
+        <select id="departmentId" name="departmentId">
+          <option value="">All departments</option>
+        </select>
       </div>
       <button type="submit" class="button">Search</button>
     </form>
@@ -32,6 +34,7 @@
   </main>
 
   <script src="../../js/shared/api.js"></script>
+  <script src="../../js/shared/departments.js"></script>
   <script src="../../js/shared/navbar.js"></script>
   <script src="../../js/pages/instructors.js"></script>
 </body>

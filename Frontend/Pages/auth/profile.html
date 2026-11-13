@@ -31,9 +31,11 @@
 
         <div class="field-row">
           <div class="field">
-            <!-- Can become a department list: GET /api/departments now exists. -->
-            <label for="departmentId">Department number</label>
-            <input id="departmentId" name="departmentId" type="number" min="1" step="1" inputmode="numeric">
+            <!-- Options are added from GET /api/departments (js/shared/departments.js). -->
+            <label for="departmentId">Department</label>
+            <select id="departmentId" name="departmentId">
+              <option value="">Not a student</option>
+            </select>
             <p class="field-hint">Students only. Needed to write reviews.</p>
             <p class="field-error" data-error-for="departmentId"></p>
           </div>
@@ -61,6 +63,7 @@
   </main>
 
   <script src="../../js/shared/api.js"></script>
+  <script src="../../js/shared/departments.js"></script>
   <script src="../../js/shared/navbar.js"></script>
   <script src="../../js/pages/profile.js"></script>
 </body>

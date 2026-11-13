@@ -1,6 +1,6 @@
 // Course detail page: course-detail.html?id=<CourseId>
 // Reads the existing GET /api/courses/{id} endpoint; it does not define its own course data.
-// Requires js/shared/api.js and js/shared/navbar.js.
+// Requires js/shared/api.js, js/shared/departments.js and js/shared/navbar.js.
 (function () {
   const status = document.querySelector("[data-status]");
   const article = document.querySelector("[data-course]");
@@ -16,14 +16,13 @@
     article.querySelector('[data-field="' + name + '"]').textContent = value;
   }
 
-  function render(course) {
+  async function render(course) {
     document.title = course.courseCode + " · University Decision Hub";
 
     setField("courseCode", course.courseCode);
     setField("courseName", course.courseName);
     setField("courseType", course.isElective ? "Elective" : "Compulsory");
-    // The department name is filled in by the API once departments exist; until then show its number.
-    setField("department", course.departmentName || "Department " + course.departmentId);
+    setField("department", course.departmentName || await Departments.label(course.departmentId));
     setField("recommendedStudyYear", course.recommendedStudyYear ? "Year " + course.recommendedStudyYear : "Not set yet");
     setField("courseCredit", course.courseCredit);
     setField("ects", course.ects);
@@ -53,7 +52,7 @@
     }
 
     try {
-      render(await apiFetch("/api/courses/" + id));
+      await render(await apiFetch("/api/courses/" + id));
     } catch (error) {
       showStatus(error.status === 404 ? "This course could not be found." : error.message, true);
     }

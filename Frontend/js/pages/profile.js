@@ -1,5 +1,5 @@
 // My profile page: shows the logged-in user's stored profile and lets them update it.
-// Requires js/shared/api.js and js/shared/navbar.js.
+// Requires js/shared/api.js, js/shared/departments.js and js/shared/navbar.js.
 (function () {
   // Only for logged-in users; visitors are sent to login and come back here afterwards.
   if (!Session.isLoggedIn) {
@@ -48,6 +48,8 @@
     try {
       const profile = await apiFetch("/api/auth/me");
       rememberProfile(profile);
+      // The list is filled before the stored department is selected in it.
+      await Departments.fillSelect(form.elements.departmentId, profile.departmentId);
       fill(profile);
       status.hidden = true;
       form.hidden = false;
@@ -74,7 +76,7 @@
 
     const errors = {};
     if (values.fullName.length < 2) errors.fullName = ["Enter your full name."];
-    if (values.departmentId !== null && !(values.departmentId >= 1)) errors.departmentId = ["Enter a valid department number."];
+    if (values.departmentId !== null && !(values.departmentId >= 1)) errors.departmentId = ["Choose a department from the list."];
     showFieldErrors(errors);
     if (Object.keys(errors).length) {
       showFormMessage("Please correct the highlighted fields.", "error");

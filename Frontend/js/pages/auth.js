@@ -1,4 +1,4 @@
-// Login and Register pages. Requires js/shared/api.js and js/shared/navbar.js to be loaded first.
+// Login and Register pages. Requires js/shared/api.js, js/shared/departments.js and js/shared/navbar.js to be loaded first.
 (function () {
   const form = document.querySelector("form[data-auth-form]");
   if (!form) return;
@@ -27,6 +27,15 @@
     return;
   }
 
+  // Register only: the department is chosen from the shared list instead of typed as a number.
+  if (mode === "register") {
+    Departments.fillSelect(form.elements.departmentId).then((count) => {
+      if (count === 0) {
+        showFieldErrors({ departmentId: ["The department list could not be loaded. Reload the page to try again."] });
+      }
+    });
+  }
+
   function showFormMessage(text, kind) {
     formMessage.textContent = text;
     formMessage.className = "form-message " + (text ? kind : "");
@@ -53,7 +62,7 @@
       if (values.password && values.password.length < 8) errors.password = ["Use at least 8 characters."];
       if (values.password !== form.elements.confirmPassword.value) errors.confirmPassword = ["The two passwords do not match."];
       // Department and year are optional: an account without them can log in but cannot write reviews.
-      if (values.departmentId !== null && !(values.departmentId >= 1)) errors.departmentId = ["Enter a valid department number."];
+      if (values.departmentId !== null && !(values.departmentId >= 1)) errors.departmentId = ["Choose a department from the list."];
     }
     return errors;
   }

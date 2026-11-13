@@ -480,6 +480,21 @@ var (reviewCourseId, offeringId) = await Db(async db =>
 });
 var review = new { courseId = reviewCourseId, offeringId, instructorId = adaId, reviewText = "Synthetic review text." };
 
+// Courses shown on the instructor detail page
+var taught = await Get("/api/instructors/" + adaId + "/courses");
+Check(taught.Status == 200 && taught.Json.GetArrayLength() == 1 && taught.Json[0].GetProperty("courseId").GetInt32() == reviewCourseId
+      && taught.Json[0].GetProperty("courseCode").GetString() == "CS402",
+    "Instructor courses: the course of the assigned offering is listed, without login");
+Check(taught.Status == 200 && taught.Json[0].GetProperty("periods").GetArrayLength() == 1
+      && taught.Json[0].GetProperty("periods")[0].GetProperty("academicYear").GetString() == "2025-2026"
+      && taught.Json[0].GetProperty("periods")[0].GetProperty("semester").GetString() == "Fall",
+    "Instructor courses: each course lists the academic year and semester it was taught");
+var burakId = createdBurak.Status == 201 ? createdBurak.Json.GetProperty("instructorId").GetInt32() : 0;
+var notTeaching = await Get("/api/instructors/" + burakId + "/courses");
+Check(notTeaching.Status == 200 && notTeaching.Json.ValueKind == JsonValueKind.Array && notTeaching.Json.GetArrayLength() == 0,
+    "Instructor courses: an instructor without assignments gets an empty array");
+Check((await Get("/api/instructors/999999/courses")).Status == 404, "Instructor courses: an unknown instructor is not found (404)");
+
 Check((await Post("/api/reviews", review)).Status == 401, "Review: anonymous is rejected (401)");
 Check((await Post("/api/reviews", review, tokenStaff)).Status == 403,
     "Review: an account without department and year can log in but cannot write a review (403)");

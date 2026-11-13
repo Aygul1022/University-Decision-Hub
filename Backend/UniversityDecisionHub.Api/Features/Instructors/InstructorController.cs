@@ -48,6 +48,43 @@ namespace UniversityDecisionHub.Api.Features.Instructors
             return Ok(InstructorDto.From(instructor));
         }
 
+        // GET api/instructors/{id}/courses
+        // The courses this instructor is assigned to, each with the periods they taught it.
+        // Reads the shared Course, CourseOffering and OfferingInstructor records; nothing is stored here.
+        [HttpGet("{id:int}/courses")]
+        public async Task<ActionResult<IEnumerable<InstructorCourseDto>>> GetCourses(int id)
+        {
+            if (!await _db.Instructors.AnyAsync(i => i.InstructorId == id)) return NotFound();
+
+            var rows = await (
+                from assignment in _db.OfferingInstructors.AsNoTracking()
+                join offering in _db.CourseOfferings on assignment.OfferingId equals offering.OfferingId
+                join course in _db.Courses on offering.CourseId equals course.CourseId
+                where assignment.InstructorId == id
+                select new
+                {
+                    course.CourseId, course.CourseCode, course.CourseName,
+                    offering.OfferingId, offering.AcademicYear, offering.Semester
+                }).ToListAsync();
+
+            var courses = rows
+                .GroupBy(r => new { r.CourseId, r.CourseCode, r.CourseName })
+                .OrderBy(g => g.Key.CourseCode).ThenBy(g => g.Key.CourseId)
+                .Select(g => new InstructorCourseDto
+                {
+                    CourseId = g.Key.CourseId,
+                    CourseCode = g.Key.CourseCode,
+                    CourseName = g.Key.CourseName,
+                    // Newest academic year first.
+                    Periods = g.OrderByDescending(r => r.AcademicYear).ThenBy(r => r.Semester).ThenBy(r => r.OfferingId)
+                        .Select(r => new InstructorCoursePeriodDto
+                        {
+                            OfferingId = r.OfferingId, AcademicYear = r.AcademicYear, Semester = r.Semester
+                        }).ToList()
+                });
+            return Ok(courses);
+        }
+
         [HttpPost]
         [Authorize(Policy = AuthPolicies.Administrator)]
         public async Task<ActionResult<InstructorDto>> Post([FromBody] InstructorSaveDto dto)

@@ -29,7 +29,14 @@
         </dl>
       </section>
 
-      <!-- 2. Kept separate from the profile: reviews are about courses, not about the person (UI05) -->
+      <!-- 2. The courses they are assigned to, from GET /api/instructors/{id}/courses (FR12) -->
+      <section class="card detail-section">
+        <h2>Courses taught</h2>
+        <p data-courses-status></p>
+        <ul class="course-list" data-courses></ul>
+      </section>
+
+      <!-- 3. Kept separate from the profile: reviews are about courses, not about the person (UI05) -->
       <section class="card detail-section reviews-callout">
         <h2>Course reviews</h2>
         <p data-reviews-text></p>
@@ -39,6 +46,7 @@
   </main>
 
   <script src="../../js/shared/api.js"></script>
+  <script src="../../js/shared/departments.js"></script>
   <script src="../../js/shared/navbar.js"></script>
   <script src="../../js/pages/instructors.js"></script>
 </body>
