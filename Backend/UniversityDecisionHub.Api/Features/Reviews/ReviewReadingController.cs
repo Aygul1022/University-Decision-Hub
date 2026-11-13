@@ -17,31 +17,10 @@ public sealed class ReviewReadingController(ApplicationDbContext db) : Controlle
     [HttpGet]
     public async Task<ActionResult<PagedReviewsDto>> List([FromQuery] ReviewReadQuery search, CancellationToken ct)
     {
-        var query = ProjectReviews();
-
-        if (!string.IsNullOrWhiteSpace(search.CourseCode))
-        {
-            // Partial, case-insensitive course-code match. Other filters use exact values.
-            var courseCode = search.CourseCode.Trim().ToUpperInvariant();
-            query = query.Where(r => r.CourseCode.ToUpper().Contains(courseCode));
-        }
-
-        if (search.DepartmentId.HasValue)
-            query = query.Where(r => r.DepartmentId == search.DepartmentId.Value);
-
-        if (search.InstructorId.HasValue)
-            query = query.Where(r => r.InstructorId == search.InstructorId.Value);
-
-        if (!string.IsNullOrWhiteSpace(search.AcademicYear))
-            query = query.Where(r => r.AcademicYear == search.AcademicYear.Trim());
+        var query = ReviewReadFiltering.Apply(ProjectReviews(), search);
 
         var totalCount = await query.CountAsync(ct);
-        var items = await query
-            .OrderByDescending(r => r.CreatedAt)
-            .ThenByDescending(r => r.ReviewId)
-            .Skip((search.Page - 1) * search.PageSize)
-            .Take(search.PageSize)
-            .ToListAsync(ct);
+        var items = await ReviewReadFiltering.Page(query, search).ToListAsync(ct);
 
         // A valid search with no matches is not an error.
         return Ok(new PagedReviewsDto
