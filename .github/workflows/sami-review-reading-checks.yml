@@ -1,0 +1,33 @@
+name: Sami Review Reading Checks
+
+on:
+  push:
+    branches:
+      - feature/sami-review-reading
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review-reading-checks:
+    name: Build and check review-reading API
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore and build solution
+        run: dotnet build UniversityDecisionHub.slnx --configuration Release
+
+      - name: Check course and submission contracts
+        run: dotnet run --project Tests/UniversityDecisionHub.CourseChecks --configuration Release
+
+      - name: Check Sami's reading, filters and paging
+        run: dotnet run --project Tests/UniversityDecisionHub.ReviewReadingChecks --configuration Release
