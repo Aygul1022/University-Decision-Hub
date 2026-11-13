@@ -169,19 +169,20 @@ Every page loads the shared files in this order:
 - `css/shared/global.css` — the red / white / cream palette as CSS variables (UI02), base typography, `.page`, `.card`, `.button`, `.notice`. The university logo is not included; no asset has been chosen yet.
 - `js/shared/api.js` — `apiFetch(path, { method, body })`, which adds the token automatically, and `Session` (`Session.user`, `Session.isLoggedIn`, `Session.clear()`). The backend address defaults to `http://localhost:5154`.
 - `js/shared/navbar.js` — inserts the header by itself: Read Reviews, Write a Review, Instructors (UI03), and Log in / Register at the upper right, or the user's name and Log out when logged in. Pages write no navbar HTML.
+- `js/shared/departments.js` — reads `GET /api/departments` once per page. `Departments.label(id)` gives the department name and `Departments.fillSelect(select, selectedId)` fills a `<select>`. Load it after `api.js`. If the list cannot be read, pages fall back to "Department 3" and keep the user's current department selectable.
 - `Site.membersUrl("Pages/reviews/reviews.html")` gives the page itself to a logged-in user and the login page to a visitor, who is returned to that page after logging in (FR01 "More Reviews redirects to login"). Sami can use it for the landing-page link.
 
 Pages:
 
 | Page | Open as | Notes |
 |---|---|---|
-| `Pages/auth/login.html`, `register.html` | — | Register completes a pre-defined account; it asks for a department *number* until a Departments endpoint exists |
-| `Pages/auth/profile.html` | — | Logged-in user edits name, department and year; reached from the name in the navbar |
-| `Pages/courses/course-detail.html` | `?id=<CourseId>` | Reads Aygül's `GET /api/courses/{id}`; no second Course model |
-| `Pages/reviews/instructors.html` | — | Name and department filters, empty state |
-| `Pages/reviews/instructor-detail.html` | `?id=<InstructorId>` | Profile and course reviews are separate sections (UI05) |
+| `Pages/auth/login.html`, `register.html` | — | Register completes a pre-defined account; department is chosen from the department list, and department and year may be left empty |
+| `Pages/auth/profile.html` | — | Logged-in user edits name, department (from the list) and year; reached from the name in the navbar |
+| `Pages/courses/course-detail.html` | `?id=<CourseId>` | Reads Aygül's `GET /api/courses/{id}`; no second Course model. Shows the department name |
+| `Pages/reviews/instructors.html` | — | Name search and department list filter, empty state |
+| `Pages/reviews/instructor-detail.html` | `?id=<InstructorId>` | Profile, courses taught (each links to the course detail page) and course reviews are separate sections (UI05) |
 
-Links to Sami's Read Reviews page use `reviews.html?courseCode=<code>` and `reviews.html?instructorId=<id>`. **These parameter names are a proposal — Sami, please confirm or tell me the names you use.** Until `reviews.html` and `review-form.html` exist, those navigation links lead to a missing page.
+Links to Sami's Read Reviews page use `reviews.html?courseCode=<code>` and `reviews.html?instructorId=<id>`. These are the filter names of Sami's `GET /api/reviews` (`courseCode`, `instructorId`) on `feature/sami-review-reading`. Until `reviews.html` and `review-form.html` exist, those navigation links lead to a missing page.
 
 ## 9. Instructors
 
@@ -192,7 +193,7 @@ Table `Instructors` (DR04), model in `Features/Instructors/Instructor.cs`:
 | `InstructorId` | `integer`, identity | no | Primary key |
 | `FullName` | `character varying(150)` | no | Trimmed; not unique (two people can share a name) |
 | `AcademicTitle` | `character varying(50)` | yes | Blank input is stored as null |
-| `DepartmentId` | `integer` | no | Positive; indexed; becomes a foreign key when the Department entity exists |
+| `DepartmentId` | `integer` | no | Foreign key to `Departments`; an unknown department is answered with `400` |
 
 An instructor is a catalog record, not a login account; there is no link to `UserAccounts`.
 
@@ -200,10 +201,13 @@ An instructor is a catalog record, not a login account; there is no link to `Use
 |---|---|---|---|
 | `GET /api/instructors?query=&departmentId=` | anyone | `200` + list sorted by name (`[]` when nothing matches) | `400` invalid filter |
 | `GET /api/instructors/{id}` | anyone | `200` + instructor | `404` |
+| `GET /api/instructors/{id}/courses` | anyone | `200` + courses the instructor is assigned to (`[]` when none) | `404` |
 | `POST /api/instructors` | administrator | `201` + instructor | `400`, `401`, `403` |
 | `PUT /api/instructors/{id}` | administrator | `200` + instructor | `400`, `401`, `403`, `404` |
 
 Body for POST/PUT: `{ fullName, academicTitle, departmentId }`. Response: `{ instructorId, fullName, academicTitle, departmentId }`.
+
+`GET /api/instructors/{id}/courses` returns `[{ courseId, courseCode, courseName, periods: [{ offeringId, academicYear, semester }] }]`, sorted by course code with the newest academic year first. It reads Aygül's `Course`, `CourseOffering` and `OfferingInstructor` records and stores nothing of its own.
 
 There is no DELETE: offerings and reviews will reference instructors and must keep their history (AT07). Aygül's `OfferingInstructor` can reference `Instructors.InstructorId` directly.
 
@@ -215,7 +219,7 @@ There is no DELETE: offerings and reviews will reference instructors and must ke
 | FR03 profiles | Department and study year are required at registration. Non-student accounts: unresolved in the requirements, not implemented |
 | FR07 author identity | `User.GetUserId()` from the token; never from the request body |
 | FR09 / FR11 administrator-only actions | `AuthPolicies.Administrator`; used by instructor writes. Course writes are still unprotected (Aygül's endpoints) |
-| FR12 instructor pages | Navigation entry, list and detail done. **Associated courses are not shown yet** — they need Aygül's offerings; reviews are reached through Sami's page |
+| FR12 instructor pages | Navigation entry, list, detail and the courses each instructor teaches are done; reviews are reached through Sami's page |
 | FR13 profile changes | `PUT /api/auth/me` lets the user change name, department and year; eligibility is rechecked from the database at submission |
 | DR01, DR04 | Sections 1 and 9 |
 | UI01 / UI03 header | Shared navbar done; the landing page itself is Sami's |
@@ -225,7 +229,7 @@ Choices made where the requirements leave a decision open — say so if the team
 
 - Basic instructor profiles are readable **without login** (FR12 leaves this open); reviews stay behind login.
 - Static prerequisite links are **not** displayed on the course detail page (D09 open).
-- Department names are shown as "Department 3" until a Departments endpoint exists.
+- Department names come from `GET /api/departments`; "Department 3" is shown only if that list cannot be read.
 - No page links to the course detail page yet: the course list page has no owner in the allocation.
 
 ## 11. Verification so far
@@ -243,6 +247,17 @@ dotnet run --project Tests/UniversityDecisionHub.AccountChecks
 ```
 
 They host the real controllers and authentication setup on a random local port with in-memory SQLite, so they need neither PostgreSQL nor a migration. After the merge with the catalog and review branch there are 100 checks; they also cover accounts without department and year, unknown departments, and review submission through `POST /api/reviews` with a real token (anonymous `401`, incomplete profile `403`, eligible student `201` with the author taken from the token, duplicate `409`). All 100 passed when the same source files were compiled for .NET 9; the `net10.0` project itself has not been built yet.
+
+**Database work (Ozan's 25%).**
+
+- `Doc/sql/report_queries.sql` — nine PostgreSQL queries for the report: courses by department, reviews by course, by instructor and by academic year, instructors of an offering, the combined search filters, and an integrity query that must return no rows.
+- `Tests/UniversityDecisionHub.DatabaseChecks` — 38 checks written directly against the database (not through the controllers): duplicate course codes, foreign keys to missing records, a second review for the same course, a review for an instructor who is not assigned to the offering, deletes of referenced records, and the row count of every report query on a small synthetic data set.
+
+```powershell
+dotnet run --project Tests/UniversityDecisionHub.DatabaseChecks
+```
+
+These run on in-memory SQLite built from the EF model, so they show that the model's keys and indexes enforce the rules; they do not execute the migrations. The report queries should be run once more on a migrated PostgreSQL database before their output is quoted. `AccountChecks` now has 104 checks (the four new ones cover `GET /api/instructors/{id}/courses`). Both projects passed when compiled for .NET 9; the new checks have not been run on the `net10.0` build yet.
 
 `Tests/UniversityDecisionHub.CourseChecks` (Aygül's, updated on her branch) expects no pending model changes; that one check fails until the follow-up migration in section 1 is generated.
 
