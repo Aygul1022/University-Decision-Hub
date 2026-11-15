@@ -32,7 +32,15 @@
     setField("courseDescription", description);
 
     // Link to the Read Reviews page, filtered to this course. Visitors go through login first (FR01).
-    const reviewsPath = "Pages/reviews/reviews.html?courseCode=" + encodeURIComponent(course.courseCode);
+    // A course code can exist in more than one department, so the code alone is not enough:
+    // departmentId narrows it to this course with the filters the review API has today, and
+    // courseId identifies it exactly once the review API filters on it.
+    const reviewsQuery = new URLSearchParams({
+      courseId: course.courseId,
+      courseCode: course.courseCode,
+      departmentId: course.departmentId,
+    });
+    const reviewsPath = "Pages/reviews/reviews.html?" + reviewsQuery.toString().replaceAll("+", "%20");
     const link = article.querySelector("[data-reviews-link]");
     link.href = Site.membersUrl(reviewsPath);
     link.textContent = Session.isLoggedIn ? "Read reviews for this course" : "Log in to read reviews";
