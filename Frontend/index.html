@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore course reviews to make informed decisions about your studies.">
+  <title>University Decision Hub</title>
+  <link rel="stylesheet" href="css/shared/global.css">
+  <link rel="stylesheet" href="css/shared/navbar.css">
+  <link rel="stylesheet" href="css/pages/home.css">
+</head>
+<body>
+  <main class="page home-page">
+    <header class="home-intro">
+      <h1>Plan your next semester with student reviews</h1>
+      <p>Explore what students say about course workloads, class formats, and how they prepared. Use their experiences to decide which courses fit your plans.</p>
+    </header>
+
+    <section class="home-previews" aria-labelledby="sample-reviews">
+      <h2 id="sample-reviews">Sample reviews</h2>
+      <p class="home-preview-note">Fictional examples of what a course review can cover.</p>
+      <div class="home-review-grid">
+        <article class="card home-review">
+          <h3>Web Programming</h3>
+          <p>The weekly labs helped me build a small site step by step. I set aside two evenings for the final project and tested each page as I built it.</p>
+        </article>
+        <article class="card home-review">
+          <h3>Discrete Mathematics</h3>
+          <p>The first proofs took me longer than expected. Writing out why each step followed from the last one helped more than rereading my notes.</p>
+        </article>
+        <article class="card home-review">
+          <h3>Database Systems</h3>
+          <p>Joins clicked for me after I drew the relationships between tables. In the group project, agreeing on the schema early saved us time.</p>
+        </article>
+      </div>
+      <a class="button home-reviews-link" data-more-reviews href="Pages/reviews/reviews.html">More Reviews</a>
+    </section>
+  </main>
+
+  <script src="js/shared/api.js"></script>
+  <script src="js/shared/navbar.js"></script>
+  <script>
+    document.querySelector("[data-more-reviews]").href = Site.membersUrl("Pages/reviews/reviews.html");
+  </script>
+</body>
+</html>
