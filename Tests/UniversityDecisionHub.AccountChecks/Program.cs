@@ -574,6 +574,38 @@ Check(legacyDetail.Status == 200 && legacyDetail.Text("academicYear") == "2024-2
 Check((await Get("/api/reviews?semester=Winter", reviewLoginToken)).Status == 400,
     "Review list rejects unsupported semesters");
 
+var exactCourseId = await Db(async db =>
+{
+    var exactCourse = new Course { CourseCode = "MATH 101", CourseName = "Test Course", DepartmentId = 4 };
+    var longerCode = new Course { CourseCode = "MATH 1010", CourseName = "Test Course II", DepartmentId = 4 };
+    var otherDepartment = new Course { CourseCode = "MATH 101", CourseName = "Test Course III", DepartmentId = 2 };
+    db.Courses.AddRange(exactCourse, longerCode, otherDepartment);
+    await db.SaveChangesAsync();
+    foreach (var course in new[] { exactCourse, longerCode, otherDepartment })
+    {
+        db.Reviews.Add(new Review
+        {
+            UserId = stored[EmailOne].UserId, CourseId = course.CourseId, InstructorId = adaId,
+            AcademicYear = "2025-2026", Semester = "Fall", ReviewText = course.CourseName, CreatedAt = DateTime.UtcNow
+        });
+    }
+    await db.SaveChangesAsync();
+    return exactCourse.CourseId;
+});
+var courseCodeList = await Get("/api/reviews?courseCode=MATH%20101&departmentId=4", reviewLoginToken);
+Check(courseCodeList.Status == 200 && courseCodeList.Json.GetProperty("totalCount").GetInt32() == 2,
+    "Manual course code search retains partial matching within a department");
+var exactCourseList = await Get($"/api/reviews?courseId={exactCourseId}&courseCode=MATH%20101&departmentId=4", reviewLoginToken);
+Check(exactCourseList.Status == 200 && exactCourseList.Json.GetProperty("totalCount").GetInt32() == 1
+    && exactCourseList.Json.GetProperty("items")[0].GetProperty("courseId").GetInt32() == exactCourseId,
+    "Course detail filters return only the exact course ID despite similar course codes");
+var exactIdList = await Get($"/api/reviews?courseId={exactCourseId}", reviewLoginToken);
+Check(exactIdList.Status == 200 && exactIdList.Json.GetProperty("totalCount").GetInt32() == 1
+    && exactIdList.Json.GetProperty("items")[0].GetProperty("courseId").GetInt32() == exactCourseId,
+    "Course ID alone excludes the same course code in another department");
+Check((await Get("/api/reviews?courseId=0", reviewLoginToken)).Status == 400,
+    "Review list rejects a nonpositive course ID");
+
 // ================================================================ catalogue v2 import
 // Separate in-memory database: no records are inserted in the user's PostgreSQL.
 using (var catalogConnection = new SqliteConnection("Data Source=:memory:"))

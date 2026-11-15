@@ -5,6 +5,9 @@ namespace UniversityDecisionHub.Api.Features.Reviews.Dtos;
 // Parameters for Sami's read-only API. All supplied filters are combined with AND.
 public sealed class ReviewReadQuery
 {
+    [Range(1, int.MaxValue)]
+    public int? CourseId { get; set; }
+
     [MaxLength(64)]
     public string? CourseCode { get; set; }
 

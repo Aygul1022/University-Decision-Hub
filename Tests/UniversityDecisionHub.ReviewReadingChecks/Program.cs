@@ -24,7 +24,7 @@ var defaults = new ReviewReadQuery();
 Check(defaults.Page == 1 && defaults.PageSize == 20, "Default pagination is page 1 / size 20");
 Check(Valid(defaults), "Default search is valid");
 Check(Valid(new ReviewReadQuery {
-    CourseCode = "COME 327", DepartmentId = 1, InstructorId = 2,
+    CourseId = 1, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 2,
     AcademicYear = "2026-2027", Semester = "Fall", Page = 2, PageSize = 50
 }), "All filters can be provided together");
 Check(!Valid(new ReviewReadQuery { Page = 0 }), "Page zero rejected");
@@ -32,6 +32,7 @@ Check(!Valid(new ReviewReadQuery { Page = -1 }), "Negative page rejected");
 Check(!Valid(new ReviewReadQuery { PageSize = 0 }), "Page size zero rejected");
 Check(!Valid(new ReviewReadQuery { PageSize = 101 }), "Page size over 100 rejected");
 Check(!Valid(new ReviewReadQuery { DepartmentId = 0 }), "Invalid department rejected");
+Check(!Valid(new ReviewReadQuery { CourseId = -1 }), "Invalid course ID rejected");
 Check(!Valid(new ReviewReadQuery { InstructorId = -2 }), "Invalid instructor rejected");
 Check(!Valid(new ReviewReadQuery { CourseCode = new string('A', 65) }), "Overlong course code rejected");
 Check(!Valid(new ReviewReadQuery { AcademicYear = "tomorrow" }), "Invalid academic-year format rejected");
@@ -85,7 +86,7 @@ Check(sql.Contains("\"ReviewText\"", StringComparison.Ordinal)
  // Deterministic examples verify actual filtering and paging behavior, not only DTO annotations.
 var sampleReviews = new[]
 {
-    new ReviewReadDto { ReviewId = 1, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
+    new ReviewReadDto { ReviewId = 1, CourseId = 1, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
         AcademicYear = "2026-2027", Semester = "Fall", CreatedAt = new DateTime(2026, 10, 10) },
     new ReviewReadDto { ReviewId = 2, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
         AcademicYear = "2026-2027", Semester = "Spring", CreatedAt = new DateTime(2026, 10, 11) },
@@ -95,7 +96,7 @@ var sampleReviews = new[]
         AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 13) },
     new ReviewReadDto { ReviewId = 5, CourseCode = "MATH 101", DepartmentId = 2, InstructorId = 5,
         AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 14) },
-    new ReviewReadDto { ReviewId = 6, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
+    new ReviewReadDto { ReviewId = 6, CourseId = 1, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
         AcademicYear = "2026-2027", Semester = "Fall", CreatedAt = new DateTime(2026, 10, 11) },
     new ReviewReadDto { ReviewId = 7, CourseCode = "SOME 333", DepartmentId = 2, InstructorId = 3,
         AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 15) }
@@ -116,10 +117,10 @@ Check(Matches(ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { Aca
 Check(Matches(ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { Semester = "Fall" }),
     1, 6), "Semester filter excludes other and unknown semesters");
 var combined = new ReviewReadQuery {
-    CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3, AcademicYear = "2026-2027", Semester = "Fall"
+    CourseId = 1, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3, AcademicYear = "2026-2027", Semester = "Fall"
 };
 Check(Matches(ReviewReadFiltering.Apply(sampleReviews, combined), 1, 6),
-    "All five filters combine with AND");
+    "All six filters combine with AND");
 Check(!ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { CourseCode = "UNKNOWN" }).Any(),
     "Unmatched search returns an empty collection");
 Check(Ids(ReviewReadFiltering.Page(sampleReviews, new ReviewReadQuery { PageSize = 2 }))

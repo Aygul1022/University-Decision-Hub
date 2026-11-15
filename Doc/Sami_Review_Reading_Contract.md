@@ -9,6 +9,7 @@ The review reading API and browser page use the catalogue and review workflow pu
 
 | Query | Behavior |
 |---|---|
+| `courseId` | Exact positive course ID. Course detail links can use this with the code and department. |
 | `courseCode` | Case-insensitive partial match. Include `departmentId` to narrow a code shared across departments. |
 | `departmentId` | Exact course department ID. |
 | `instructorId` | Exact instructor ID. |
@@ -25,4 +26,4 @@ The list returns `{ page, pageSize, totalCount, items }`. The fields on each ite
 
 New reviews carry their own academic year and semester and return `offeringId: null`. Each missing period field on a legacy review falls back to its linked offering. A field without a source stays null. Year and semester filters use the same resolved fields that the API displays. No review requires an offering or assignment to be returned.
 
-`Frontend/Pages/reviews/reviews.html` preserves course, instructor and period filters through sign-in and pagination. It renders review text as plain text. The catalogue team coordinates PostgreSQL migration rollout. Administrator moderation and any changes to review uniqueness depend on the team decision.
+`Frontend/Pages/reviews/reviews.html` preserves course, instructor and period filters through sign-in and pagination. Editing the course code or department starts a new search and removes the course ID from the link. It renders review text as plain text. The catalogue team coordinates PostgreSQL migration rollout. Administrator moderation and any changes to review uniqueness depend on the team decision.

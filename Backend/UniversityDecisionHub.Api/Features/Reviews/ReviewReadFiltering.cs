@@ -8,6 +8,9 @@ public static class ReviewReadFiltering
 {
     public static IQueryable<ReviewReadDto> Apply(IQueryable<ReviewReadDto> source, ReviewReadQuery search)
     {
+        if (search.CourseId.HasValue)
+            source = source.Where(r => r.CourseId == search.CourseId.Value);
+
         if (!string.IsNullOrWhiteSpace(search.CourseCode))
         {
             // Partial, case-insensitive course-code match.

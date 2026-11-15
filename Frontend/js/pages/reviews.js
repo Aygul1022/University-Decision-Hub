@@ -14,7 +14,7 @@
   const currentQuery = new URLSearchParams(window.location.search);
   const params = new URLSearchParams();
   const filterNames = ["courseCode", "departmentId", "instructorId", "academicYear", "semester"];
-  for (const name of [...filterNames, "page", "pageSize"]) {
+  for (const name of ["courseId", ...filterNames, "page", "pageSize"]) {
     const value = currentQuery.get(name)?.trim();
     if (value) params.set(name, value);
   }
@@ -44,12 +44,18 @@
   form.elements.courseCode.value = params.get("courseCode") || "";
   form.elements.academicYear.value = params.get("academicYear") || "";
   form.elements.semester.value = params.get("semester") || "";
+  form.querySelector("[data-course-scope]").hidden = !params.has("courseId");
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const search = new URLSearchParams();
     for (const name of filterNames) {
       const value = form.elements[name].value.trim();
       if (value) search.set(name, value);
+    }
+    // Editing the course or department starts a new search across the catalogue.
+    if (params.has("courseId") && search.get("courseCode") === params.get("courseCode")
+        && search.get("departmentId") === params.get("departmentId")) {
+      search.set("courseId", params.get("courseId"));
     }
     if (params.has("pageSize")) search.set("pageSize", params.get("pageSize"));
     window.location.assign(Site.url(pageUrl(search)));
