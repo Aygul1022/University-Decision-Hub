@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="Backend/UniversityDecisionHub.Api/UniversityDecisionHub.Api.csproj" Id="6cc8dc76-f10c-40a8-ad92-5c6b172d9559" />
+  <Project Path="Tests/UniversityDecisionHub.AccountChecks/UniversityDecisionHub.AccountChecks.csproj" />
   <Project Path="Tests/UniversityDecisionHub.CourseChecks/UniversityDecisionHub.CourseChecks.csproj" />
 </Solution>

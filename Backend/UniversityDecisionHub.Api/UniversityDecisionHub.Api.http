@@ -76,3 +76,115 @@ Content-Type: application/json
 ### Unsupported filter should return 400 instead of silently ignoring it
 GET https://localhost:7214/api/courses?semester=Fall
 Accept: application/json
+
+### ---------------- Authentication (synthetic test data only) ----------------
+
+### Complete registration (the person must already be on the list: import-users or POST api/admin/users)
+POST http://localhost:5154/api/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Test Student",
+  "email": "test.student@example.com",
+  "password": "synthetic-Pass-1",
+  "departmentId": 1,
+  "studyYear": 2
+}
+
+### Registering the same account again should return 409
+POST http://localhost:5154/api/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Test Student",
+  "email": "TEST.Student@Example.com",
+  "password": "synthetic-Pass-1",
+  "departmentId": 1,
+  "studyYear": 2
+}
+
+### Log in (copy "token" from the response into @token below)
+POST http://localhost:5154/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test.student@example.com",
+  "password": "synthetic-Pass-1"
+}
+
+### Wrong password should return 401
+POST http://localhost:5154/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test.student@example.com",
+  "password": "not-the-password"
+}
+
+### Current user profile
+@token = paste-token-here
+GET http://localhost:5154/api/auth/me
+Authorization: Bearer {{token}}
+
+### Without a token should return 401
+GET http://localhost:5154/api/auth/me
+
+### ---------------- Instructors (synthetic test data only) ----------------
+
+### List instructors (no login needed)
+GET http://localhost:5154/api/instructors
+Accept: application/json
+
+### Search by name and department
+GET http://localhost:5154/api/instructors?query=kaya&departmentId=1
+Accept: application/json
+
+### Create without a token should return 401
+POST http://localhost:5154/api/instructors
+Content-Type: application/json
+
+{
+  "fullName": "Test Instructor",
+  "academicTitle": "Dr.",
+  "departmentId": 1
+}
+
+### Create as administrator (a student token returns 403)
+POST http://localhost:5154/api/instructors
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fullName": "Test Instructor",
+  "academicTitle": "Dr.",
+  "departmentId": 1
+}
+
+### Blank name should return 400
+POST http://localhost:5154/api/instructors
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fullName": " ",
+  "departmentId": 1
+}
+
+### Instructor detail
+GET http://localhost:5154/api/instructors/1
+Accept: application/json
+
+### Update as administrator
+PUT http://localhost:5154/api/instructors/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fullName": "Test Instructor",
+  "academicTitle": "Assoc. Prof. Dr.",
+  "departmentId": 1
+}
+
+### Nonexistent instructor should return 404
+GET http://localhost:5154/api/instructors/999999
+Accept: application/json

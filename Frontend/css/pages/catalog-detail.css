@@ -1,0 +1,161 @@
+/* Course detail, instructor list and instructor detail pages. Colours come from css/shared/global.css. */
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.detail-header {
+  margin-bottom: 24px;
+}
+
+.detail-code {
+  margin: 0 0 4px;
+  color: var(--color-red);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.detail-header h1 {
+  overflow-wrap: anywhere;
+}
+
+.tag {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--color-cream-deep);
+  color: var(--color-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.detail-section {
+  margin-bottom: 20px;
+}
+
+.detail-section > h2 {
+  margin-bottom: 12px;
+}
+
+/* Label / value pairs. */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+
+.facts dt {
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.facts dd {
+  margin: 2px 0 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.description {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+
+/* The review block is visually set apart from the profile/catalog facts above it (UI05). */
+.reviews-callout {
+  background: var(--color-cream-deep);
+  border-color: var(--color-line);
+}
+
+.reviews-callout p {
+  max-width: 60ch;
+}
+
+/* Instructor list */
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-form .field {
+  flex: 1 1 200px;
+}
+
+.search-form .field.narrow {
+  flex: 0 1 180px;
+}
+
+.search-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.search-form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: inherit;
+  font: inherit;
+}
+
+.result-count {
+  margin-bottom: 12px;
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+}
+
+.instructor-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.instructor-list a {
+  display: block;
+  height: 100%;
+  padding: 16px;
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.instructor-list a:hover {
+  border-color: var(--color-red);
+}
+
+.instructor-name {
+  display: block;
+  color: var(--color-red);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.instructor-meta {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+}
