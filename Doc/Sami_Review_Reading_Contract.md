@@ -49,3 +49,24 @@ This branch should be merged or cherry-picked **after** Aygül/Ozan's integratio
 7. Agree author visibility and AND filter semantics with Aygül. Implement and test admin edits/deletes **only after** deletion/resubmission policy is approved.
 
 No live database, migrations or teammate-owned files were changed in this increment.
+
+## Read Reviews page
+
+`Frontend/Pages/reviews/reviews.html` uses the authenticated list and detail endpoints.
+The URL accepts the four current list filters and preserves Ozan's links with
+`courseCode` or `instructorId` through sign-in. The page displays the academic year
+and semester from the response and renders review text as plain text.
+
+## Follow-up for the planned review model
+
+Agree the read contract with Aygül before changing the backend:
+
+- Confirm the response field names and formats for the academic year and semester
+  supplied with the review, and the query value for the semester filter.
+- Confirm whether to omit `offeringId` from the response or keep it optional for
+  older consumers.
+- Agree how the migration carries forward the year and semester of existing reviews.
+
+Once the model is available, read the academic year and semester from the review
+and test that an offering-free review appears in both the list and the detail.
+Review uniqueness and moderation rules are tracked by the team.
