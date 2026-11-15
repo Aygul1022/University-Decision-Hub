@@ -19,6 +19,9 @@ namespace UniversityDecisionHub.Api.Features.Authentication.Dtos
         [Range(1, int.MaxValue, ErrorMessage = "DepartmentId must be a positive number.")]
         public int? DepartmentId { get; set; }
 
+        [Range(1, int.MaxValue)]
+        public int? ProgrammeId { get; set; }
+
         // Optional; when given it must be 1-6.
         [Range(1, 6, ErrorMessage = "StudyYear must be between 1 and 6.")]
         public int? StudyYear { get; set; }

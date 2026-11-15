@@ -25,6 +25,14 @@
         <label>Academic year
           <input name="academicYear" placeholder="YYYY-YYYY" pattern="[0-9]{4}-[0-9]{4}" maxlength="9" title="Enter an academic year in YYYY-YYYY format">
         </label>
+        <label>Semester
+          <select name="semester">
+            <option value="">All semesters</option>
+            <option value="Fall">Fall</option>
+            <option value="Spring">Spring</option>
+            <option value="Summer">Summer</option>
+          </select>
+        </label>
       </div>
       <p class="review-catalog-status" data-catalog-status role="status" hidden></p>
       <div class="review-filter-actions">

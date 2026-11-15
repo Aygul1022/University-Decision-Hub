@@ -13,7 +13,7 @@
 
   const currentQuery = new URLSearchParams(window.location.search);
   const params = new URLSearchParams();
-  const filterNames = ["courseCode", "departmentId", "instructorId", "academicYear"];
+  const filterNames = ["courseCode", "departmentId", "instructorId", "academicYear", "semester"];
   for (const name of [...filterNames, "page", "pageSize"]) {
     const value = currentQuery.get(name)?.trim();
     if (value) params.set(name, value);
@@ -43,6 +43,7 @@
 
   form.elements.courseCode.value = params.get("courseCode") || "";
   form.elements.academicYear.value = params.get("academicYear") || "";
+  form.elements.semester.value = params.get("semester") || "";
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const search = new URLSearchParams();

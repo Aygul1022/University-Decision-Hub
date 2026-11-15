@@ -9,9 +9,9 @@ public sealed class ReviewReadDto
     public string CourseCode { get; set; } = string.Empty;
     public string CourseName { get; set; } = string.Empty;
     public int DepartmentId { get; set; }
-    public int OfferingId { get; set; }
-    public string AcademicYear { get; set; } = string.Empty;
-    public string Semester { get; set; } = string.Empty;
+    public int? OfferingId { get; set; }
+    public string? AcademicYear { get; set; }
+    public string? Semester { get; set; }
     public int InstructorId { get; set; }
     public string InstructorName { get; set; } = string.Empty;
     public string ReviewText { get; set; } = string.Empty;

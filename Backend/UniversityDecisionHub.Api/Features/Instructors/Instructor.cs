@@ -5,6 +5,8 @@ namespace UniversityDecisionHub.Api.Features.Instructors
     public class Instructor
     {
         public int InstructorId { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string? ImportKey { get; set; }
 
         public string FullName { get; set; } = string.Empty;
 

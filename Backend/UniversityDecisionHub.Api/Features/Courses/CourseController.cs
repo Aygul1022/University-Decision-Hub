@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Npgsql;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,7 @@ namespace UniversityDecisionHub.Api.Features.Courses
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<CourseDto>> Post([FromBody] CourseCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -94,6 +96,7 @@ namespace UniversityDecisionHub.Api.Features.Courses
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Put(int id, [FromBody] CourseUpdateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -130,6 +133,7 @@ namespace UniversityDecisionHub.Api.Features.Courses
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var entity = await _db.Courses.FindAsync(id);

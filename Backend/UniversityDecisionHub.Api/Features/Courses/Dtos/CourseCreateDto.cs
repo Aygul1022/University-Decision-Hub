@@ -13,16 +13,16 @@ namespace UniversityDecisionHub.Api.Features.Courses.Dtos
 
         public string? CourseDescription { get; set; }
 
-        [Range(0, 30)]
-        public int CourseCredit { get; set; }
+        [Range(typeof(decimal), "0", "30")]
+        public decimal? CourseCredit { get; set; }
 
-        [Required, Range(1, int.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int? RecommendedStudyYear { get; set; }
 
-        [Range(0, int.MaxValue)]
-        public int Ects { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsElective { get; set; }
+        [Range(typeof(decimal), "0", "79228162514264337593543950335")]
+        public decimal? Ects { get; set; }
+        public bool? IsActive { get; set; }
+        public bool? IsElective { get; set; }
 
         [Range(1, int.MaxValue)]
         public int DepartmentId { get; set; }

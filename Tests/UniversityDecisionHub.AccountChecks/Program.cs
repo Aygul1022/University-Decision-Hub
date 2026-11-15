@@ -1,3 +1,5 @@
+using UniversityDecisionHub.Api.Features.Programmes;
+using UniversityDecisionHub.Api.Features.CatalogImport;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -25,7 +27,7 @@ using UniversityDecisionHub.Api.Features.Users;
 using UniversityDecisionHub.Api.Features.Users.Dtos;
 
 // Account, administrator-boundary, instructor and detail-page checks (Ozan's module), plus the
-// hand-over to review submission and reading using real login tokens.
+// hand-over to review submission: the token identifies the author and an incomplete profile is refused.
 //
 //   dotnet run --project Tests/UniversityDecisionHub.AccountChecks
 //
@@ -255,7 +257,7 @@ var me = await Get("/api/auth/me", tokenOne);
 Check(me.Status == 200 && me.Json.GetProperty("departmentId").GetInt32() == 1 && me.Json.GetProperty("studyYear").GetInt32() == 3
       && me.Json.GetProperty("userId").GetInt32() == stored[EmailOne].UserId,
     "GET /api/auth/me returns the caller's own id, department and study year");
-Check(me.PropertyNames().SetEquals(["userId", "fullName", "email", "departmentId", "studyYear", "isAdministrator"]),
+Check(me.PropertyNames().SetEquals(["userId", "fullName", "email", "departmentId", "programmeId", "studyYear", "isAdministrator"]),
     "The profile contains exactly the six public fields");
 
 var middle = tokenOne.Length - 10;
@@ -428,13 +430,15 @@ var both = await Get("/api/instructors?query=ada&departmentId=4");
 Check(both.Status == 200 && both.Json.GetArrayLength() == 0, "Name and department filters are combined; no match is an empty array");
 Check((await Get("/api/instructors?departmentId=0")).Status == 400, "Instructor filter with department 0 is rejected (400)");
 
-var change = new { fullName = "Ada Yılmaz Öztürk", academicTitle = "Dr.", departmentId = 5 };
+Check((await Put("/api/instructors/" + adaId, new { fullName = "Synthetic Name", departmentId = 5 }, adminToken)).Status == 200,
+    "Instructor may move to another existing department without a minimum staffing rule");
+var change = new { fullName = "Ada Yılmaz Öztürk", academicTitle = "Dr.", departmentId = 3 };
 Check((await Put("/api/instructors/" + adaId, change)).Status == 401, "Edit instructor: anonymous is rejected (401)");
 Check((await Put("/api/instructors/" + adaId, change, tokenOne)).Status == 403, "Edit instructor: a student is rejected (403)");
 var changed = await Put("/api/instructors/" + adaId, change, adminToken);
 Check(changed.Status == 200 && changed.Text("fullName") == "Ada Yılmaz Öztürk" && changed.Text("academicTitle") == "Dr."
-      && changed.Json.GetProperty("departmentId").GetInt32() == 5,
-    "Edit instructor: an administrator updates all three fields");
+      && changed.Json.GetProperty("departmentId").GetInt32() == 3,
+    "Edit instructor: an administrator updates name and title in the existing department");
 Check((await Put("/api/instructors/999999", change, adminToken)).Status == 404, "Edit instructor: an unknown id is not found (404)");
 Check((await Put("/api/instructors/" + adaId, new { fullName = " ", departmentId = 5 }, adminToken)).Status == 400,
     "Edit instructor: a blank name is rejected (400)");
@@ -460,53 +464,181 @@ Check(courseDetail.PropertyNames().IsSupersetOf(
     "The course response has every field course-detail.html displays");
 Check((await Get("/api/courses/999999")).Status == 404, "Course detail: an unknown id is not found (404)");
 
+// Course writes use the same trusted administrator role as the account module.
+var newCourse = new { courseCode = "TEST101", courseName = "Synthetic Test", departmentId = 1, recommendedStudyYear = 1, courseCredit = 3, ects = 6 };
+Check((await Post("/api/courses", newCourse)).Status == 401, "Course create rejects anonymous requests");
+Check((await Post("/api/courses", newCourse, tokenOne)).Status == 403, "Course create rejects student requests");
+var adminCourse = await Post("/api/courses", newCourse, adminToken);
+Check(adminCourse.Status == 201, "Administrator can create a course");
+var adminCourseId = adminCourse.Json.GetProperty("courseId").GetInt32();
+var courseUpdate = new { courseId = adminCourseId, newCourse.courseCode, newCourse.courseName, newCourse.departmentId, newCourse.recommendedStudyYear, newCourse.courseCredit, newCourse.ects };
+Check((await Put("/api/courses/" + adminCourseId, courseUpdate)).Status == 401, "Course update rejects anonymous requests");
+Check((await Put("/api/courses/" + adminCourseId, courseUpdate, tokenOne)).Status == 403, "Course update rejects student requests");
+Check((await Put("/api/courses/" + adminCourseId, courseUpdate, adminToken)).Status == 204, "Administrator can update a course");
+Check((await Send(HttpMethod.Delete, "/api/courses/" + adminCourseId, null)).Status == 401, "Course delete rejects anonymous requests");
+Check((await Send(HttpMethod.Delete, "/api/courses/" + adminCourseId, null, tokenOne)).Status == 403, "Course delete rejects student requests");
+Check((await Send(HttpMethod.Delete, "/api/courses/" + adminCourseId, null, adminToken)).Status == 204, "Administrator can delete an unreferenced course");
+
 // ================================================================ hand-over to review submission
 // Student one is now in department 2, year 4 (changed through PUT /api/auth/me above).
-var (reviewCourseId, offeringId) = await Db(async db =>
+var (reviewCourseId, programmeId) = await Db(async db =>
 {
-    var course = new Course
-    {
-        CourseCode = "CS402", CourseName = "Synthetic Seminar", DepartmentId = 2, RecommendedStudyYear = 4,
-        CourseCredit = 3, Ects = 6, IsActive = true
-    };
-    db.Courses.Add(course);
+    var course = new Course { CourseCode = "CS402", CourseName = "Synthetic Seminar", DepartmentId = 4, IsActive = false };
+    var programme = new Programme { ProgrammeKey = "TEST-P1", ProgrammeName = "Test Programme", DepartmentId = 2 };
+    db.Courses.Add(course); db.Programmes.Add(programme);
     await db.SaveChangesAsync();
-    var offering = new CourseOffering { CourseId = course.CourseId, AcademicYear = "2025-2026", Semester = "Fall", Status = "Completed" };
-    db.CourseOfferings.Add(offering);
+    db.ProgrammeCourses.Add(new ProgrammeCourse { ProgrammeId = programme.ProgrammeId, CourseId = course.CourseId,
+        CatalogueYear = "2020-2021", RecommendedStudyYear = 4, IsElective = true });
     await db.SaveChangesAsync();
-    db.OfferingInstructors.Add(new OfferingInstructor { OfferingId = offering.OfferingId, InstructorId = adaId });
-    await db.SaveChangesAsync();
-    return (course.CourseId, offering.OfferingId);
+    return (course.CourseId, programme.ProgrammeId);
 });
-var review = new { courseId = reviewCourseId, offeringId, instructorId = adaId, reviewText = "Synthetic review text." };
+Check((await Put("/api/auth/me", new { fullName = "Student One", programmeId, studyYear = 4 }, tokenOne)).Status == 200,
+    "Profile derives department from programme");
+Check((await Put("/api/auth/me", new { fullName = "Student One", programmeId, departmentId = 1, studyYear = 4 }, tokenOne)).Status == 400,
+    "Profile rejects mismatched programme and department");
+Check((await Put("/api/auth/me", new { fullName = "Student One", programmeId = 999999, studyYear = 4 }, tokenOne)).Status == 400,
+    "Profile rejects unknown programme");
+Check((await Get("/api/programmes")).Status == 200, "Programme lookup is available during registration");
+Check((await Get($"/api/programmes/{programmeId}/courses")).Status == 401, "Curriculum lookup requires login");
+Check((await Get($"/api/programmes/{programmeId}/courses", tokenOne)).Json.GetArrayLength() == 1, "Curriculum includes historical inactive elective course");
+var review = new { courseId = reviewCourseId, instructorId = adaId, academicYear = "2025-2026", semester = "Fall", attendanceConfirmed = true, reviewText = "Synthetic review text." };
 
 Check((await Post("/api/reviews", review)).Status == 401, "Review: anonymous is rejected (401)");
 Check((await Post("/api/reviews", review, tokenStaff)).Status == 403,
     "Review: an account without department and year can log in but cannot write a review (403)");
+Check((await Post("/api/reviews", new { review.courseId, review.instructorId, review.academicYear, review.semester, attendanceConfirmed = false, review.reviewText }, tokenOne)).Status == 400,
+    "Review requires explicit attendance confirmation");
+Check((await Post("/api/reviews", new { review.courseId, instructorId = 999999, review.academicYear, review.semester, review.attendanceConfirmed, review.reviewText }, tokenOne)).Status == 400,
+    "Review rejects nonexistent instructor");
+Check((await Post("/api/reviews", new { review.courseId, review.instructorId, academicYear = "2025-2029", review.semester, review.attendanceConfirmed, review.reviewText }, tokenOne)).Status == 400,
+    "Review rejects nonconsecutive academic years");
 var submitted = await Post("/api/reviews", review, tokenOne);
 Check(submitted.Status == 201 && submitted.Json.GetProperty("userId").GetInt32() == stored[EmailOne].UserId,
-    "Review: an eligible student submits one, and the author is the user in the token");
+    "Review: historical cross-department elective accepts any existing instructor without offering and uses trusted author");
 Check((await Post("/api/reviews", review, tokenOne)).Status == 409, "Review: a second review for the same course is rejected (409)");
-Check((await Post("/api/reviews", new { review.courseId, review.offeringId, review.instructorId, review.reviewText, userId = 1 }, adminToken)).Status == 400,
+Check((await Post("/api/reviews", new { review.courseId, review.academicYear, review.semester, review.attendanceConfirmed, review.instructorId, review.reviewText, userId = 1 }, adminToken)).Status == 400,
     "Review: a userId in the request body is rejected (400)");
 
-// ================================================================ review reading using the login token
+// Read a newly submitted review and a review written before the direct period columns existed.
+var legacyReviewId = await Db(async db =>
+{
+    var offering = new CourseOffering
+    {
+        CourseId = reviewCourseId, AcademicYear = "2024-2025", Semester = "Spring", Status = "Completed"
+    };
+    db.CourseOfferings.Add(offering);
+    await db.SaveChangesAsync();
+    db.OfferingInstructors.Add(new OfferingInstructor { OfferingId = offering.OfferingId, InstructorId = adaId });
+    var legacyReview = new Review
+    {
+        UserId = stored[EmailNever].UserId, CourseId = reviewCourseId, OfferingId = offering.OfferingId,
+        InstructorId = adaId, ReviewText = "Legacy review.", CreatedAt = DateTime.UtcNow
+    };
+    db.Reviews.Add(legacyReview);
+    await db.SaveChangesAsync();
+    return legacyReview.ReviewId;
+});
+
 var reviewId = submitted.Status == 201 ? submitted.Json.GetProperty("reviewId").GetInt32() : 0;
 var reviewLoginToken = login.Text("token");
+var reviewPath = $"/api/reviews/{reviewId}";
+Check((await Get("/api/reviews")).Status == 401, "Review list rejects anonymous readers");
+Check((await Get(reviewPath)).Status == 401, "Review detail rejects anonymous readers");
 
-Check((await Get("/api/reviews")).Status == 401, "Review list: anonymous is rejected (401)");
-Check((await Get($"/api/reviews/{reviewId}")).Status == 401, "Review detail: anonymous is rejected (401)");
+var bothReviews = await Get($"/api/reviews?courseCode=CS402&instructorId={adaId}", reviewLoginToken);
+Check(bothReviews.Status == 200 && bothReviews.Json.GetProperty("items").EnumerateArray()
+    .Select(item => item.GetProperty("reviewId").GetInt32()).ToHashSet().SetEquals([reviewId, legacyReviewId]),
+    "Reading the course lists both the legacy review and the review without an offering");
 
-var reviewList = await Get($"/api/reviews?courseCode=CS402&instructorId={adaId}", reviewLoginToken);
-Check(reviewList.Status == 200
-      && reviewList.Json.GetProperty("totalCount").GetInt32() == 1
-      && reviewList.Json.GetProperty("items").GetArrayLength() == 1
-      && reviewList.Json.GetProperty("items")[0].GetProperty("reviewId").GetInt32() == reviewId,
-    "Review list: login token returns the filtered review (200)");
+var reviewList = await Get("/api/reviews?academicYear=2025-2026&semester=Fall", reviewLoginToken);
+Check(reviewList.Status == 200 && reviewList.Json.GetProperty("totalCount").GetInt32() == 1
+    && reviewList.Json.GetProperty("items").GetArrayLength() == 1
+    && reviewList.Json.GetProperty("items")[0].GetProperty("reviewId").GetInt32() == reviewId,
+    "Year and semester filters find the submitted review without an offering");
 
-var reviewDetail = await Get($"/api/reviews/{reviewId}", reviewLoginToken);
-Check(reviewDetail.Status == 200 && reviewDetail.Text("reviewText") == review.reviewText,
-    "Review detail: login token returns the submitted text (200)");
+var reviewDetail = await Get(reviewPath, reviewLoginToken);
+Check(reviewDetail.Status == 200 && reviewDetail.Text("reviewText") == review.reviewText
+    && reviewDetail.Text("academicYear") == review.academicYear && reviewDetail.Text("semester") == review.semester
+    && reviewDetail.Json.GetProperty("offeringId").ValueKind == JsonValueKind.Null,
+    "Review detail returns the submitted text and declared period without an offering");
+
+var legacyList = await Get("/api/reviews?academicYear=2024-2025&semester=Spring", reviewLoginToken);
+Check(legacyList.Status == 200 && legacyList.Json.GetProperty("totalCount").GetInt32() == 1
+    && legacyList.Json.GetProperty("items").GetArrayLength() == 1
+    && legacyList.Json.GetProperty("items")[0].GetProperty("reviewId").GetInt32() == legacyReviewId,
+    "Year and semester filters include a legacy review via its offering period");
+
+var legacyDetail = await Get($"/api/reviews/{legacyReviewId}", reviewLoginToken);
+Check(legacyDetail.Status == 200 && legacyDetail.Text("academicYear") == "2024-2025"
+    && legacyDetail.Text("semester") == "Spring", "Legacy detail preserves its offering period");
+Check((await Get("/api/reviews?semester=Winter", reviewLoginToken)).Status == 400,
+    "Review list rejects unsupported semesters");
+
+// ================================================================ catalogue v2 import
+// Separate in-memory database: no records are inserted in the user's PostgreSQL.
+using (var catalogConnection = new SqliteConnection("Data Source=:memory:"))
+{
+    await catalogConnection.OpenAsync();
+    await using var catalogDb = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite(catalogConnection).Options);
+    await catalogDb.Database.EnsureCreatedAsync();
+    var file = new CatalogFile
+    {
+        SchemaVersion = 2,
+        Faculties = [new() { FacultyKey = "F1", FacultyName = "Synthetic Faculty" }, new() { FacultyKey = "F2", FacultyName = "Empty Faculty" }],
+        Departments = [new() { DepartmentKey = "D1", FacultyKey = "F1", DepartmentName = "Department One" },
+            new() { DepartmentKey = "D2", FacultyKey = "F1", DepartmentName = "Department Two", DepartmentCode = "SHARED" },
+            new() { DepartmentKey = "D3", FacultyKey = "F1", DepartmentName = "Department Three", DepartmentCode = "SHARED" }],
+        Instructors = [new() { InstructorKey = "I1", DepartmentKey = "D2", FullName = "Synthetic Instructor" }],
+        Programmes = [new() { ProgrammeKey = "P1", DepartmentKey = "D1", ProgrammeName = "Programme One", DegreeLevel = "Bachelor", InstructionLanguage = "English" }],
+        Courses = [new() { CourseKey = "C1", DepartmentKey = "D2", CourseCode = "X101", CourseName = "Cross Department Course" }],
+        ProgrammeCourses = [new() { CurriculumKey = "PC1", ProgrammeKey = "P1", CourseKey = "C1", CatalogueYear = "2020-2021", Ects = 2.5m },
+            new() { CurriculumKey = "PC2", ProgrammeKey = "P1", CourseKey = "C1", CatalogueYear = "2021-2022", RecommendedStudyYear = 2, IsElective = true }]
+    };
+    Check(CatalogFileValidator.Validate(file).Count == 0, "Catalog v2 accepts unknown/repeated official codes and empty academic units");
+    var importer = new CatalogImportService(catalogDb);
+    var imported = await importer.ImportAsync(file);
+    Check(imported.Added == 10 && imported.Skipped == 0, "Catalog v2 imports all six entity types atomically");
+    var repeatCatalog = await importer.ImportAsync(file);
+    Check(repeatCatalog.Added == 0 && repeatCatalog.Skipped == 10, "Identical catalog reimport creates no duplicates");
+    Check((await catalogDb.Departments.SingleAsync(d => d.DepartmentKey == "D1")).DepartmentCode is null,
+        "Unknown official code remains null");
+    Check(await catalogDb.Departments.CountAsync(d => d.DepartmentCode == "SHARED") == 2,
+        "Repeated official codes retain separate department identities");
+    var pc = await catalogDb.ProgrammeCourses.SingleAsync(p => p.CurriculumKey == "PC1");
+    Check(pc.Ects == 2.5m && pc.IsElective is null && pc.RecommendedStudyYear is null,
+        "Curriculum preserves fractional ECTS and unknown flags/year");
+    Check(await catalogDb.ProgrammeCourses.CountAsync() == 2, "Repeated course occurrences across curricula are preserved");
+    file.Faculties.Add(new() { FacultyKey = "F3", FacultyName = "Must Roll Back" });
+    file.ProgrammeCourses[0]!.Ects = 9;
+    var conflict = false;
+    try { await importer.ImportAsync(file); } catch (CatalogImportConflictException) { conflict = true; }
+    Check(conflict && !await catalogDb.Faculties.AnyAsync(f => f.ImportKey == "F3"), "Late curriculum conflict rolls back earlier faculty insertion");
+    Check((await catalogDb.ProgrammeCourses.SingleAsync(p => p.CurriculumKey == "PC1")).Ects == 2.5m,
+        "Conflicting import never overwrites existing curriculum");
+    file.ProgrammeCourses[0]!.Ects = 2.5m;
+    file.Instructors[0]!.DepartmentKey = "MISSING";
+    Check(CatalogFileValidator.Validate(file).Count > 0, "Unresolved instructor department is rejected before import");
+    file.Instructors[0]!.DepartmentKey = "D2";
+    file.Programmes.Add(new() { ProgrammeKey = " p1 ", DepartmentKey = "D1", ProgrammeName = "Duplicate" });
+    Check(CatalogFileValidator.Validate(file).Count > 0, "Stable keys are unique ignoring case and whitespace");
+    file.Programmes.RemoveAt(1);
+    file.SchemaVersion = 1;
+    Check(CatalogFileValidator.Validate(file).Count > 0, "Legacy import contract cannot silently mislink departments");
+}
+
+// Empty units are supported through the administrator API, not just direct imports.
+var emptyFaculty = await Post("/api/faculties", new { facultyName = "Empty API Faculty", departments = Array.Empty<object>() }, adminToken);
+Check(emptyFaculty.Status == 201, "Faculty API accepts zero departments");
+if (emptyFaculty.Status == 201)
+{
+    var facultyId = emptyFaculty.Json.GetProperty("facultyId").GetInt32();
+    var emptyDepartment = await Post("/api/departments", new { facultyId, departmentName = "Empty API Department", instructors = Array.Empty<object>() }, adminToken);
+    Check(emptyDepartment.Status == 201 && emptyDepartment.Json.GetProperty("departmentCode").ValueKind == JsonValueKind.Null,
+        "Department API accepts zero instructors and unknown official code");
+    if (emptyDepartment.Status == 201)
+        Check((await Send(HttpMethod.Delete, "/api/departments/" + emptyDepartment.Json.GetProperty("departmentId").GetInt32(), null, adminToken)).Status == 204,
+            "Last empty department may be deleted without inventing a replacement");
+}
 
 // ---------------------------------------------------------------- result
 await app.StopAsync();

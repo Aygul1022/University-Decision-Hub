@@ -14,9 +14,11 @@ public sealed class ReviewReadQuery
     [Range(1, int.MaxValue)]
     public int? InstructorId { get; set; }
 
-    // CourseOffering.AcademicYear uses values such as "2026-2027".
-    [RegularExpression(@"^\d{4}-\d{4}$")]
+    [RegularExpression(@"^[0-9]{4}-[0-9]{4}$")]
     public string? AcademicYear { get; set; }
+
+    [RegularExpression("^(Fall|Spring|Summer)$")]
+    public string? Semester { get; set; }
 
     [Range(1, 100000)]
     public int Page { get; set; } = 1;

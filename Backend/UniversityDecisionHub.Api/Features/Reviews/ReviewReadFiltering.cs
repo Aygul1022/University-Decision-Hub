@@ -27,6 +27,9 @@ public static class ReviewReadFiltering
             source = source.Where(r => r.AcademicYear == academicYear);
         }
 
+        if (!string.IsNullOrWhiteSpace(search.Semester))
+            source = source.Where(r => r.Semester == search.Semester);
+
         return source;
     }
 

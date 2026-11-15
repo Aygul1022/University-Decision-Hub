@@ -25,7 +25,7 @@ Check(defaults.Page == 1 && defaults.PageSize == 20, "Default pagination is page
 Check(Valid(defaults), "Default search is valid");
 Check(Valid(new ReviewReadQuery {
     CourseCode = "COME 327", DepartmentId = 1, InstructorId = 2,
-    AcademicYear = "2026-2027", Page = 2, PageSize = 50
+    AcademicYear = "2026-2027", Semester = "Fall", Page = 2, PageSize = 50
 }), "All filters can be provided together");
 Check(!Valid(new ReviewReadQuery { Page = 0 }), "Page zero rejected");
 Check(!Valid(new ReviewReadQuery { Page = -1 }), "Negative page rejected");
@@ -36,6 +36,9 @@ Check(!Valid(new ReviewReadQuery { InstructorId = -2 }), "Invalid instructor rej
 Check(!Valid(new ReviewReadQuery { CourseCode = new string('A', 65) }), "Overlong course code rejected");
 Check(!Valid(new ReviewReadQuery { AcademicYear = "tomorrow" }), "Invalid academic-year format rejected");
 Check(Valid(new ReviewReadQuery { AcademicYear = "2026-2027" }), "Valid academic-year format accepted");
+Check(new[] { "Fall", "Spring", "Summer" }.All(semester => Valid(new ReviewReadQuery { Semester = semester })),
+    "All declared semesters are accepted");
+Check(!Valid(new ReviewReadQuery { Semester = "Winter" }), "Unsupported semester rejected");
 
 var controllerType = typeof(ReviewReadingController);
 Check(controllerType.IsDefined(typeof(AuthorizeAttribute), inherit: true), "All reading actions require authorization");
@@ -69,20 +72,23 @@ var sql = query.ToQueryString();
 Check(sql.Contains("\"Reviews\"", StringComparison.Ordinal)
     && sql.Contains("\"Courses\"", StringComparison.Ordinal)
     && sql.Contains("\"CourseOfferings\"", StringComparison.Ordinal)
-    && sql.Contains("\"Instructors\"", StringComparison.Ordinal),
-    "Reading projection translates to SQL joining review, course, offering and instructor");
+    && sql.Contains("\"Instructors\"", StringComparison.Ordinal)
+    && sql.Contains("LEFT JOIN \"CourseOfferings\"", StringComparison.Ordinal),
+    "Reading projection joins offering only as optional context");
 Check(sql.Contains("\"ReviewText\"", StringComparison.Ordinal)
-    && sql.Contains("\"AcademicYear\"", StringComparison.Ordinal),
-    "SQL projection includes review text and academic year");
+    && sql.Contains("\"AcademicYear\"", StringComparison.Ordinal)
+    && sql.Contains("\"Semester\"", StringComparison.Ordinal)
+    && sql.Contains("COALESCE", StringComparison.Ordinal),
+    "SQL projection includes the review period with fallback");
 
 
  // Deterministic examples verify actual filtering and paging behavior, not only DTO annotations.
 var sampleReviews = new[]
 {
     new ReviewReadDto { ReviewId = 1, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
-        AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 10) },
+        AcademicYear = "2026-2027", Semester = "Fall", CreatedAt = new DateTime(2026, 10, 10) },
     new ReviewReadDto { ReviewId = 2, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
-        AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 11) },
+        AcademicYear = "2026-2027", Semester = "Spring", CreatedAt = new DateTime(2026, 10, 11) },
     new ReviewReadDto { ReviewId = 3, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 4,
         AcademicYear = "2025-2026", CreatedAt = new DateTime(2026, 10, 12) },
     new ReviewReadDto { ReviewId = 4, CourseCode = "COME 211", DepartmentId = 1, InstructorId = 3,
@@ -90,7 +96,7 @@ var sampleReviews = new[]
     new ReviewReadDto { ReviewId = 5, CourseCode = "MATH 101", DepartmentId = 2, InstructorId = 5,
         AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 14) },
     new ReviewReadDto { ReviewId = 6, CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3,
-        AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 11) },
+        AcademicYear = "2026-2027", Semester = "Fall", CreatedAt = new DateTime(2026, 10, 11) },
     new ReviewReadDto { ReviewId = 7, CourseCode = "SOME 333", DepartmentId = 2, InstructorId = 3,
         AcademicYear = "2026-2027", CreatedAt = new DateTime(2026, 10, 15) }
 }.AsQueryable();
@@ -107,11 +113,13 @@ Check(Matches(ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { Ins
     1, 2, 4, 6, 7), "Instructor filter selects only matching reviews");
 Check(Matches(ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { AcademicYear = "2025-2026" }),
     3), "Academic-year filter uses exact year");
+Check(Matches(ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { Semester = "Fall" }),
+    1, 6), "Semester filter excludes other and unknown semesters");
 var combined = new ReviewReadQuery {
-    CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3, AcademicYear = "2026-2027"
+    CourseCode = "COME 327", DepartmentId = 1, InstructorId = 3, AcademicYear = "2026-2027", Semester = "Fall"
 };
-Check(Matches(ReviewReadFiltering.Apply(sampleReviews, combined), 1, 2, 6),
-    "All four filters combine with AND");
+Check(Matches(ReviewReadFiltering.Apply(sampleReviews, combined), 1, 6),
+    "All five filters combine with AND");
 Check(!ReviewReadFiltering.Apply(sampleReviews, new ReviewReadQuery { CourseCode = "UNKNOWN" }).Any(),
     "Unmatched search returns an empty collection");
 Check(Ids(ReviewReadFiltering.Page(sampleReviews, new ReviewReadQuery { PageSize = 2 }))

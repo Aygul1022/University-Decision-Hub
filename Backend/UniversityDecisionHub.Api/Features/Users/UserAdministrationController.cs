@@ -1,3 +1,4 @@
+using UniversityDecisionHub.Api.Features.Programmes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,8 @@ namespace UniversityDecisionHub.Api.Features.Users
         [HttpPost]
         public async Task<ActionResult<ManagedUserDto>> Post([FromBody] ManagedUserSaveDto dto)
         {
-            if (!await DepartmentExists(dto.DepartmentId)) return UnknownDepartment();
+            var profile = await ProgrammeProfile.ResolveAsync(_db, dto.ProgrammeId, dto.DepartmentId);
+            if (profile.Error is not null) return BadRequest(profile.Error);
 
             var normalizedEmail = UserAccount.NormalizeEmail(dto.Email);
             if (await _db.UserAccounts.AnyAsync(u => u.NormalizedEmail == normalizedEmail))
@@ -54,7 +56,8 @@ namespace UniversityDecisionHub.Api.Features.Users
                 Email = dto.Email.Trim(),
                 NormalizedEmail = normalizedEmail,
                 PasswordHash = null,
-                DepartmentId = dto.DepartmentId,
+                DepartmentId = profile.DepartmentId,
+                ProgrammeId = dto.ProgrammeId,
                 StudyYear = dto.StudyYear,
                 IsAdministrator = false,
                 CreatedAtUtc = DateTime.UtcNow
@@ -83,7 +86,8 @@ namespace UniversityDecisionHub.Api.Features.Users
         {
             var user = await _db.UserAccounts.FirstOrDefaultAsync(u => u.UserId == id);
             if (user == null) return NotFound();
-            if (!await DepartmentExists(dto.DepartmentId)) return UnknownDepartment();
+            var profile = await ProgrammeProfile.ResolveAsync(_db, dto.ProgrammeId, dto.DepartmentId);
+            if (profile.Error is not null) return BadRequest(profile.Error);
 
             var normalizedEmail = UserAccount.NormalizeEmail(dto.Email);
             if (normalizedEmail != user.NormalizedEmail
@@ -93,7 +97,8 @@ namespace UniversityDecisionHub.Api.Features.Users
             user.FullName = dto.FullName.Trim();
             user.Email = dto.Email.Trim();
             user.NormalizedEmail = normalizedEmail;
-            user.DepartmentId = dto.DepartmentId;
+            user.DepartmentId = profile.DepartmentId;
+            user.ProgrammeId = dto.ProgrammeId;
             user.StudyYear = dto.StudyYear;
 
             try

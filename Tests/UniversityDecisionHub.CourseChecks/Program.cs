@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
+using UniversityDecisionHub.Api.Features.Programmes;
+using UniversityDecisionHub.Api.Features.Authentication;
 using System.Text.Json;
 using UniversityDecisionHub.Api.Features.Reviews;
 using UniversityDecisionHub.Api.Features.Reviews.Dtos;
@@ -34,7 +37,7 @@ CourseCreateDto Input() => new() { CourseCode = "CS101", CourseName = "Computer 
     CourseCredit = 3, Ects = 6, RecommendedStudyYear = 1 };
 Check(Valid(Input()), "Valid create request");
 var input = Input(); input.RecommendedStudyYear = null;
-Check(!Valid(input), "Missing year rejected");
+Check(Valid(input), "Unknown course year accepted");
 input = Input(); input.RecommendedStudyYear = 0;
 Check(!Valid(input), "Zero year rejected");
 input = Input(); input.RecommendedStudyYear = -1;
@@ -45,10 +48,14 @@ input = Input(); input.Ects = -1;
 Check(!Valid(input), "Negative ECTS rejected");
 input = Input(); input.CourseCredit = -1;
 Check(!Valid(input), "Negative credits rejected");
+input = Input(); input.CourseCredit = -0.1m;
+Check(!Valid(input), "Negative fractional credits rejected without rounding");
+input = Input(); input.CourseCredit = 2.5m;
+Check(Valid(input), "Fractional credits accepted");
 input = Input(); input.CourseName = "   ";
 Check(!Valid(input), "Blank course name rejected");
-Check(!Valid(new CourseUpdateDto { CourseId = 1, CourseCode = "CS101", CourseName = "Computer Science",
-    DepartmentId = 1, Ects = 6, CourseCredit = 3 }), "Update also requires explicit year");
+Check(Valid(new CourseUpdateDto { CourseId = 1, CourseCode = "CS101", CourseName = "Computer Science",
+    DepartmentId = 1, Ects = 6, CourseCredit = 3 }), "Update permits unknown year");
 
 using var db = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
     .UseNpgsql("Host=localhost;Database=not_contacted;Username=not_used").Options);
@@ -57,16 +64,16 @@ var course = model.FindEntityType(typeof(Course))!;
 Check(course.FindProperty(nameof(Course.RecommendedStudyYear))!.IsNullable, "Existing rows can retain unknown year");
 Check(course.GetIndexes().Any(i => i.IsUnique && i.Properties.Select(p => p.Name)
     .SequenceEqual(new[] { "DepartmentId", "CourseCode" })), "Department and code remain a composite unique index");
-Check(model.GetEntityTypes().Count() == 9, "Catalog, user profile and review entities are implemented");
+Check(model.GetEntityTypes().Count() == 11, "Catalog, programme, user profile and review entities are implemented");
 var assembly = db.GetService<IMigrationsAssembly>();
-Check(assembly.Migrations.Count == 4, "Course, catalog and review migrations are discoverable");
+Check(assembly.Migrations.Count == 8, "Course, catalog, review, import-key and programme migrations are discoverable");
 Check(!db.Database.HasPendingModelChanges(), "Migration snapshot matches current model");
 var sql = db.GetService<IMigrator>().GenerateScript("20261013171125_InitialCourses", "20261022000000_AddRecommendedStudyYear");
 Check(sql.Contains("ADD \"RecommendedStudyYear\" integer"), "Migration adds the nullable year column");
 Check(!sql.Contains("DROP TABLE", StringComparison.OrdinalIgnoreCase) && !sql.Contains("DEFAULT", StringComparison.OrdinalIgnoreCase),
     "Migration neither drops tables nor invents existing course years");
-Check(!Valid(new FacultyCreate { FacultyName = "Engineering" }), "Faculty requires a first department");
-Check(!Valid(new DepartmentCreate { FacultyId = 1, DepartmentCode = "COME", DepartmentName = "Computing" }), "Department requires a first instructor");
+Check(Valid(new FacultyCreate { FacultyName = "Engineering" }), "Faculty permits no departments");
+Check(Valid(new DepartmentCreate { FacultyId = 1, DepartmentCode = "COME", DepartmentName = "Computing" }), "Department permits no instructors");
 Check(!Valid(new InstructorInput { FullName = "   " }), "Blank instructor name rejected");
 Check(!Valid(new OfferingCreate { CourseId = 0, AcademicYear = "2026-2027", Semester = "Fall", Status = "Active" }), "Offering requires positive course ID");
 Check(!Valid(new OfferingCreate { CourseId = 1, AcademicYear = " ", Semester = "Fall", Status = "Active" }), "Blank offering year rejected");
@@ -103,32 +110,21 @@ foreach (var controller in new[] { typeof(FacultyController), typeof(DepartmentC
     Check(writes.All(m => m.GetCustomAttributes(typeof(CatalogAdministratorAttribute), true).Any()), controller.Name + " protects every write endpoint");
 }
 var faculties = new FacultyController(db);
-Check(await faculties.Post(new FacultyCreate { FacultyName = "Engineering", Departments = [] }, default) is BadRequestObjectResult,
-    "Faculty controller refuses empty child collection before saving");
-Check(await faculties.Post(new FacultyCreate { FacultyName = "Engineering", Departments = [new DepartmentSeed { DepartmentCode = "COME", DepartmentName = "Computing", Instructors = [] }] }, default) is BadRequestObjectResult,
-    "Faculty controller refuses a department without instructors");
+Check(await faculties.Post(new FacultyCreate { FacultyName = "Engineering", Departments = null! }, default) is BadRequestObjectResult,
+    "Faculty controller rejects null child collections");
 var departments = new DepartmentController(db);
-Check(await departments.Post(new DepartmentCreate { FacultyId = 1, DepartmentCode = "COME", DepartmentName = "Computing", Instructors = [] }, default) is BadRequestObjectResult,
-    "Department controller refuses missing instructor before querying the database");
-Check(ReviewEligibility.Check(1, 3, 1, 3) is null, "Matching department and equal study year allow review");
-Check(ReviewEligibility.Check(1, 4, 1, 3) is null, "Higher study year allows review");
-Check(ReviewEligibility.Check(1, 2, 1, 3) is not null, "Lower study year rejected");
-Check(ReviewEligibility.Check(2, 4, 1, 3) is not null, "Different department rejected");
-Check(ReviewEligibility.Check(null, 4, 1, 3) is not null, "Missing student department rejected");
-Check(ReviewEligibility.Check(1, null, 1, 3) is not null, "Missing student year rejected");
-Check(ReviewEligibility.Check(1, 0, 1, 3) is not null, "Invalid student year rejected");
-Check(ReviewEligibility.Check(1, 4, 1, null) is not null, "Unknown legacy course year does not grant eligibility");
-Check(ReviewEligibility.Check(1, 4, 1, 0) is not null, "Invalid course year rejected");
-ReviewCreateDto ReviewInput() => new() { CourseId = 1, OfferingId = 2, InstructorId = 3, ReviewText = "Useful course." };
+Check(await departments.Post(new DepartmentCreate { FacultyId = 1, DepartmentName = "Computing", Instructors = [null!] }, default) is BadRequestObjectResult,
+    "Department controller rejects null child entries before database access");
+ReviewCreateDto ReviewInput() => new() { CourseId = 1, AcademicYear = "2025-2026", Semester = "Fall", AttendanceConfirmed = true, InstructorId = 3, ReviewText = "Useful course." };
 Check(Valid(ReviewInput()), "Valid review input accepted");
 var reviewInput = ReviewInput(); reviewInput.ReviewText = "   ";
 Check(!Valid(reviewInput), "Blank review rejected");
-reviewInput = ReviewInput(); reviewInput.OfferingId = 0;
-Check(!Valid(reviewInput), "Invalid offering ID rejected");
+reviewInput = ReviewInput(); reviewInput.AttendanceConfirmed = false;
+Check(!Valid(reviewInput), "Missing attendance confirmation rejected");
 reviewInput = ReviewInput(); reviewInput.InstructorId = -1;
 Check(!Valid(reviewInput), "Invalid instructor ID rejected");
 var rejectedAuthor = false;
-try { JsonSerializer.Deserialize<ReviewCreateDto>("{\"courseId\":1,\"offeringId\":2,\"instructorId\":3,\"reviewText\":\"Hi\",\"userId\":999}", new JsonSerializerOptions(JsonSerializerDefaults.Web)); }
+try { JsonSerializer.Deserialize<ReviewCreateDto>("{\"courseId\":1,\"instructorId\":3,\"reviewText\":\"Hi\",\"userId\":999}", new JsonSerializerOptions(JsonSerializerDefaults.Web)); }
 catch (JsonException) { rejectedAuthor = true; }
 Check(rejectedAuthor, "Submitted author ID is rejected as an unmapped field");
 var reviewModel = model.FindEntityType(typeof(Review))!;
@@ -153,4 +149,37 @@ Check((await service.SubmitAsync(forged, ReviewInput(), default)).StatusCode == 
 var reviewSql = db.GetService<IMigrator>().GenerateScript(assembly.Migrations.Keys.ElementAt(2), latest);
 Check(reviewSql.Contains("CREATE TABLE \"Reviews\""), "Review migration creates review storage");
 Check(!reviewSql.Contains("DROP TABLE", StringComparison.OrdinalIgnoreCase), "Review upgrade drops no existing tables");
+var accountModel = model.FindEntityType(typeof(UserAccount))!;
+Check(accountModel.FindProperty("DepartmentId")!.IsNullable && accountModel.FindProperty("StudyYear")!.IsNullable, "Incomplete legacy profiles remain nullable");
+Check(accountModel.GetIndexes().Any(i => i.IsUnique && i.Properties.Single().Name == "NormalizedEmail"), "Normalized email uniqueness is configured");
+Check(accountModel.FindProperty("PasswordHash")!.IsNullable, "Imported accounts can remain without passwords");
+foreach (var method in new[] { "Post", "Put", "Delete" })
+    Check(typeof(UniversityDecisionHub.Api.Features.Courses.CourseController).GetMethod(method)!
+        .GetCustomAttributes(typeof(AuthorizeAttribute), true).Cast<AuthorizeAttribute>().Any(a => a.Roles == "Administrator"), "Course " + method + " requires administrator authorization");
+Check(typeof(ReviewSubmissionController).GetMethod("Post")!.GetCustomAttributes(typeof(AuthorizeAttribute), true).Any(), "Review endpoint requires JWT authentication");
+var authSql = db.GetService<IMigrator>().GenerateScript(assembly.Migrations.Keys.ElementAt(3), "20261110152153_IntegrateAuthenticationAccounts");
+Check(authSql.Contains("RAISE EXCEPTION") && authSql.Contains("CURRENT_TIMESTAMP") && authSql.Contains("SET NOT NULL"), "Auth migration checks legacy data and fills new required fields");
+Check(!authSql.Contains("CREATE TABLE"), "Auth migration extends existing tables rather than recreating them");
+Check(UserAccount.NormalizeEmail(" student@example.com ") == "STUDENT@EXAMPLE.COM", "Email normalization matches ASCII migration backfill");
+var curriculum = new[] { new ProgrammeCourse { ProgrammeId = 1, CourseId = 2, RecommendedStudyYear = 2, CatalogueYear = "2020-2021", IsElective = true } };
+Check(ProgrammeReviewEligibility.Check(1, 2, 2, curriculum) is null, "Programme policy includes historical elective courses");
+Check(ProgrammeReviewEligibility.Check(2, 4, 2, curriculum) is not null, "Programme policy does not cross programme boundaries");
+Check(ProgrammeReviewEligibility.Check(1, 1, 2, curriculum) is not null, "Programme policy checks known study year");
+Check(ProgrammeReviewEligibility.Check(null, 2, 2, curriculum) is not null, "Programme policy requires a student programme");
+curriculum[0].RecommendedStudyYear = null;
+Check(ProgrammeReviewEligibility.Check(1, 1, 2, curriculum) is null, "Unknown curriculum year does not block review");
+Check(ProgrammeReviewEligibility.Check(1, 1, 99, curriculum) is not null, "Unknown year does not grant access to an unrelated course");
+Check(ProgrammeReviewEligibility.Check(1, 4, 2, [
+    new ProgrammeCourse { ProgrammeId = 1, CourseId = 2, RecommendedStudyYear = 1 },
+    new ProgrammeCourse { ProgrammeId = 1, CourseId = 2, RecommendedStudyYear = 3 }]) is not null,
+    "Conflicting curriculum years await an explicit policy");
+Check(accountModel.FindProperty("ProgrammeId")!.IsNullable, "Legacy users are not assigned a guessed programme");
+var curriculumModel = model.FindEntityType(typeof(ProgrammeCourse))!;
+Check(new[] { "RecommendedStudyYear", "Semester", "CourseCredit", "Ects", "IsElective" }
+    .All(n => curriculumModel.FindProperty(n)!.IsNullable), "Unknown curriculum values remain nullable");
+Check(curriculumModel.GetForeignKeys().All(f => f.DeleteBehavior == DeleteBehavior.Restrict), "Curriculum parents cannot cascade-delete entries");
+var foundationSql = db.GetService<IMigrator>().GenerateScript("20261110193326_AddCatalogImportKeys", latest);
+Check(!foundationSql.Contains("DROP TABLE") && !foundationSql.Contains("DROP COLUMN")
+    && !foundationSql.Contains("INSERT INTO \"Programmes\"") && !foundationSql.Contains("INSERT INTO \"ProgrammeCourses\""),
+    "Programme foundation preserves existing tables and invents no source data");
 Console.WriteLine($"{passed} checks passed. No database connection or migration application was performed.");

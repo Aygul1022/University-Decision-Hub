@@ -25,7 +25,7 @@ public class ReviewSubmissionService(ApplicationDbContext db, TimeProvider clock
         if (subjects is not { Length: 1 } || !int.TryParse(subjects[0], NumberStyles.None, CultureInfo.InvariantCulture, out var userId) || userId <= 0)
             return new(401, "An authenticated account with a valid user ID is required.");
         if (input is null || !Validator.TryValidateObject(input, new ValidationContext(input), [], true))
-            return new(400, "Provide positive course, offering and instructor IDs and nonblank review text.");
+            return new(400, "Provide valid course/instructor IDs, academic year, semester, attendance confirmation and review text.");
 
         try
         {
@@ -35,22 +35,23 @@ public class ReviewSubmissionService(ApplicationDbContext db, TimeProvider clock
             if (user is null) return new(401, "The authenticated account no longer exists.");
             var course = await db.Courses.AsNoTracking().SingleOrDefaultAsync(c => c.CourseId == input.CourseId, ct);
             if (course is null) return new(404, "Course does not exist.");
-            var eligibility = ReviewEligibility.Check(user.DepartmentId, user.StudyYear, course.DepartmentId, course.RecommendedStudyYear);
+            var curriculum = await db.ProgrammeCourses.AsNoTracking()
+                .Where(p => p.ProgrammeId == user.ProgrammeId && p.CourseId == input.CourseId).ToListAsync(ct);
+            var eligibility = ProgrammeReviewEligibility.Check(user.ProgrammeId, user.StudyYear, input.CourseId, curriculum);
             if (eligibility is not null) return new(403, eligibility);
-            if (!await db.CourseOfferings.AnyAsync(o => o.OfferingId == input.OfferingId && o.CourseId == input.CourseId, ct))
-                return new(400, "The offering does not belong to the selected course.");
-            if (!await db.OfferingInstructors.AnyAsync(a => a.OfferingId == input.OfferingId && a.InstructorId == input.InstructorId, ct))
-                return new(400, "The instructor is not assigned to this offering.");
+            if (!await db.Instructors.AnyAsync(a => a.InstructorId == input.InstructorId, ct))
+                return new(400, "The selected instructor does not exist.");
             if (await db.Reviews.AnyAsync(r => r.UserId == userId && r.CourseId == input.CourseId, ct))
                 return new(409, "You have already reviewed this course.");
 
-            var row = new Review { UserId = userId, CourseId = input.CourseId, OfferingId = input.OfferingId,
+            var row = new Review { UserId = userId, CourseId = input.CourseId,
+                AcademicYear = input.AcademicYear, Semester = input.Semester, AttendanceConfirmed = input.AttendanceConfirmed,
                 InstructorId = input.InstructorId, ReviewText = input.ReviewText.Trim(), CreatedAt = clock.GetUtcNow().UtcDateTime };
             db.Reviews.Add(row);
             await db.SaveChangesAsync(ct);
             await tx.CommitAsync(ct);
             return new(201, Review: new ReviewCreatedDto(row.ReviewId, row.UserId, row.CourseId, row.OfferingId,
-                row.InstructorId, row.ReviewText, row.CreatedAt));
+                row.InstructorId, row.ReviewText, row.CreatedAt, row.AcademicYear, row.Semester, row.AttendanceConfirmed));
         }
         catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: "23505", ConstraintName: "IX_Reviews_UserId_CourseId" })
         { return new(409, "You have already reviewed this course."); }

@@ -1,72 +1,28 @@
-# Sami — Review Reading & Search (initial implementation)
+# Review reading and search
 
-**Branch:** `feature/sami-review-reading`  
-**Base:** Aygül's catalog/submission checkpoint `3d625026` (`feature/integrationstart`).  
-**Scope:** GET-only review reading. No shared files, POST handler, migrations or models changed.
+The review reading API and browser page use the catalogue and review workflow published in `feature/backend` at `9fb1a60`. The read endpoints require authentication. Review submission remains `POST /api/reviews` under the shared [catalogue and review contract](Catalog_V2_Contract.md).
 
-## Routes and access
+## Routes
 
-- `GET /api/reviews` — requires an authenticated user; default page 1, page size 20.
-- `GET /api/reviews/{id}` — requires an authenticated user; 404 when not found.
-- `POST /api/reviews` continues to belong exclusively to Aygül.
-- Administrative PUT/DELETE deliberately **not implemented** until the team confirms deletion and resubmission rules.
+- `GET /api/reviews` lists reviews. An empty search returns `items: []` and the matching total.
+- `GET /api/reviews/{id}` returns one review, or 404 when it does not exist.
 
-## Optional list filters
-
-| Query string | Meaning |
+| Query | Behavior |
 |---|---|
-| `courseCode` | Case-insensitive substring of course code, e.g. `COME` |
-| `departmentId` | Exact positive department identifier |
-| `instructorId` | Exact positive instructor identifier |
-| `academicYear` | Exact academic year such as `2026-2027` |
-| `page` | 1–100000, default 1 |
-| `pageSize` | 1–100, default 20 |
+| `courseCode` | Case-insensitive partial match. Include `departmentId` to narrow a code shared across departments. |
+| `departmentId` | Exact course department ID. |
+| `instructorId` | Exact instructor ID. |
+| `academicYear` | Exact year in YYYY-YYYY format. |
+| `semester` | Exact `Fall`, `Spring` or `Summer`. |
+| `page` | 1–100000, default 1. |
+| `pageSize` | 1–100, default 20. |
 
-All supplied filters use **AND**. This combination rule is a proposal to confirm with Aygül before final acceptance.
+Filters combine with AND. Results are ordered by `createdAt` descending, then `reviewId` descending.
 
-Results are ordered by `createdAt` descending, then `reviewId` descending for stable page boundaries in an unchanged dataset.
+## Response and compatibility
 
-## Response shape
+The list returns `{ page, pageSize, totalCount, items }`. The fields on each item and on the detail response are `reviewId`, `courseId`, `courseCode`, `courseName`, `departmentId`, `offeringId`, `academicYear`, `semester`, `instructorId`, `instructorName`, `reviewText` and `createdAt`. Author identity is private.
 
-The list returns `{ page, pageSize, totalCount, items }`; an empty result returns `items: []`, `totalCount: 0`. Every item contains `reviewId, courseId, courseCode, courseName, departmentId, offeringId, academicYear, semester, instructorId, instructorName, reviewText, createdAt`. Detail returns the same item shape.
+New reviews carry their own academic year and semester and return `offeringId: null`. Each missing period field on a legacy review falls back to its linked offering. A field without a source stays null. Year and semester filters use the same resolved fields that the API displays. No review requires an offering or assignment to be returned.
 
-Author id/name and author visibility are an open policy question, so this endpoint **does not reveal author identity**. Review text remains plain text; the future frontend must not render it as HTML.
-
-## Integration boundaries
-
-The controller reads Aygül's existing `Review`, `Course`, `CourseOffering` and `Instructor` models and creates no duplicate entity. It uses `[Authorize]` from ASP.NET Core; Ozan and Aygül must integrate JWT authentication/authorization and database mappings before HTTP behavior can be verified. Keep Aygül's `ReviewSubmissionController` and its POST route unchanged.
-
-This branch should be merged or cherry-picked **after** Aygül/Ozan's integration branch is reviewed. Do not merge directly into `main` before that.
-
-## Pending verification (not yet passed)
-
-1. Build the merged solution with .NET 10.
-2. In an approved disposable PostgreSQL test database, verify anonymous GET returns 401; authenticated GET returns 200.
-3. Verify list/detail return the correct course, instructor and academic period; unknown detail returns 404.
-4. Verify each filter and combinations; page boundaries, no-results response, invalid query values and deterministic ordering.
-5. Verify a newly submitted review appears immediately via GET.
-6. Verify no author identity is exposed and text is rendered safely.
-7. Agree author visibility and AND filter semantics with Aygül. Implement and test admin edits/deletes **only after** deletion/resubmission policy is approved.
-
-No live database, migrations or teammate-owned files were changed in this increment.
-
-## Read Reviews page
-
-`Frontend/Pages/reviews/reviews.html` uses the authenticated list and detail endpoints.
-The URL accepts the four current list filters and preserves Ozan's links with
-`courseCode` or `instructorId` through sign-in. The page displays the academic year
-and semester from the response and renders review text as plain text.
-
-## Follow-up for the planned review model
-
-Agree the read contract with Aygül before changing the backend:
-
-- Confirm the response field names and formats for the academic year and semester
-  supplied with the review, and the query value for the semester filter.
-- Confirm whether to omit `offeringId` from the response or keep it optional for
-  older consumers.
-- Agree how the migration carries forward the year and semester of existing reviews.
-
-Once the model is available, read the academic year and semester from the review
-and test that an offering-free review appears in both the list and the detail.
-Review uniqueness and moderation rules are tracked by the team.
+`Frontend/Pages/reviews/reviews.html` preserves course, instructor and period filters through sign-in and pagination. It renders review text as plain text. The catalogue team coordinates PostgreSQL migration rollout. Administrator moderation and any changes to review uniqueness depend on the team decision.

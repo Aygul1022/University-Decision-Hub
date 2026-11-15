@@ -6,14 +6,12 @@ using UniversityDecisionHub.Api.Features.Reviews.Dtos;
 
 namespace UniversityDecisionHub.Api.Features.Reviews;
 
-// Separate from Aygül's ReviewSubmissionController: no POST route, no shared-model edits.
-// Ozan's authentication middleware must be integrated before these endpoints can be exercised.
 [ApiController]
 [Route("api/reviews")]
 [Authorize]
 public sealed class ReviewReadingController(ApplicationDbContext db) : ControllerBase
 {
-    // GET /api/reviews?courseCode=COME&departmentId=1&instructorId=2&academicYear=2026-2027&page=1&pageSize=20
+    // GET /api/reviews?courseCode=COME&departmentId=1&instructorId=2&academicYear=2026-2027&semester=Fall
     [HttpGet]
     public async Task<ActionResult<PagedReviewsDto>> List([FromQuery] ReviewReadQuery search, CancellationToken ct)
     {
@@ -44,11 +42,13 @@ public sealed class ReviewReadingController(ApplicationDbContext db) : Controlle
 
     private IQueryable<ReviewReadDto> ProjectReviews()
     {
-        // Explicit joins avoid introducing navigation properties or editing team-owned entities.
+        // Reviews with an offering can still get missing period fields from that legacy record.
         return from review in db.Reviews.AsNoTracking()
                join course in db.Courses.AsNoTracking() on review.CourseId equals course.CourseId
-               join offering in db.CourseOfferings.AsNoTracking() on review.OfferingId equals offering.OfferingId
                join instructor in db.Instructors.AsNoTracking() on review.InstructorId equals instructor.InstructorId
+               join legacyOffering in db.CourseOfferings.AsNoTracking()
+                   on review.OfferingId equals (int?)legacyOffering.OfferingId into legacyOfferings
+               from offering in legacyOfferings.DefaultIfEmpty()
                select new ReviewReadDto
                {
                    ReviewId = review.ReviewId,
@@ -57,8 +57,8 @@ public sealed class ReviewReadingController(ApplicationDbContext db) : Controlle
                    CourseName = course.CourseName,
                    DepartmentId = course.DepartmentId,
                    OfferingId = review.OfferingId,
-                   AcademicYear = offering.AcademicYear,
-                   Semester = offering.Semester,
+                   AcademicYear = review.AcademicYear ?? (offering == null ? null : offering.AcademicYear),
+                   Semester = review.Semester ?? (offering == null ? null : offering.Semester),
                    InstructorId = instructor.InstructorId,
                    InstructorName = instructor.FullName,
                    ReviewText = review.ReviewText,

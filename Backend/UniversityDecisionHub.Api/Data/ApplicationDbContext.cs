@@ -1,4 +1,5 @@
 using UniversityDecisionHub.Api.Features.Reviews;
+using UniversityDecisionHub.Api.Features.Programmes;
 using UniversityDecisionHub.Api.Features.Users;
 using UniversityDecisionHub.Api.Features.Faculties;
 using UniversityDecisionHub.Api.Features.Departments;
@@ -28,13 +29,31 @@ namespace UniversityDecisionHub.Api.Data
 
         public DbSet<Review> Reviews => Set<Review>();
         public DbSet<UserAccount> UserAccounts => Set<UserAccount>();
+        public DbSet<Programme> Programmes => Set<Programme>();
+        public DbSet<ProgrammeCourse> ProgrammeCourses => Set<ProgrammeCourse>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Course>().Property(c => c.CourseKey).HasMaxLength(100);
+            modelBuilder.Entity<Course>().HasIndex(c => c.CourseKey).IsUnique();
+            modelBuilder.ApplyConfiguration(new ProgrammeConfiguration());
+            modelBuilder.ApplyConfiguration(new ProgrammeCourseConfiguration());
+            modelBuilder.Entity<Department>().Property(d => d.DepartmentKey).HasMaxLength(100);
+            modelBuilder.Entity<Department>().HasIndex(d => d.DepartmentKey).IsUnique();
+            modelBuilder.Entity<UserAccount>().HasOne<Programme>().WithMany()
+                .HasForeignKey(u => u.ProgrammeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Faculty>().Property(f => f.ImportKey).HasMaxLength(100);
+            modelBuilder.Entity<Faculty>().HasIndex(f => f.ImportKey).IsUnique();
+            modelBuilder.Entity<Instructor>().Property(i => i.ImportKey).HasMaxLength(100);
+            modelBuilder.Entity<Instructor>().HasIndex(i => i.ImportKey).IsUnique();
             // Key, column sizes and the unique NormalizedEmail index are in UserAccountConfiguration.
             modelBuilder.Entity<UserAccount>().HasOne<Department>().WithMany()
                 .HasForeignKey(u => u.DepartmentId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Review>().Property(r => r.AcademicYear).HasMaxLength(9);
+            modelBuilder.Entity<Review>().Property(r => r.Semester).HasMaxLength(10);
+            modelBuilder.Entity<Review>().HasOne<Instructor>().WithMany()
+                .HasForeignKey(r => r.InstructorId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Review>().HasIndex(r => new { r.UserId, r.CourseId }).IsUnique();
             modelBuilder.Entity<Review>().HasOne<UserAccount>().WithMany()
                 .HasForeignKey(r => r.UserId).OnDelete(DeleteBehavior.Restrict);
@@ -47,7 +66,7 @@ namespace UniversityDecisionHub.Api.Data
                 .HasForeignKey(r => new { r.OfferingId, r.InstructorId }).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Faculty>().HasMany(f => f.Departments).WithOne()
                 .HasForeignKey(d => d.FacultyId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Department>().HasIndex(d => d.DepartmentCode).IsUnique();
+            modelBuilder.Entity<Department>().HasIndex(d => d.DepartmentCode);
             modelBuilder.Entity<Department>().HasMany(d => d.Instructors).WithOne()
                 .HasForeignKey(i => i.DepartmentId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Course>().HasOne<Department>().WithMany()

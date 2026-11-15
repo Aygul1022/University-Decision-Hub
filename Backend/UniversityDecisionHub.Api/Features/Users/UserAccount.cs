@@ -27,10 +27,12 @@ namespace UniversityDecisionHub.Api.Features.Users
         public string? PasswordHash { get; set; }
 
         // Student profile. Both are optional: an account without them can still log in,
-        // but cannot submit a review (ReviewEligibility requires both).
+        // but review submission requires a selected programme and study year.
         // DepartmentId is a foreign key to Departments.
         public int? DepartmentId { get; set; }
         public int? StudyYear { get; set; }
+        // No programme is guessed from a legacy department. Profile integration follows separately.
+        public int? ProgrammeId { get; set; }
 
         // Never set from a request body. Granted only with the `make-admin` command.
         public bool IsAdministrator { get; set; }

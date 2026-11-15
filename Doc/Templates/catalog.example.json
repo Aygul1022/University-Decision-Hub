@@ -1,0 +1,28 @@
+{
+  "faculties": [
+    {
+      "facultyKey": "FAC-DEMO",
+      "facultyName": "Example Faculty"
+    }
+  ],
+  "departments": [
+    {
+      "departmentCode": "DEMO",
+      "departmentName": "Example Department",
+      "facultyKey": "FAC-DEMO",
+      "departmentKey": "DEP-DEMO"
+    }
+  ],
+  "instructors": [
+    {
+      "instructorKey": "INST-DEMO-01",
+      "fullName": "Example Instructor",
+      "academicTitle": null,
+      "departmentKey": "DEP-DEMO"
+    }
+  ],
+  "schemaVersion": 2,
+  "programmes": [],
+  "courses": [],
+  "programmeCourses": []
+}
