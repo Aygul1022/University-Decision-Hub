@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UniversityDecisionHub.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+62f052ebb4dbb8f9f205828a958231725d5abaf6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9fb1a6095f3f9322f8b9ea133d40e580b17e0b4a")]
 [assembly: System.Reflection.AssemblyProductAttribute("UniversityDecisionHub.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UniversityDecisionHub.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
