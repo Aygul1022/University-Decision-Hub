@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/sami-review-reading
+      - feature/ozan-catalog-pages
   workflow_dispatch:
 
 permissions:
