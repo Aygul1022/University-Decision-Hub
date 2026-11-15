@@ -25,7 +25,7 @@ using UniversityDecisionHub.Api.Features.Users;
 using UniversityDecisionHub.Api.Features.Users.Dtos;
 
 // Account, administrator-boundary, instructor and detail-page checks (Ozan's module), plus the
-// hand-over to review submission: the token identifies the author and an incomplete profile is refused.
+// hand-over to review submission and reading using real login tokens.
 //
 //   dotnet run --project Tests/UniversityDecisionHub.AccountChecks
 //
@@ -489,6 +489,24 @@ Check(submitted.Status == 201 && submitted.Json.GetProperty("userId").GetInt32()
 Check((await Post("/api/reviews", review, tokenOne)).Status == 409, "Review: a second review for the same course is rejected (409)");
 Check((await Post("/api/reviews", new { review.courseId, review.offeringId, review.instructorId, review.reviewText, userId = 1 }, adminToken)).Status == 400,
     "Review: a userId in the request body is rejected (400)");
+
+// ================================================================ review reading using the login token
+var reviewId = submitted.Status == 201 ? submitted.Json.GetProperty("reviewId").GetInt32() : 0;
+var reviewLoginToken = login.Text("token");
+
+Check((await Get("/api/reviews")).Status == 401, "Review list: anonymous is rejected (401)");
+Check((await Get($"/api/reviews/{reviewId}")).Status == 401, "Review detail: anonymous is rejected (401)");
+
+var reviewList = await Get($"/api/reviews?courseCode=CS402&instructorId={adaId}", reviewLoginToken);
+Check(reviewList.Status == 200
+      && reviewList.Json.GetProperty("totalCount").GetInt32() == 1
+      && reviewList.Json.GetProperty("items").GetArrayLength() == 1
+      && reviewList.Json.GetProperty("items")[0].GetProperty("reviewId").GetInt32() == reviewId,
+    "Review list: login token returns the filtered review (200)");
+
+var reviewDetail = await Get($"/api/reviews/{reviewId}", reviewLoginToken);
+Check(reviewDetail.Status == 200 && reviewDetail.Text("reviewText") == review.reviewText,
+    "Review detail: login token returns the submitted text (200)");
 
 // ---------------------------------------------------------------- result
 await app.StopAsync();
