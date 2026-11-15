@@ -107,7 +107,9 @@
       const list = article.querySelector("[data-courses]");
       const note = article.querySelector("[data-courses-status]");
       list.replaceChildren();
-      note.textContent = courses.length === 0 ? "No courses have been assigned to this instructor yet." : "";
+      // The catalogue has no verified term assignments yet, so an empty list means "not published",
+      // not "this instructor teaches nothing".
+      note.textContent = courses.length === 0 ? "Term course assignments have not been published yet." : "";
       note.hidden = courses.length !== 0;
 
       for (const course of courses) {
