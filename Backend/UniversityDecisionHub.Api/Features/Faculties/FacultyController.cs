@@ -21,15 +21,15 @@ public class FacultyController(ApplicationDbContext db) : CatalogControllerBase(
     [HttpPost, CatalogAdministrator]
     public async Task<IActionResult> Post(FacultyCreate input, CancellationToken ct)
     {
-        if (input.Departments is null || input.Departments.Count == 0 || input.Departments.Any(d => d is null || d.Instructors is null || d.Instructors.Count == 0 || d.Instructors.Any(i => i is null)))
-            return BadRequest("Provide at least one department and at least one instructor per department.");
+        if (input.Departments is null || input.Departments.Any(d => d is null || d.Instructors is null || d.Instructors.Any(i => i is null)))
+            return BadRequest("Collections cannot be null or contain null entries.");
         var row = new Faculty { FacultyName = input.FacultyName.Trim(), Departments = input.Departments.Select(ToDepartment).ToList() };
         Db.Faculties.Add(row);
         return await Save(() => CreatedAtAction(nameof(GetById), new { id = row.FacultyId }, row), ct);
     }
     internal static Department ToDepartment(DepartmentSeed d) => new()
     {
-        DepartmentCode = d.DepartmentCode.Trim(), DepartmentName = d.DepartmentName.Trim(),
+        DepartmentCode = string.IsNullOrWhiteSpace(d.DepartmentCode) ? null : d.DepartmentCode.Trim(), DepartmentName = d.DepartmentName.Trim(),
         Instructors = d.Instructors.Select(i => new Instructor { FullName = i.FullName.Trim(), AcademicTitle = i.AcademicTitle?.Trim() }).ToList()
     };
     [HttpPut("{id:int}"), CatalogAdministrator]

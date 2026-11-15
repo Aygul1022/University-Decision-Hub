@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityDecisionHub.Api.Features.Reviews.Dtos;
 namespace UniversityDecisionHub.Api.Features.Reviews;
@@ -5,7 +6,7 @@ namespace UniversityDecisionHub.Api.Features.Reviews;
 public class ReviewSubmissionController(IReviewSubmissionService submissions) : ControllerBase
 {
     // GET/PUT/DELETE routes are reserved for Sami's reading and administrator controllers.
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<IActionResult> Post(ReviewCreateDto input, CancellationToken ct)
     {
         var result = await submissions.SubmitAsync(User, input, ct);

@@ -1,4 +1,5 @@
 namespace UniversityDecisionHub.Api.Features.Reviews;
+// Retained legacy helper. Current submission uses ProgrammeReviewEligibility.
 public static class ReviewEligibility
 {
     public static string? Check(int? studentDepartmentId, int? studyYear, int courseDepartmentId, int? recommendedYear)

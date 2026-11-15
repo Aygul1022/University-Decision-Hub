@@ -7,6 +7,7 @@ namespace UniversityDecisionHub.Api.Features.Courses
     {
         public int CourseId { get; set; }
         public int DepartmentId { get; set; }
+        public string? CourseKey { get; set; }
         // Null means a pre-existing course has not yet been assigned a year.
         public int? RecommendedStudyYear { get; set; }
 
@@ -15,11 +16,11 @@ namespace UniversityDecisionHub.Api.Features.Courses
 
         public string? CourseDescription { get; set; }
 
-        public int CourseCredit { get; set; }
+        public decimal? CourseCredit { get; set; }
 
-        public int Ects { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsElective { get; set; }
+        public decimal? Ects { get; set; }
+        public bool? IsActive { get; set; }
+        public bool? IsElective { get; set; }
 
         // Navigation for prerequisites (self-referencing many-to-many via CoursePrerequisite)
         public ICollection<CoursePrerequisite> Prerequisites { get; set; } = new List<CoursePrerequisite>();

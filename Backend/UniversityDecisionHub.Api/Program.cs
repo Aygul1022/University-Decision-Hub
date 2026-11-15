@@ -3,10 +3,27 @@ using Microsoft.EntityFrameworkCore;
 using UniversityDecisionHub.Api.Data;
 using UniversityDecisionHub.Api.Features.Authentication;
 using UniversityDecisionHub.Api.Features.Users;
+using UniversityDecisionHub.Api.Features.CatalogImport;
 
-var builder = WebApplication.CreateBuilder(args);
+// File-only validation exits before configuration, authentication or database setup.
+if (args.Length > 0 && args[0] == CatalogValidationCommand.Name)
+{
+    Environment.ExitCode = await CatalogValidationCommand.RunAsync(args);
+    return;
+}
+
+// Import arguments belong to our CLI, not ASP.NET's configuration parser.
+var builder = WebApplication.CreateBuilder(
+    args.Length > 0 && args[0] == CatalogImportCommand.Name ? Array.Empty<string>() : args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+// Developer command: do not start HTTP/authentication or apply migrations implicitly.
+if (args.Length > 0 && args[0] == CatalogImportCommand.Name)
+{
+    Environment.ExitCode = await CatalogImportCommand.RunAsync(args, connectionString);
+    return;
+}
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));

@@ -9,6 +9,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication.Dtos
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public int? DepartmentId { get; set; }
+        public int? ProgrammeId { get; set; }
         public int? StudyYear { get; set; }
         public bool IsAdministrator { get; set; }
 
@@ -18,6 +19,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication.Dtos
             FullName = user.FullName,
             Email = user.Email,
             DepartmentId = user.DepartmentId,
+            ProgrammeId = user.ProgrammeId,
             StudyYear = user.StudyYear,
             IsAdministrator = user.IsAdministrator
         };

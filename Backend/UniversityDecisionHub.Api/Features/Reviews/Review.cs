@@ -5,8 +5,11 @@ public class Review
     public int UserId { get; set; }
     // Controlled redundancy supports the unique user/course rule across all offerings.
     public int CourseId { get; set; }
-    public int OfferingId { get; set; }
+    public int? OfferingId { get; set; }
     public int InstructorId { get; set; }
+    public string? AcademicYear { get; set; }
+    public string? Semester { get; set; }
+    public bool? AttendanceConfirmed { get; set; }
     public string ReviewText { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }

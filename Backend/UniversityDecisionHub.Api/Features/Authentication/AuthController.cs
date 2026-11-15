@@ -1,3 +1,4 @@
+using UniversityDecisionHub.Api.Features.Programmes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -56,15 +57,22 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             if (user.HasCompletedRegistration)
                 return Conflict(AlreadyRegistered);
 
+            var selectedProgramme = request.ProgrammeId ?? user.ProgrammeId;
+            var profile = await ProgrammeProfile.ResolveAsync(_db, selectedProgramme, user.DepartmentId);
+            if (profile.Error is not null) return BadRequest(profile.Error);
+
             // Set the password only if nobody has set one in the meantime: when two requests for the
             // same account arrive together, exactly one of them wins and the other gets 409.
             var passwordHash = _hasher.HashPassword(user, request.Password);
             var updated = await _db.UserAccounts
                 .Where(u => u.UserId == user.UserId && u.PasswordHash == null)
-                .ExecuteUpdateAsync(setters => setters.SetProperty(u => u.PasswordHash, passwordHash));
+                .ExecuteUpdateAsync(setters => setters.SetProperty(u => u.PasswordHash, passwordHash)
+                    .SetProperty(u => u.ProgrammeId, selectedProgramme).SetProperty(u => u.DepartmentId, profile.DepartmentId));
             if (updated == 0)
                 return Conflict(AlreadyRegistered);
 
+            user.ProgrammeId = selectedProgramme;
+            user.DepartmentId = profile.DepartmentId;
             return StatusCode(StatusCodes.Status201Created, ToResponse(user));
         }
 
@@ -125,14 +133,12 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             var user = await _db.UserAccounts.FirstOrDefaultAsync(u => u.UserId == userId.Value);
             if (user == null) return Unauthorized();
 
-            if (request.DepartmentId != null && !await _db.Departments.AnyAsync(d => d.DepartmentId == request.DepartmentId))
-            {
-                ModelState.AddModelError(nameof(request.DepartmentId), "This department does not exist.");
-                return ValidationProblem(ModelState);
-            }
+            var profile = await ProgrammeProfile.ResolveAsync(_db, request.ProgrammeId, request.DepartmentId);
+            if (profile.Error is not null) return BadRequest(profile.Error);
 
             user.FullName = request.FullName.Trim();
-            user.DepartmentId = request.DepartmentId;
+            user.DepartmentId = profile.DepartmentId;
+            user.ProgrammeId = request.ProgrammeId;
             user.StudyYear = request.StudyYear;
             await _db.SaveChangesAsync();
 

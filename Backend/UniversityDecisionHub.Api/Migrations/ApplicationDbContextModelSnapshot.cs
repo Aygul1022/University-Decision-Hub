@@ -34,11 +34,15 @@ namespace UniversityDecisionHub.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("CourseCredit")
-                        .HasColumnType("integer");
+                    b.Property<decimal?>("CourseCredit")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("CourseDescription")
                         .HasColumnType("text");
+
+                    b.Property<string>("CourseKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("CourseName")
                         .IsRequired()
@@ -47,19 +51,22 @@ namespace UniversityDecisionHub.Api.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Ects")
-                        .HasColumnType("integer");
+                    b.Property<decimal?>("Ects")
+                        .HasColumnType("numeric");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsElective")
+                    b.Property<bool?>("IsElective")
                         .HasColumnType("boolean");
 
                     b.Property<int?>("RecommendedStudyYear")
                         .HasColumnType("integer");
 
                     b.HasKey("CourseId");
+
+                    b.HasIndex("CourseKey")
+                        .IsUnique();
 
                     b.HasIndex("DepartmentId", "CourseCode")
                         .IsUnique();
@@ -91,8 +98,11 @@ namespace UniversityDecisionHub.Api.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DepartmentId"));
 
                     b.Property<string>("DepartmentCode")
-                        .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("DepartmentKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("DepartmentName")
                         .IsRequired()
@@ -103,7 +113,9 @@ namespace UniversityDecisionHub.Api.Migrations
 
                     b.HasKey("DepartmentId");
 
-                    b.HasIndex("DepartmentCode")
+                    b.HasIndex("DepartmentCode");
+
+                    b.HasIndex("DepartmentKey")
                         .IsUnique();
 
                     b.HasIndex("FacultyId");
@@ -123,7 +135,14 @@ namespace UniversityDecisionHub.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ImportKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.HasKey("FacultyId");
+
+                    b.HasIndex("ImportKey")
+                        .IsUnique();
 
                     b.ToTable("Faculties");
                 });
@@ -137,20 +156,29 @@ namespace UniversityDecisionHub.Api.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("InstructorId"));
 
                     b.Property<string>("AcademicTitle")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("ImportKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("InstructorId");
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Instructors");
+                    b.HasIndex("ImportKey")
+                        .IsUnique();
+
+                    b.ToTable("Instructors", (string)null);
                 });
 
             modelBuilder.Entity("UniversityDecisionHub.Api.Features.Offerings.CourseOffering", b =>
@@ -198,6 +226,107 @@ namespace UniversityDecisionHub.Api.Migrations
                     b.ToTable("OfferingInstructors");
                 });
 
+            modelBuilder.Entity("UniversityDecisionHub.Api.Features.Programmes.Programme", b =>
+                {
+                    b.Property<int>("ProgrammeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProgrammeId"));
+
+                    b.Property<string>("BolognaProgrammeId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("DegreeLevel")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("InstructionLanguage")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ProgrammeKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ProgrammeName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("ProgrammeId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ProgrammeKey")
+                        .IsUnique();
+
+                    b.ToTable("Programmes");
+                });
+
+            modelBuilder.Entity("UniversityDecisionHub.Api.Features.Programmes.ProgrammeCourse", b =>
+                {
+                    b.Property<int>("ProgrammeCourseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProgrammeCourseId"));
+
+                    b.Property<string>("CatalogueYear")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<decimal?>("CourseCredit")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CurriculumKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<decimal?>("Ects")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool?>("IsElective")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ProgrammeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("RecommendedStudyYear")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Semester")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ProgrammeCourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("CurriculumKey")
+                        .IsUnique();
+
+                    b.HasIndex("ProgrammeId", "CourseId");
+
+                    b.ToTable("ProgrammeCourses", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_ProgrammeCourses_Credit", "\"CourseCredit\" IS NULL OR \"CourseCredit\" >= 0");
+
+                            t.HasCheckConstraint("CK_ProgrammeCourses_Ects", "\"Ects\" IS NULL OR \"Ects\" >= 0");
+
+                            t.HasCheckConstraint("CK_ProgrammeCourses_Semester", "\"Semester\" IS NULL OR \"Semester\" > 0");
+
+                            t.HasCheckConstraint("CK_ProgrammeCourses_Year", "\"RecommendedStudyYear\" IS NULL OR \"RecommendedStudyYear\" > 0");
+                        });
+                });
+
             modelBuilder.Entity("UniversityDecisionHub.Api.Features.Reviews.Review", b =>
                 {
                     b.Property<int>("ReviewId")
@@ -205,6 +334,13 @@ namespace UniversityDecisionHub.Api.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ReviewId"));
+
+                    b.Property<string>("AcademicYear")
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)");
+
+                    b.Property<bool?>("AttendanceConfirmed")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("CourseId")
                         .HasColumnType("integer");
@@ -215,12 +351,16 @@ namespace UniversityDecisionHub.Api.Migrations
                     b.Property<int>("InstructorId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("OfferingId")
+                    b.Property<int?>("OfferingId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ReviewText")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("Semester")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -228,6 +368,8 @@ namespace UniversityDecisionHub.Api.Migrations
                     b.HasKey("ReviewId");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("InstructorId");
 
                     b.HasIndex("OfferingId", "CourseId");
 
@@ -247,19 +389,35 @@ namespace UniversityDecisionHub.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
 
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<bool>("IsAdministrator")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("NormalizedEmail")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ProgrammeId")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("StudyYear")
                         .HasColumnType("integer");
@@ -268,10 +426,12 @@ namespace UniversityDecisionHub.Api.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("NormalizedEmail")
                         .IsUnique();
 
-                    b.ToTable("UserAccounts");
+                    b.HasIndex("ProgrammeId");
+
+                    b.ToTable("UserAccounts", (string)null);
                 });
 
             modelBuilder.Entity("UniversityDecisionHub.Api.Features.Courses.Course", b =>
@@ -344,11 +504,41 @@ namespace UniversityDecisionHub.Api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("UniversityDecisionHub.Api.Features.Programmes.Programme", b =>
+                {
+                    b.HasOne("UniversityDecisionHub.Api.Features.Departments.Department", null)
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UniversityDecisionHub.Api.Features.Programmes.ProgrammeCourse", b =>
+                {
+                    b.HasOne("UniversityDecisionHub.Api.Features.Courses.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UniversityDecisionHub.Api.Features.Programmes.Programme", null)
+                        .WithMany()
+                        .HasForeignKey("ProgrammeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("UniversityDecisionHub.Api.Features.Reviews.Review", b =>
                 {
                     b.HasOne("UniversityDecisionHub.Api.Features.Courses.Course", null)
                         .WithMany()
                         .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UniversityDecisionHub.Api.Features.Instructors.Instructor", null)
+                        .WithMany()
+                        .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -362,14 +552,12 @@ namespace UniversityDecisionHub.Api.Migrations
                         .WithMany()
                         .HasForeignKey("OfferingId", "CourseId")
                         .HasPrincipalKey("OfferingId", "CourseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("UniversityDecisionHub.Api.Features.Offerings.OfferingInstructor", null)
                         .WithMany()
                         .HasForeignKey("OfferingId", "InstructorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("UniversityDecisionHub.Api.Features.Users.UserAccount", b =>
@@ -377,6 +565,11 @@ namespace UniversityDecisionHub.Api.Migrations
                     b.HasOne("UniversityDecisionHub.Api.Features.Departments.Department", null)
                         .WithMany()
                         .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("UniversityDecisionHub.Api.Features.Programmes.Programme", null)
+                        .WithMany()
+                        .HasForeignKey("ProgrammeId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
