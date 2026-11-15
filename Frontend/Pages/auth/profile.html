@@ -12,7 +12,7 @@
   <main class="auth-shell">
     <div class="auth-card">
       <h1>My profile</h1>
-      <p class="auth-lead">Your department and year decide which courses you can review. Keep them up to date.</p>
+      <p class="auth-lead">Your programme and year decide which courses you can review. Keep them up to date.</p>
 
       <p class="notice" data-status role="status">Loading your profile…</p>
 
@@ -53,6 +53,16 @@
             </select>
             <p class="field-error" data-error-for="studyYear"></p>
           </div>
+        </div>
+
+        <div class="field">
+          <!-- Options are added from GET /api/programmes?departmentId=... for the chosen department. -->
+          <label for="programmeId">Programme</label>
+          <select id="programmeId" name="programmeId" aria-describedby="programme-hint">
+            <option value="">Not selected</option>
+          </select>
+          <p class="field-hint" id="programme-hint" data-programme-hint>Choose your department first.</p>
+          <p class="field-error" data-error-for="programmeId"></p>
         </div>
 
         <p class="form-message" data-form-message role="alert" hidden></p>

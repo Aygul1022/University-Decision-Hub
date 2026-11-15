@@ -26,13 +26,74 @@
     });
   }
 
+  const programmeSelect = form.elements.programmeId;
+  const programmeHint = form.querySelector("[data-programme-hint]");
+  let programmeRequest = 0;
+
+  // "Computer Engineering (Bachelor, English)"; degree and language are left out when unknown.
+  function programmeLabel(programme) {
+    const details = [programme.degreeLevel, programme.instructionLanguage].filter(Boolean).join(", ");
+    return programme.programmeName + (details ? " (" + details + ")" : "");
+  }
+
+  function addProgrammeOption(value, text) {
+    const option = document.createElement("option");
+    option.value = String(value);
+    option.textContent = text;
+    programmeSelect.appendChild(option);
+  }
+
+  // Lists the programmes of one department (GET /api/programmes?departmentId=...). `selectedId` stays
+  // selectable even when the list cannot be read: PUT /api/auth/me replaces the whole profile, so a
+  // missing option would silently clear a programme the user already has.
+  async function fillProgrammes(departmentId, selectedId) {
+    const requestNumber = ++programmeRequest;
+    programmeSelect.length = 1; // keeps only "Not selected"
+    programmeSelect.disabled = true;
+
+    let list = [];
+    let failed = false;
+    if (departmentId !== null) {
+      try {
+        const result = await apiFetch("/api/programmes?departmentId=" + encodeURIComponent(departmentId));
+        list = Array.isArray(result) ? result : [];
+      } catch (error) {
+        failed = true;
+      }
+    }
+    if (requestNumber !== programmeRequest) return; // the department changed again meanwhile
+
+    for (const programme of list) addProgrammeOption(programme.programmeId, programmeLabel(programme));
+    if (selectedId !== null && selectedId !== undefined) {
+      if (!list.some((programme) => programme.programmeId === selectedId)) {
+        addProgrammeOption(selectedId, "Programme " + selectedId);
+      }
+      programmeSelect.value = String(selectedId);
+    }
+
+    programmeSelect.disabled = programmeSelect.length === 1;
+    programmeHint.textContent = departmentId === null
+      ? "Choose your department first."
+      : failed
+        ? "The programme list could not be loaded. Reload the page to try again."
+        : list.length === 0
+          ? "No programmes have been added for this department yet."
+          : "Needed to write reviews. Choose the programme you are enrolled in.";
+  }
+
   function fill(profile) {
     form.elements.email.value = profile.email;
     form.elements.fullName.value = profile.fullName;
-    // Both are null for an account without a student profile.
+    // All three are null for an account without a student profile.
     form.elements.departmentId.value = profile.departmentId ?? "";
     form.elements.studyYear.value = profile.studyYear ?? "";
+    return fillProgrammes(profile.departmentId ?? null, profile.programmeId ?? null);
   }
+
+  // A programme belongs to one department, so a different department starts without a programme.
+  form.elements.departmentId.addEventListener("change", () => {
+    fillProgrammes(optionalNumber(form.elements.departmentId.value), null);
+  });
 
   // An empty field is sent as null, not as 0.
   function optionalNumber(text) {
@@ -50,7 +111,7 @@
       rememberProfile(profile);
       // The list is filled before the stored department is selected in it.
       await Departments.fillSelect(form.elements.departmentId, profile.departmentId);
-      fill(profile);
+      await fill(profile);
       status.hidden = true;
       form.hidden = false;
     } catch (error) {
@@ -71,6 +132,8 @@
     const values = {
       fullName: form.elements.fullName.value.trim(),
       departmentId: optionalNumber(form.elements.departmentId.value),
+      // Always sent: the server treats a missing programmeId as "clear the selection".
+      programmeId: optionalNumber(programmeSelect.value),
       studyYear: optionalNumber(form.elements.studyYear.value),
     };
 
@@ -87,7 +150,7 @@
     try {
       const profile = await apiFetch("/api/auth/me", { method: "PUT", body: values });
       rememberProfile(profile);
-      fill(profile);
+      await fill(profile);
       showFormMessage("Your profile was saved.", "success");
     } catch (error) {
       showFieldErrors(error.fieldErrors || {});
