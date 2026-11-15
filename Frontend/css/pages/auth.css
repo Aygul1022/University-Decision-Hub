@@ -1,0 +1,127 @@
+/* Login and Register pages. Colours come from css/shared/global.css. */
+.auth-shell {
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px 56px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-top: 4px solid var(--color-red);
+  border-radius: 12px;
+}
+
+.auth-card h1 {
+  margin-bottom: 4px;
+  font-size: 1.625rem;
+}
+
+.auth-lead {
+  margin-bottom: 24px;
+  color: var(--color-muted);
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: inherit;
+  font: inherit;
+}
+
+.field input:focus-visible,
+.field select:focus-visible {
+  border-color: var(--color-red);
+}
+
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"] {
+  border-color: var(--color-red);
+  background: var(--color-red-soft);
+}
+
+.field-hint,
+.field-error {
+  margin: 4px 0 0;
+  font-size: 0.8125rem;
+}
+
+.field-hint {
+  color: var(--color-muted);
+}
+
+.field-error {
+  color: var(--color-red-dark);
+  font-weight: 600;
+}
+
+.field-error:empty {
+  display: none;
+}
+
+.form-message {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+}
+
+.form-message.error {
+  background: var(--color-red-soft);
+  color: var(--color-red-dark);
+}
+
+.form-message.success {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.auth-card .button {
+  width: 100%;
+  padding: 12px 16px;
+}
+
+.auth-switch {
+  margin: 20px 0 0;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.auth-switch a {
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 20px;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

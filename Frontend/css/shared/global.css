@@ -1,0 +1,144 @@
+/* Shared look for every page: the red / white / cream palette (UI02), base typography
+   and a few building blocks. Page-specific rules live in css/pages/. */
+:root {
+  --color-red: #a6192e;
+  --color-red-dark: #7d1222;
+  --color-red-soft: #f8e4e6;
+  --color-cream: #faf4e8;
+  --color-cream-deep: #f1e6d2;
+  --color-white: #ffffff;
+  --color-ink: #2b1f1f;
+  --color-muted: #6a5a57;
+  --color-line: #e2d5bf;
+  --color-success: #1d6a3e;
+  --color-success-soft: #e6f4ea;
+
+  --radius: 8px;
+  --page-width: 960px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 8px;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: 1.75rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+p {
+  margin: 0 0 12px;
+}
+
+a {
+  color: var(--color-red);
+}
+
+a:hover {
+  color: var(--color-red-dark);
+}
+
+:focus-visible {
+  outline: 3px solid rgba(166, 25, 46, 0.4);
+  outline-offset: 2px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Centered content column used by ordinary pages. */
+.page {
+  width: 100%;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 32px 16px 56px;
+}
+
+.page-lead {
+  color: var(--color-muted);
+  margin-bottom: 24px;
+}
+
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid var(--color-red);
+  border-radius: var(--radius);
+  background: var(--color-red);
+  color: var(--color-white);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--color-red-dark);
+  border-color: var(--color-red-dark);
+  color: var(--color-white);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.button.secondary {
+  background: var(--color-white);
+  color: var(--color-red);
+}
+
+.button.secondary:hover {
+  background: var(--color-red-soft);
+  color: var(--color-red-dark);
+}
+
+/* A status line for loading, empty and error states. */
+.notice {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--color-cream-deep);
+  color: var(--color-muted);
+}
+
+.notice.error {
+  background: var(--color-red-soft);
+  color: var(--color-red-dark);
+}
+
+.notice.success {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}

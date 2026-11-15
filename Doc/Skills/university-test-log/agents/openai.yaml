@@ -1,0 +1,6 @@
+interface:
+  display_name: "University Test Log"
+  short_description: "Record UniversityDecisionHub test results in Word"
+  default_prompt: "Use $university-test-log to record the test results I supplied."
+policy:
+  allow_implicit_invocation: true

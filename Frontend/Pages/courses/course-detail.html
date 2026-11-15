@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course · University Decision Hub</title>
+  <link rel="stylesheet" href="../../css/shared/global.css">
+  <link rel="stylesheet" href="../../css/shared/navbar.css">
+  <link rel="stylesheet" href="../../css/pages/catalog-detail.css">
+</head>
+<body>
+  <!-- Open as course-detail.html?id=<CourseId> -->
+  <main class="page">
+    <p class="notice" data-status role="status">Loading course…</p>
+
+    <article data-course hidden>
+      <header class="detail-header">
+        <p class="detail-code" data-field="courseCode"></p>
+        <h1 data-field="courseName"></h1>
+        <span class="tag" data-field="courseType"></span>
+      </header>
+
+      <section class="card detail-section" aria-label="Course facts">
+        <dl class="facts">
+          <div><dt>Department</dt><dd data-field="department"></dd></div>
+          <div><dt>Recommended year</dt><dd data-field="recommendedStudyYear"></dd></div>
+          <div><dt>Credits</dt><dd data-field="courseCredit"></dd></div>
+          <div><dt>ECTS</dt><dd data-field="ects"></dd></div>
+        </dl>
+      </section>
+
+      <section class="card detail-section" data-description-section hidden>
+        <h2>About this course</h2>
+        <p class="description" data-field="courseDescription"></p>
+      </section>
+
+      <section class="card detail-section reviews-callout">
+        <h2>Student reviews</h2>
+        <p data-reviews-text></p>
+        <a class="button" data-reviews-link></a>
+      </section>
+    </article>
+  </main>
+
+  <script src="../../js/shared/api.js"></script>
+  <script src="../../js/shared/navbar.js"></script>
+  <script src="../../js/pages/course-detail.js"></script>
+</body>
+</html>

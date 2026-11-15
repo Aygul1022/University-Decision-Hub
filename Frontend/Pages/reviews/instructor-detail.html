@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instructor · University Decision Hub</title>
+  <link rel="stylesheet" href="../../css/shared/global.css">
+  <link rel="stylesheet" href="../../css/shared/navbar.css">
+  <link rel="stylesheet" href="../../css/pages/catalog-detail.css">
+</head>
+<body>
+  <!-- Open as instructor-detail.html?id=<InstructorId> -->
+  <main class="page" data-page="instructor-detail">
+    <a class="back-link" href="instructors.html">← All instructors</a>
+
+    <p class="notice" data-status role="status">Loading instructor…</p>
+
+    <article data-instructor hidden>
+      <!-- 1. The instructor's own profile -->
+      <header class="detail-header">
+        <p class="detail-code" data-field="academicTitle"></p>
+        <h1 data-field="fullName"></h1>
+      </header>
+
+      <section class="card detail-section">
+        <h2>Profile</h2>
+        <dl class="facts">
+          <div><dt>Department</dt><dd data-field="department"></dd></div>
+        </dl>
+      </section>
+
+      <!-- 2. Kept separate from the profile: reviews are about courses, not about the person (UI05) -->
+      <section class="card detail-section reviews-callout">
+        <h2>Course reviews</h2>
+        <p data-reviews-text></p>
+        <a class="button" data-reviews-link></a>
+      </section>
+    </article>
+  </main>
+
+  <script src="../../js/shared/api.js"></script>
+  <script src="../../js/shared/navbar.js"></script>
+  <script src="../../js/pages/instructors.js"></script>
+</body>
+</html>

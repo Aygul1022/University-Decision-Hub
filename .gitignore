@@ -1,0 +1,14 @@
+# Local IDE state and generated build output
+.vs/
+**/bin/
+**/obj/
+*.csproj.user
+*.suo
+# Local credentials and environment configuration
+**/secrets.json
+.env
+.env.*
+!.env.example
+# Private user data must never be committed
+private-data/
+*.private.csv

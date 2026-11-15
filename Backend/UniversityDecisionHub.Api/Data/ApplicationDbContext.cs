@@ -1,0 +1,112 @@
+using UniversityDecisionHub.Api.Features.Reviews;
+using UniversityDecisionHub.Api.Features.Programmes;
+using UniversityDecisionHub.Api.Features.Users;
+using UniversityDecisionHub.Api.Features.Faculties;
+using UniversityDecisionHub.Api.Features.Departments;
+using UniversityDecisionHub.Api.Features.Instructors;
+using UniversityDecisionHub.Api.Features.Offerings;
+using Microsoft.EntityFrameworkCore;
+using UniversityDecisionHub.Api.Data.Configurations;
+using UniversityDecisionHub.Api.Features.Courses;
+
+//TRY TO UNDERSTAND THE CODE: This code defines the ApplicationDbContext class, which is a subclass of DbContext from Entity Framework Core. It represents the database context for the application and provides access to the Courses and CoursePrerequisites tables in the database. The OnModelCreating method is overridden to configure the relationships between the Course and CoursePrerequisite entities, including defining composite keys and foreign key constraints. Additionally, there are commented-out lines that suggest how to map database column names if they differ from the property names in the entity classes.
+namespace UniversityDecisionHub.Api.Data
+{
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
+
+        public DbSet<Course> Courses { get; set; } = null!;
+        public DbSet<CoursePrerequisite> CoursePrerequisites { get; set; } = null!;
+
+        public DbSet<Faculty> Faculties => Set<Faculty>();
+        public DbSet<Department> Departments => Set<Department>();
+        public DbSet<Instructor> Instructors => Set<Instructor>();
+        public DbSet<CourseOffering> CourseOfferings => Set<CourseOffering>();
+        public DbSet<OfferingInstructor> OfferingInstructors => Set<OfferingInstructor>();
+
+        public DbSet<Review> Reviews => Set<Review>();
+        public DbSet<UserAccount> UserAccounts => Set<UserAccount>();
+        public DbSet<Programme> Programmes => Set<Programme>();
+        public DbSet<ProgrammeCourse> ProgrammeCourses => Set<ProgrammeCourse>();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Course>().Property(c => c.CourseKey).HasMaxLength(100);
+            modelBuilder.Entity<Course>().HasIndex(c => c.CourseKey).IsUnique();
+            modelBuilder.ApplyConfiguration(new ProgrammeConfiguration());
+            modelBuilder.ApplyConfiguration(new ProgrammeCourseConfiguration());
+            modelBuilder.Entity<Department>().Property(d => d.DepartmentKey).HasMaxLength(100);
+            modelBuilder.Entity<Department>().HasIndex(d => d.DepartmentKey).IsUnique();
+            modelBuilder.Entity<UserAccount>().HasOne<Programme>().WithMany()
+                .HasForeignKey(u => u.ProgrammeId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Faculty>().Property(f => f.ImportKey).HasMaxLength(100);
+            modelBuilder.Entity<Faculty>().HasIndex(f => f.ImportKey).IsUnique();
+            modelBuilder.Entity<Instructor>().Property(i => i.ImportKey).HasMaxLength(100);
+            modelBuilder.Entity<Instructor>().HasIndex(i => i.ImportKey).IsUnique();
+            // Key, column sizes and the unique NormalizedEmail index are in UserAccountConfiguration.
+            modelBuilder.Entity<UserAccount>().HasOne<Department>().WithMany()
+                .HasForeignKey(u => u.DepartmentId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Review>().Property(r => r.AcademicYear).HasMaxLength(9);
+            modelBuilder.Entity<Review>().Property(r => r.Semester).HasMaxLength(10);
+            modelBuilder.Entity<Review>().HasOne<Instructor>().WithMany()
+                .HasForeignKey(r => r.InstructorId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Review>().HasIndex(r => new { r.UserId, r.CourseId }).IsUnique();
+            modelBuilder.Entity<Review>().HasOne<UserAccount>().WithMany()
+                .HasForeignKey(r => r.UserId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Review>().HasOne<Course>().WithMany()
+                .HasForeignKey(r => r.CourseId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Review>().HasOne<CourseOffering>().WithMany()
+                .HasForeignKey(r => new { r.OfferingId, r.CourseId })
+                .HasPrincipalKey(o => new { o.OfferingId, o.CourseId }).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Review>().HasOne<OfferingInstructor>().WithMany()
+                .HasForeignKey(r => new { r.OfferingId, r.InstructorId }).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Faculty>().HasMany(f => f.Departments).WithOne()
+                .HasForeignKey(d => d.FacultyId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Department>().HasIndex(d => d.DepartmentCode);
+            modelBuilder.Entity<Department>().HasMany(d => d.Instructors).WithOne()
+                .HasForeignKey(i => i.DepartmentId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Course>().HasOne<Department>().WithMany()
+                .HasForeignKey(c => c.DepartmentId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CourseOffering>().HasKey(o => o.OfferingId);
+            modelBuilder.Entity<CourseOffering>().HasAlternateKey(o => new { o.OfferingId, o.CourseId });
+            modelBuilder.Entity<CourseOffering>().HasOne<Course>().WithMany()
+                .HasForeignKey(o => o.CourseId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<OfferingInstructor>().HasKey(a => new { a.OfferingId, a.InstructorId });
+            modelBuilder.Entity<OfferingInstructor>().HasOne<CourseOffering>().WithMany()
+                .HasForeignKey(a => a.OfferingId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<OfferingInstructor>().HasOne<Instructor>().WithMany()
+                .HasForeignKey(a => a.InstructorId).OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.ApplyConfiguration(new UserAccountConfiguration());
+            modelBuilder.ApplyConfiguration(new InstructorConfiguration());
+
+            modelBuilder.Entity<Course>()
+                .HasIndex(c => new { c.DepartmentId, c.CourseCode })
+                .IsUnique();
+
+
+            modelBuilder.Entity<CoursePrerequisite>()
+                .HasKey(cp => new { cp.CourseId, cp.PrerequisiteCourseId });
+
+            modelBuilder.Entity<CoursePrerequisite>()
+                .HasOne(cp => cp.Course)
+                .WithMany(c => c.Prerequisites)
+                .HasForeignKey(cp => cp.CourseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<CoursePrerequisite>()
+                .HasOne(cp => cp.PrerequisiteCourse)
+                .WithMany(c => c.RequiredBy)
+                .HasForeignKey(cp => cp.PrerequisiteCourseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // If your DB column names differ (for example Coursecode), map them here to avoid migration that renames columns:
+            // modelBuilder.Entity<Course>().Property(c => c.CourseCode).HasColumnName("Coursecode");
+            // modelBuilder.Entity<Course>().Property(c => c.IsElective).HasColumnName("iselective");
+        }
+    }
+}
