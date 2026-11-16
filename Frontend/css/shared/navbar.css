@@ -32,6 +32,15 @@
   white-space: nowrap;
 }
 
+.navbar-brand img { display: block; width: 94px; height: 49px; }
+.navbar-inner { padding-top: 12px; padding-bottom: 12px; }
+.navbar-links a, .navbar-account a, .navbar-account button {
+  transition: background-color 180ms ease, color 180ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .navbar a, .navbar button { transition: none; }
+}
+
 .navbar-links,
 .navbar-account {
   display: flex;
