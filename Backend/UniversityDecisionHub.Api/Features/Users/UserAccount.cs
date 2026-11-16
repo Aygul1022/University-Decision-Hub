@@ -5,9 +5,9 @@ namespace UniversityDecisionHub.Api.Features.Users
     // The single shared account/profile model (table: UserAccounts).
     // Instructor records are separate and are NOT login accounts.
     //
-    // Accounts are created in advance (private local import, or by an administrator) WITHOUT a password.
-    // The person then completes registration: they enter the same name, email, department and year,
-    // choose a password, and only then can log in.
+    // Anyone can register an account with an email that has no account yet (open registration).
+    // A record may also be added in advance (private local import, or by an administrator) WITHOUT a
+    // password; it becomes an account when its owner registers with that email and chooses a password.
     public class UserAccount
     {
         public int UserId { get; set; }

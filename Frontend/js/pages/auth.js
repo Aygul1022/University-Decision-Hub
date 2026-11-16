@@ -76,6 +76,9 @@
   function validate(values) {
     const errors = {};
     if (!values.email) errors.email = ["Enter your email address."];
+    // The form is novalidate, so ask the browser's own email rule here: an address without "@"
+    // would otherwise reach the server and come back as a confusing answer.
+    else if (!form.elements.email.checkValidity()) errors.email = ["Enter a full email address, like name@example.com."];
     if (!values.password) errors.password = ["Enter your password."];
     if (mode === "register") {
       if (values.fullName.length < 2) errors.fullName = ["Enter your full name."];
@@ -128,6 +131,16 @@
     } catch (error) {
       showFieldErrors(error.fieldErrors || {});
       showFormMessage(error.message || "Something went wrong. Please try again.", "error");
+      // 409 on Register: this email already has an account, so point to the Log in page.
+      if (mode === "register" && error.status === 409) {
+        const loginLink = document.querySelector(".auth-switch a");
+        if (loginLink) {
+          const link = document.createElement("a");
+          link.href = loginLink.href;
+          link.textContent = "Go to Log in";
+          formMessage.append(" ", link);
+        }
+      }
       submitButton.disabled = false;
     }
   });

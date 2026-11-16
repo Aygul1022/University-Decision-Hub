@@ -16,7 +16,7 @@ One shared model, in `Features/Users/UserAccount.cs`; mapping in `Data/Configura
 | `DepartmentId` | `integer` | **yes** | Foreign key to `Departments`. Null for an account without a student profile |
 | `StudyYear` | `integer` | **yes** | 1–6 when given (validated in the API) |
 | `IsAdministrator` | `boolean` | no | Default `false`; never set from a request |
-| `CreatedAtUtc` | `timestamp with time zone` | no | Set when the account is created (import or administrator) |
+| `CreatedAtUtc` | `timestamp with time zone` | no | Set when the account is created (registration, import or administrator) |
 
 Compared with the fields discussed earlier (`UserId, FullName, Email, DepartmentId, StudyYear, IsAdministrator`), three columns are new: `NormalizedEmail`, `PasswordHash`, `CreatedAtUtc`. The unique index moves from `Email` to `NormalizedEmail`.
 
@@ -36,7 +36,7 @@ It should only: add `NormalizedEmail`, `PasswordHash` and `CreatedAtUtc` to `Use
 
 - Stored in exactly one column, `PasswordHash`, produced by ASP.NET Core Identity's `PasswordHasher<UserAccount>` (PBKDF2-HMAC-SHA512, 100 000 iterations, a random salt per user embedded in the value).
 - The plain password is never stored, logged or returned. No API response contains `PasswordHash` or `NormalizedEmail`.
-- Rules: 8–128 characters. Wrong password, unknown email and an account that has not completed registration all give the same `401` answer.
+- Rules: 8–128 characters. Wrong password, unknown email and a record added in advance that has no password yet all give the same `401` answer.
 - Register and login share a limit of 10 attempts per minute per client address (`429` afterwards).
 - Nobody — including administrators and whoever imports data — ever sets or knows another person's password. There are no default or shared passwords.
 
@@ -46,29 +46,27 @@ It should only: add `NormalizedEmail`, `PasswordHash` and `CreatedAtUtc` to `Use
 
 ## 4. How accounts are created
 
-Team decision (replaces the earlier registration-only proposal and the activation-code proposal): **accounts are defined in advance, and each person completes registration themselves.**
+Team decision of 16 November 2026 (replaces "accounts are defined in advance"): **registration is open. Anyone can create an account with an email that has no account yet.**
 
-1. An account is created without a password, in one of two ways:
-   - the private user list is imported into the local database with `import-users` (section 7), or
-   - an administrator adds a single person with `POST /api/admin/users`.
-2. The person opens the Register screen and enters full name, email, department, year of study, password and repeated password.
-3. The backend looks the account up by email and compares name, department and year with the stored record. The name comparison ignores letter case, extra spaces and Turkish diacritics; department and year must be equal.
-4. If everything matches and the account has no password yet, the password hash is stored and the person is logged in.
-5. Afterwards the person can change their name, department and year on the My profile page (`PUT /api/auth/me`). Review eligibility must read these values from the database at submission time.
+1. The person opens the Register screen and enters full name, email, password and repeated password. Department and year of study are optional and are needed only to write reviews.
+2. The backend looks the email up (`NormalizedEmail`, so letter case does not matter).
+3. If no account uses that email, a new account is stored with the typed details and a password hash, and the person is logged in.
+4. If an account with a password already uses that email, the answer is `409` and the Register page offers a link to Log in.
+5. Afterwards the person can change their name, department, programme and year on the My profile page (`PUT /api/auth/me`). Review eligibility must read these values from the database at submission time.
 
-Rejected:
+Answers:
 
 | Situation | Answer |
 |---|---|
-| Email not on the list, or name / department / year different | `404`, one message for all of these |
-| Account already has a password | `409` |
-| Missing or invalid field, password shorter than 8 | `400` |
+| Email has no account | `201`, account created and logged in |
+| Email already has an account with a password | `409` |
+| Missing or invalid field, password shorter than 8, unknown department or programme | `400` |
 
-There is no open registration: a person who is not on the list cannot create an account.
+**Records added in advance.** `import-users` (section 7) and `POST /api/admin/users` still add a record without a password. Such a record cannot log in and is not treated as an existing account: its owner registers like everyone else, and the typed name, department, programme and year replace the stored ones. The details no longer have to match the list, so nobody is locked out. A teammate confirmed this on 16 November 2026: the same row is completed, and it appears in the administrator user list as registered.
 
-**Known limitation, accepted by the team:** this checks that the details match the list; it does not prove the person owns the email address. Someone who knows another student's name, email, department and year could register that account first. The first registration wins, the real owner then gets `409`, and an administrator has to step in. Email verification would close this gap and is a separate decision.
+**Known limitation:** nothing proves that the person owns the email address, so anyone can create an account with any unused email, including someone else's. The first registration wins and the real owner then gets `409`. The register answer also shows whether an email already has an account. The 10-requests-per-minute limit on register and login slows guessing; email verification would close the gap. Ozan's decision for the demo (16 November 2026): no ownership check, including for records added in advance; the other teammates have not yet confirmed this. Sending a code by email would need a mail service the project does not have.
 
-**Administrators:** a team member completes registration like everyone else, then on the machine that runs the backend:
+**Administrators:** a team member registers like everyone else, then on the machine that runs the backend:
 
 ```powershell
 dotnet run --project Backend/UniversityDecisionHub.Api -- make-admin someone@example.com
@@ -85,7 +83,7 @@ The person then logs in again to get an administrator token. Nothing in the HTTP
 
 | Request | Who | Body | Success | Errors |
 |---|---|---|---|---|
-| `POST /api/auth/register` | anyone on the list | `fullName, email, password, departmentId, studyYear` | `201` + `{ token, expiresAtUtc, user }` | `400`, `404` no match, `409` already registered, `429` |
+| `POST /api/auth/register` | anyone | `fullName, email, password, departmentId, programmeId, studyYear` | `201` + `{ token, expiresAtUtc, user }` | `400`, `409` email already has an account, `429` |
 | `POST /api/auth/login` | registered user | `email, password` | `200` + `{ token, expiresAtUtc, user }` | `401`, `429` |
 | `GET /api/auth/me` | logged in | — | `200` + `user` | `401` |
 | `PUT /api/auth/me` | logged in | `fullName, departmentId, studyYear` | `200` + `user` | `400`, `401` |
@@ -175,7 +173,7 @@ Pages:
 
 | Page | Open as | Notes |
 |---|---|---|
-| `Pages/auth/login.html`, `register.html` | — | Register completes a pre-defined account; it asks for a department *number* until a Departments endpoint exists |
+| `Pages/auth/login.html`, `register.html` | — | Register creates an account; department is chosen from the department list, and department and year may be left empty |
 | `Pages/auth/profile.html` | — | Logged-in user edits name, department and year; reached from the name in the navbar |
 | `Pages/courses/course-detail.html` | `?id=<CourseId>` | Reads Aygül's `GET /api/courses/{id}`; no second Course model |
 | `Pages/reviews/instructors.html` | — | Name and department filters, empty state |
@@ -211,7 +209,7 @@ There is no DELETE: offerings and reviews will reference instructors and must ke
 
 | Requirement | Status |
 |---|---|
-| FR02 accounts | Accounts are defined in advance (import or administrator) and completed by their owner at Register; see section 4 |
+| FR02 accounts | Open registration; records may also be added in advance by import or an administrator; see section 4 |
 | FR03 profiles | Department and study year are required at registration. Non-student accounts: unresolved in the requirements, not implemented |
 | FR07 author identity | `User.GetUserId()` from the token; never from the request body |
 | FR09 / FR11 administrator-only actions | `AuthPolicies.Administrator`; used by instructor writes. Course writes are still unprotected (Aygül's endpoints) |

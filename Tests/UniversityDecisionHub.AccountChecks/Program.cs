@@ -140,19 +140,21 @@ var courseId = await Db(async db =>
 });
 
 // ================================================================ registration and login
-// auth request 1/10 — name typed without diacritics, in another letter case and with extra spaces
+// auth request 1/10 — a record added in advance without a password; its owner registers with that email
 var register = await Post("/api/auth/register", new
 {
-    fullName = "yigit   SAHIN", email = "Yigit.Sahin@Example.com", departmentId = 1, studyYear = 3, password = PasswordOne
+    fullName = "  Yiğit Şahin ", email = EmailOne, departmentId = 1, studyYear = 3, password = PasswordOne
 });
-Check(register.Status == 201, "Registration that matches a pre-defined user succeeds");
+Check(register.Status == 201, "A record added in advance becomes an account when its owner registers");
 var tokenOne = register.Text("token") ?? "";
 Check(tokenOne.Length > 0, "Registration returns a token");
 Check(register.Json.TryGetProperty("user", out var registeredUser)
       && registeredUser.GetProperty("fullName").GetString() == "Yiğit Şahin"
       && registeredUser.GetProperty("email").GetString() == EmailOne,
-    "Registration answers with the stored name and email, not the typed ones");
+    "Registration answers with the trimmed name and email");
 Check(register.HasNoPrivateFields(PasswordOne), "Registration response has no password, hash or normalized email");
+Check(await Db(db => db.UserAccounts.CountAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailOne))) == 1,
+    "Registering a record added in advance does not create a second account");
 
 // auth request 2/10
 var again = await Post("/api/auth/register", new
@@ -161,20 +163,31 @@ var again = await Post("/api/auth/register", new
 });
 Check(again.Status == 409, "A second registration for the same account is rejected (409)");
 
-// auth request 3/10
-var wrongYear = await Post("/api/auth/register", new
+// auth request 3/10 — open registration: an email that has no account and is on no list
+const string EmailNew = "new.student@example.com";
+const string PasswordNew = "synthetic-pass-new";
+var registerNew = await Post("/api/auth/register", new
 {
-    fullName = "Student Two", email = EmailTwo, departmentId = 2, studyYear = 1, password = PasswordTwo
+    fullName = "New Student", email = "New.Student@Example.com", departmentId = 2, studyYear = 1, password = PasswordNew
 });
-Check(wrongYear.Status == 404, "Registration with a different study year is rejected (404)");
+Check(registerNew.Status == 201 && !string.IsNullOrEmpty(registerNew.Text("token")),
+    "Open registration: an email without an account creates one and logs in (201)");
+Check(registerNew.HasNoPrivateFields(PasswordNew), "Open registration response has no password, hash or normalized email");
+Check(await Db(db => db.UserAccounts.AnyAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailNew)
+        && u.FullName == "New Student" && u.DepartmentId == 2 && u.StudyYear == 1
+        && u.PasswordHash != null && !u.IsAdministrator)),
+    "Open registration stores the typed details with a password hash and no administrator access");
 
-// auth request 4/10
-var unknownEmail = await Post("/api/auth/register", new
+// auth request 4/10 — the same email again, in another letter case
+var duplicateNew = await Post("/api/auth/register", new
 {
-    fullName = "Nobody Here", email = "nobody@example.com", departmentId = 2, studyYear = 4, password = PasswordTwo
+    fullName = "Someone Else", email = EmailNew.ToUpperInvariant(), departmentId = 2, studyYear = 4, password = PasswordTwo
 });
-Check(unknownEmail.Status == 404, "Registration with an email that is not on the list is rejected (404)");
-Check(unknownEmail.Body == wrongYear.Body, "Unknown email and wrong detail give the same answer");
+Check(duplicateNew.Status == 409 && duplicateNew.Body == again.Body,
+    "An email that already has an account cannot register again, whatever its letter case (409)");
+Check(await Db(db => db.UserAccounts.CountAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailNew))) == 1
+      && await Db(db => db.UserAccounts.AnyAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailNew) && u.FullName == "New Student")),
+    "The rejected registration leaves the existing account unchanged");
 
 // auth request 5/10 — the body asks for administrator access
 var registerTwo = await Post("/api/auth/register", new
@@ -187,7 +200,7 @@ Check(registerTwo.Status == 201 && registerTwo.Json.GetProperty("user").GetPrope
     "Registration ignores an isAdministrator value in the request");
 Check(!await Db(db => db.UserAccounts.AnyAsync(u => u.IsAdministrator)), "No administrator exists after public registrations");
 
-// auth request 6/10 — an account without department and year completes registration and is logged in
+// auth request 6/10 — an account without department and year registers and is logged in
 var registerStaff = await Post("/api/auth/register", new
 {
     fullName = "Staff Member", email = EmailStaff, departmentId = (int?)null, studyYear = (int?)null, password = PasswordStaff
@@ -298,11 +311,19 @@ Check((await Get("/api/admin/users", staleTokenTwo)).Status == 403,
     "User list: a token issued before make-admin has no administrator access (403)");
 
 var users = await Get("/api/admin/users", adminToken);
-Check(users.Status == 200 && users.Json.GetArrayLength() == 4, "User list: an administrator sees all four accounts");
+Check(users.Status == 200 && users.Json.GetArrayLength() == 5, "User list: an administrator sees all five accounts");
 Check(users.HasNoPrivateFields(PasswordOne), "User list has no password, hash or normalized email");
 Check(users.Json.EnumerateArray().Single(u => u.GetProperty("email").GetString() == EmailNever)
         .GetProperty("hasCompletedRegistration").GetBoolean() == false,
     "User list shows who has not completed registration yet");
+// Register and the administrator list read the same UserAccounts table.
+Check(users.Json.EnumerateArray().Count(u => string.Equals(u.GetProperty("email").GetString(), EmailNew, StringComparison.OrdinalIgnoreCase)
+        && u.GetProperty("fullName").GetString() == "New Student"
+        && u.GetProperty("hasCompletedRegistration").GetBoolean()) == 1,
+    "User list: an account created by open registration appears once, as registered");
+Check(users.Json.EnumerateArray().Count(u => u.GetProperty("email").GetString() == EmailOne
+        && u.GetProperty("hasCompletedRegistration").GetBoolean()) == 1,
+    "User list: a record added in advance stays one row and shows as registered after its owner registers");
 
 var newUser = new { fullName = " New Person ", email = "new.person@example.com", departmentId = 1, studyYear = 2, isAdministrator = true, password = "ignored-value" };
 Check((await Post("/api/admin/users", newUser)).Status == 401, "Add user: anonymous is rejected (401)");
@@ -374,7 +395,7 @@ Check(!await Db(db => db.UserAccounts.AnyAsync(u => u.Email == "wrong.department
 Check(!importText.Contains("@"), "Import output reports line numbers only, no email addresses");
 Check(await Db(db => db.UserAccounts.AnyAsync(u => u.Email == "imported.person@example.com" && u.PasswordHash == null && !u.IsAdministrator)),
     "An imported account has no password and is not an administrator");
-Check(await Db(db => db.UserAccounts.CountAsync()) == 7, "Seven accounts exist: four listed, one added, two imported");
+Check(await Db(db => db.UserAccounts.CountAsync()) == 8, "Eight accounts exist: four listed, one registered, one added, two imported");
 
 // ================================================================ model-level guarantees
 Check(UserAccount.NormalizeName("  yiğit   ŞAHİN ") == UserAccount.NormalizeName("Yigit Sahin"),
