@@ -1,0 +1,43 @@
+.review-form-card {
+  max-width: 640px;
+}
+
+.review-form-card fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.review-form-legend {
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.review-form-card textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: inherit;
+  font: inherit;
+  resize: vertical;
+}
+
+.review-form-card textarea:focus-visible {
+  border-color: var(--color-red);
+}
+
+.review-form-card .attendance-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.review-form-card .attendance-label input {
+  width: auto;
+  flex: none;
+  margin-top: 4px;
+}

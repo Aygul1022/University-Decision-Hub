@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore academic staff and course reviews with University Decision Hub.">
+  <title>University Decision Hub</title>
+  <link rel="stylesheet" href="css/shared/global.css">
+  <link rel="stylesheet" href="css/shared/navbar.css">
+  <link rel="stylesheet" href="css/pages/home.css">
+</head>
+<body>
+  <main class="page home-page">
+    <section class="home-hero card" aria-labelledby="home-title">
+      <p class="home-eyebrow">University Decision Hub</p>
+      <h1 id="home-title">Make your university decisions with confidence.</h1>
+      <p class="home-lead">Explore academic staff and use student course reviews to make more informed choices.</p>
+      <div class="home-actions">
+        <a class="button" href="Pages/reviews/instructors.html">Browse academic staff</a>
+        <a class="button secondary" href="Pages/auth/register.html">Create an account</a>
+      </div>
+    </section>
+
+    <section class="home-features" aria-labelledby="features-title">
+      <h2 id="features-title">Explore the hub</h2>
+      <div class="home-feature-grid">
+        <article class="home-feature">
+          <h3>Academic staff</h3>
+          <p>Find staff by name or department and open their profiles.</p>
+          <a href="Pages/reviews/instructors.html">Browse academic staff</a>
+        </article>
+        <article class="home-feature">
+          <h3>Course reviews</h3>
+          <p>Read student feedback and share your own course experience.</p>
+          <a href="Pages/reviews/reviews.html" data-members-path="Pages/reviews/reviews.html">Read course reviews</a>
+        </article>
+        <article class="home-feature">
+          <h3>Join the community</h3>
+          <p>Create an account to take part in the course review community.</p>
+          <a href="Pages/auth/register.html">Register</a>
+        </article>
+      </div>
+    </section>
+
+    <p class="home-note">Keep the API running to load live staff and department information.</p>
+  </main>
+
+  <script src="js/shared/api.js"></script>
+  <script src="js/shared/navbar.js"></script>
+  <script>
+    document.querySelectorAll("[data-members-path]").forEach((link) => {
+      link.href = Site.membersUrl(link.dataset.membersPath);
+    });
+  </script>
+</body>
+</html>

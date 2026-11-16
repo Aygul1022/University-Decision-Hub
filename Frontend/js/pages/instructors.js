@@ -1,5 +1,5 @@
 // Instructor list (instructors.html) and instructor detail (instructor-detail.html?id=<InstructorId>).
-// Requires js/shared/api.js and js/shared/navbar.js.
+// Requires js/shared/api.js, js/shared/departments.js and js/shared/navbar.js.
 (function () {
   const main = document.querySelector("main[data-page]");
   if (!main) return;
@@ -12,17 +12,33 @@
     status.hidden = !text;
   }
 
-  // GET /api/departments can supply the name; until the pages use it, show the number.
+  let departmentNames = new Map();
+
+  async function loadDepartmentNames() {
+    const departments = await Departments.load();
+    departmentNames = new Map(departments.map((department) => [department.departmentId, department.departmentName]));
+  }
+
   function departmentLabel(instructor) {
-    return "Department " + instructor.departmentId;
+    return departmentNames.get(instructor.departmentId) || "";
   }
 
   // ---------------------------------------------------------------- list page
-  function initList() {
+  async function initList() {
     const form = main.querySelector("[data-search-form]");
     const results = main.querySelector("[data-results]");
     const count = main.querySelector("[data-result-count]");
+    const departmentSelect = form.elements.departmentId;
+    const departmentStatus = main.querySelector("[data-department-status]");
     let latestRequest = 0;
+
+    const departmentCount = await Departments.fillSelect(departmentSelect);
+    await loadDepartmentNames();
+    if (departmentCount === 0) {
+      departmentSelect.disabled = true;
+      departmentStatus.textContent = "Department filtering is unavailable. Search by name instead.";
+      departmentStatus.hidden = false;
+    }
 
     function renderList(instructors) {
       results.replaceChildren();
@@ -56,7 +72,7 @@
 
       const request = ++latestRequest;
       count.hidden = true;
-      showStatus("Loading instructors…", false);
+      showStatus("Loading academic staff…", false);
 
       try {
         const instructors = await apiFetch("/api/instructors" + (filtered ? "?" + params : ""));
@@ -65,11 +81,13 @@
 
         if (instructors.length === 0) {
           showStatus(filtered
-            ? "No instructors match this search. Try a shorter name or clear the department number."
-            : "No instructors have been added yet.", false);
+            ? "No academic staff members match this search. Try a shorter name or clear the department filter."
+            : "No academic staff members have been added yet.", false);
         } else {
           showStatus("", false);
-          count.textContent = instructors.length === 1 ? "1 instructor" : instructors.length + " instructors";
+          count.textContent = instructors.length === 1
+            ? "1 academic staff member"
+            : instructors.length + " academic staff members";
           count.hidden = false;
         }
       } catch (error) {
@@ -119,14 +137,16 @@
     async function load() {
       const id = Number(new URLSearchParams(window.location.search).get("id"));
       if (!Number.isInteger(id) || id <= 0) {
-        showStatus("No instructor was selected. Choose one from the instructor list.", true);
+        showStatus("No academic staff member was selected. Choose one from the academic staff list.", true);
         return;
       }
 
       try {
-        render(await apiFetch("/api/instructors/" + id));
+        const instructor = await apiFetch("/api/instructors/" + id);
+        await loadDepartmentNames();
+        render(instructor);
       } catch (error) {
-        showStatus(error.status === 404 ? "This instructor could not be found." : error.message, true);
+        showStatus(error.status === 404 ? "This academic staff member could not be found." : error.message, true);
       }
     }
 

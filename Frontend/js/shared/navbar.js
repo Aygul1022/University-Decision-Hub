@@ -39,7 +39,7 @@ const Site = (function () {
   const LINKS = [
     { label: "Read Reviews", path: "Pages/reviews/reviews.html", membersOnly: true },
     { label: "Write a Review", path: "Pages/reviews/review-form.html", membersOnly: true },
-    { label: "Instructors", path: "Pages/reviews/instructors.html", membersOnly: false },
+    { label: "Academic Staff", path: "Pages/reviews/instructors.html", membersOnly: false },
   ];
 
   function element(tag, className, text) {

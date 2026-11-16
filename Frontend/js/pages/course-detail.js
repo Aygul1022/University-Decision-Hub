@@ -49,6 +49,16 @@
   reviewsQuery.toString().replaceAll("+", "%20");
     const link = article.querySelector("[data-reviews-link]");
     link.href = Site.membersUrl(reviewsPath);
+    const writePath =
+  "Pages/reviews/review-form.html?courseId=" +
+  encodeURIComponent(course.courseId);
+
+const writeLink = article.querySelector("[data-write-review-link]");
+
+writeLink.href = Site.membersUrl(writePath);
+writeLink.textContent = Session.isLoggedIn
+  ? "Write a Review"
+  : "Log in to write a review";
     link.textContent = Session.isLoggedIn ? "Read reviews for this course" : "Log in to read reviews";
     article.querySelector("[data-reviews-text]").textContent = Session.isLoggedIn
       ? "See what students who took " + course.courseCode + " wrote about it."

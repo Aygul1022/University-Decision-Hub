@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Write a Review · University Decision Hub</title>
+
+  <link rel="stylesheet" href="../../css/shared/global.css">
+  <link rel="stylesheet" href="../../css/shared/navbar.css">
+  <link rel="stylesheet" href="../../css/pages/auth.css">
+  <link rel="stylesheet" href="../../css/pages/review-form.css">
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="auth-card review-form-card">
+      <h1>Write a Review</h1>
+      <p class="auth-lead">
+        Choose a course from your programme and describe your experience.
+      </p>
+
+      <p class="notice" data-status role="status">
+        Loading your profile and courses…
+      </p>
+
+      <p hidden data-profile-help>
+        Select your programme and study year in
+        <a href="../auth/profile.html">your profile</a>,
+        then return to this page.
+      </p>
+
+      <form data-review-form hidden novalidate>
+        <fieldset>
+          <legend class="review-form-legend">Review details</legend>
+
+          <div class="field">
+            <label for="courseId">Course</label>
+            <select id="courseId" name="courseId" required>
+              <option value="">Choose a course</option>
+            </select>
+            <p class="field-hint">
+              Courses come from your programme’s curricula.
+              Eligibility is checked when you submit.
+            </p>
+          </div>
+
+          <div class="field">
+            <label for="instructorId">Academic staff member</label>
+            <select id="instructorId" name="instructorId" required>
+              <option value="">Choose an academic staff member</option>
+            </select>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="academicYear">Academic year</label>
+              <input
+                id="academicYear"
+                name="academicYear"
+                type="text"
+                placeholder="2025-2026"
+                maxlength="9"
+                required
+              >
+              <p class="field-hint">
+                The academic year when you took the course.
+              </p>
+            </div>
+
+            <div class="field">
+              <label for="semester">Semester</label>
+              <select id="semester" name="semester" required>
+                <option value="">Choose a semester</option>
+                <option value="Fall">Fall</option>
+                <option value="Spring">Spring</option>
+                <option value="Summer">Summer</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="reviewText">Your review</label>
+            <textarea
+              id="reviewText"
+              name="reviewText"
+              rows="7"
+              required
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label class="attendance-label" for="attendanceConfirmed">
+              <input
+                id="attendanceConfirmed"
+                name="attendanceConfirmed"
+                type="checkbox"
+                required
+              >
+              <span>
+                I confirm that I took this course with this academic staff member.
+              </span>
+            </label>
+          </div>
+
+          <p class="form-message" data-form-message role="alert" hidden></p>
+
+          <button class="button" type="submit">Submit review</button>
+        </fieldset>
+      </form>
+
+      <p hidden data-success role="status"></p>
+      <a class="button" data-read-reviews hidden>Read course reviews</a>
+    </section>
+  </main>
+
+  <script src="../../js/shared/api.js"></script>
+  <script src="../../js/shared/navbar.js"></script>
+  <script src="../../js/pages/review-form.js"></script>
+</body>
+</html>

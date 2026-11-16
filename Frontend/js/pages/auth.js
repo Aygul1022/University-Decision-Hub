@@ -1,4 +1,4 @@
-// Login and Register pages. Requires js/shared/api.js and js/shared/navbar.js to be loaded first.
+// Login and Register pages. Register also requires js/shared/departments.js.
 (function () {
   const form = document.querySelector("form[data-auth-form]");
   if (!form) return;
@@ -6,6 +6,7 @@
   const mode = form.dataset.authForm; // "login" or "register"
   const formMessage = form.querySelector("[data-form-message]");
   const submitButton = form.querySelector("button[type=submit]");
+  const registrationDepartmentIds = new Set();
 
   // ?next=Pages/reviews/reviews.html  -> where to go after a successful login (see Site.membersUrl).
   const requestedNext = new URLSearchParams(window.location.search).get("next");
@@ -42,6 +43,34 @@
     });
   }
 
+  async function loadDepartmentOptions() {
+    const departmentSelect = form.elements.departmentId;
+    const departmentStatus = document.querySelector("[data-department-status]");
+    submitButton.disabled = true;
+    departmentSelect.disabled = true;
+
+    try {
+      const count = await Departments.fillSelect(departmentSelect);
+      for (const option of departmentSelect.options) {
+        if (option.value) registrationDepartmentIds.add(Number(option.value));
+      }
+
+      if (count === 0) {
+        departmentStatus.textContent = "No department choices are available. You can still register without student information.";
+        departmentStatus.hidden = false;
+      } else {
+        departmentSelect.disabled = false;
+      }
+    } catch (error) {
+      departmentStatus.textContent = error.message || "Department options could not be loaded.";
+      departmentStatus.hidden = false;
+    } finally {
+      submitButton.disabled = false;
+    }
+  }
+
+  if (mode === "register") loadDepartmentOptions();
+
   // Checks done in the browser first, so obvious mistakes do not need a round trip.
   // The server repeats every check; these are only for convenience.
   function validate(values) {
@@ -53,7 +82,9 @@
       if (values.password && values.password.length < 8) errors.password = ["Use at least 8 characters."];
       if (values.password !== form.elements.confirmPassword.value) errors.confirmPassword = ["The two passwords do not match."];
       // Department and year are optional: an account without them can log in but cannot write reviews.
-      if (values.departmentId !== null && !(values.departmentId >= 1)) errors.departmentId = ["Enter a valid department number."];
+      if (values.departmentId !== null && !registrationDepartmentIds.has(values.departmentId)) {
+        errors.departmentId = ["Choose a department from the list."];
+      }
     }
     return errors;
   }

@@ -174,11 +174,11 @@
 
   Promise.all([
     loadOptions("departmentId", "/api/departments", (entry) => entry.departmentName, "Department"),
-    loadOptions("instructorId", "/api/instructors", (entry) => entry.fullName, "Instructor"),
+    loadOptions("instructorId", "/api/instructors", (entry) => entry.fullName, "Academic staff"),
   ]).then(([departmentsLoaded, instructorsLoaded]) => {
     const missing = [];
     if (!departmentsLoaded) missing.push("departments");
-    if (!instructorsLoaded) missing.push("instructors");
+    if (!instructorsLoaded) missing.push("academic staff");
     if (missing.length) setNotice(catalogStatus, "Could not load " + missing.join(" and ") + ".");
   });
   loadReviews();
