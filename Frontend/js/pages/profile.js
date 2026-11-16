@@ -86,7 +86,8 @@
     form.elements.fullName.value = profile.fullName;
     // All three are null for an account without a student profile.
     form.elements.departmentId.value = profile.departmentId ?? "";
-    form.elements.studyYear.value = profile.studyYear ?? "";
+    // A graduate has no study year and shows the "Graduate" choice instead.
+    form.elements.studyYear.value = profile.isGraduate ? "graduate" : profile.studyYear ?? "";
     return fillProgrammes(profile.departmentId ?? null, profile.programmeId ?? null);
   }
 
@@ -129,12 +130,14 @@
     event.preventDefault();
     showFormMessage("", "");
 
+    const year = form.elements.studyYear.value;
     const values = {
       fullName: form.elements.fullName.value.trim(),
       departmentId: optionalNumber(form.elements.departmentId.value),
       // Always sent: the server treats a missing programmeId as "clear the selection".
       programmeId: optionalNumber(programmeSelect.value),
-      studyYear: optionalNumber(form.elements.studyYear.value),
+      isGraduate: year === "graduate",
+      studyYear: year === "graduate" ? null : optionalNumber(year),
     };
 
     const errors = {};

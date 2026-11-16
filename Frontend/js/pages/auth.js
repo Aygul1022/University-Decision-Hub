@@ -105,7 +105,10 @@
     if (mode === "register") {
       values.fullName = form.elements.fullName.value.trim();
       values.departmentId = optionalNumber(form.elements.departmentId.value);
-      values.studyYear = optionalNumber(form.elements.studyYear.value);
+      // "Graduate" is one of the choices in the year list; it is stored as isGraduate with no year.
+      const year = form.elements.studyYear.value;
+      values.isGraduate = year === "graduate";
+      values.studyYear = values.isGraduate ? null : optionalNumber(year);
     }
     return values;
   }

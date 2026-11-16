@@ -23,7 +23,7 @@ const Session = {
     if (!expires || expires <= Date.now()) return null;
     return localStorage.getItem("udh.token");
   },
-  // { userId, fullName, email, departmentId, studyYear, isAdministrator } or null
+  // { userId, fullName, email, departmentId, programmeId, studyYear, isGraduate, isAdministrator } or null
   get user() {
     if (!this.token) return null;
     try {

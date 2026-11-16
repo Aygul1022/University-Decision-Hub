@@ -39,6 +39,9 @@ namespace UniversityDecisionHub.Api.Features.Authentication
         [EnableRateLimiting(RateLimitPolicies.Authentication)]
         public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
         {
+            if (UserAccount.GraduateError(request.IsGraduate, request.StudyYear) is { } graduateError)
+                return BadRequest(graduateError);
+
             var profile = await ProgrammeProfile.ResolveAsync(_db, request.ProgrammeId, request.DepartmentId);
             if (profile.Error is not null) return BadRequest(profile.Error);
 
@@ -61,6 +64,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication
                     DepartmentId = profile.DepartmentId,
                     ProgrammeId = request.ProgrammeId,
                     StudyYear = request.StudyYear,
+                    IsGraduate = request.IsGraduate,
                     IsAdministrator = false,
                     CreatedAtUtc = DateTime.UtcNow
                 };
@@ -94,7 +98,8 @@ namespace UniversityDecisionHub.Api.Features.Authentication
                     .SetProperty(u => u.Email, email)
                     .SetProperty(u => u.DepartmentId, profile.DepartmentId)
                     .SetProperty(u => u.ProgrammeId, request.ProgrammeId)
-                    .SetProperty(u => u.StudyYear, request.StudyYear));
+                    .SetProperty(u => u.StudyYear, request.StudyYear)
+                    .SetProperty(u => u.IsGraduate, request.IsGraduate));
             if (updated == 0)
                 return Conflict(AlreadyRegistered);
 
@@ -103,6 +108,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             user.DepartmentId = profile.DepartmentId;
             user.ProgrammeId = request.ProgrammeId;
             user.StudyYear = request.StudyYear;
+            user.IsGraduate = request.IsGraduate;
             return StatusCode(StatusCodes.Status201Created, ToResponse(user));
         }
 
@@ -163,6 +169,9 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             var user = await _db.UserAccounts.FirstOrDefaultAsync(u => u.UserId == userId.Value);
             if (user == null) return Unauthorized();
 
+            if (UserAccount.GraduateError(request.IsGraduate, request.StudyYear) is { } graduateError)
+                return BadRequest(graduateError);
+
             var profile = await ProgrammeProfile.ResolveAsync(_db, request.ProgrammeId, request.DepartmentId);
             if (profile.Error is not null) return BadRequest(profile.Error);
 
@@ -170,6 +179,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             user.DepartmentId = profile.DepartmentId;
             user.ProgrammeId = request.ProgrammeId;
             user.StudyYear = request.StudyYear;
+            user.IsGraduate = request.IsGraduate;
             await _db.SaveChangesAsync();
 
             return Ok(UserProfileDto.From(user));

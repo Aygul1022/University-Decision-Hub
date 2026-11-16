@@ -68,6 +68,12 @@
     try {
       const profile = await apiFetch("/api/auth/me");
 
+      // Whether graduates may write reviews is still a team decision; the server requires a study year.
+      if (profile.isGraduate) {
+        showStatus("Reviews need a year of study, so graduate accounts cannot write reviews yet.", true);
+        return;
+      }
+
       if (
         !Number.isInteger(profile.programmeId) ||
         profile.programmeId <= 0 ||

@@ -168,15 +168,22 @@ const string EmailNew = "new.student@example.com";
 const string PasswordNew = "synthetic-pass-new";
 var registerNew = await Post("/api/auth/register", new
 {
-    fullName = "New Student", email = "New.Student@Example.com", departmentId = 2, studyYear = 1, password = PasswordNew
+    fullName = "New Student", email = "New.Student@Example.com", departmentId = 2, studyYear = (int?)null, isGraduate = true,
+    password = PasswordNew
 });
 Check(registerNew.Status == 201 && !string.IsNullOrEmpty(registerNew.Text("token")),
     "Open registration: an email without an account creates one and logs in (201)");
 Check(registerNew.HasNoPrivateFields(PasswordNew), "Open registration response has no password, hash or normalized email");
 Check(await Db(db => db.UserAccounts.AnyAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailNew)
-        && u.FullName == "New Student" && u.DepartmentId == 2 && u.StudyYear == 1
+        && u.FullName == "New Student" && u.DepartmentId == 2
         && u.PasswordHash != null && !u.IsAdministrator)),
     "Open registration stores the typed details with a password hash and no administrator access");
+Check(registerNew.Json.GetProperty("user").GetProperty("isGraduate").GetBoolean()
+      && registerNew.Json.GetProperty("user").GetProperty("studyYear").ValueKind == JsonValueKind.Null
+      && await Db(db => db.UserAccounts.AnyAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailNew)
+          && u.IsGraduate && u.StudyYear == null)),
+    "Registering as a graduate stores IsGraduate with no study year and returns it");
+Check(registeredUser.GetProperty("isGraduate").GetBoolean() == false, "A registration with a study year is not a graduate");
 
 // auth request 4/10 — the same email again, in another letter case
 var duplicateNew = await Post("/api/auth/register", new
@@ -270,8 +277,8 @@ var me = await Get("/api/auth/me", tokenOne);
 Check(me.Status == 200 && me.Json.GetProperty("departmentId").GetInt32() == 1 && me.Json.GetProperty("studyYear").GetInt32() == 3
       && me.Json.GetProperty("userId").GetInt32() == stored[EmailOne].UserId,
     "GET /api/auth/me returns the caller's own id, department and study year");
-Check(me.PropertyNames().SetEquals(["userId", "fullName", "email", "departmentId", "programmeId", "studyYear", "isAdministrator"]),
-    "The profile contains exactly the six public fields");
+Check(me.PropertyNames().SetEquals(["userId", "fullName", "email", "departmentId", "programmeId", "studyYear", "isGraduate", "isAdministrator"]),
+    "The profile contains exactly the eight public fields");
 
 var middle = tokenOne.Length - 10;
 var tampered = tokenOne[..middle] + (tokenOne[middle] == 'A' ? 'B' : 'A') + tokenOne[(middle + 1)..];
@@ -297,6 +304,39 @@ Check((await Put("/api/auth/me", new { fullName = "Yiğit Şahin", departmentId 
     "PUT /api/auth/me rejects study year 9 (400)");
 Check((await Put("/api/auth/me", new { fullName = "Yiğit Şahin Kaya", departmentId = 999, studyYear = 4 }, tokenOne)).Status == 400,
     "PUT /api/auth/me rejects a department that does not exist (400)");
+var graduateWithYear = await Put("/api/auth/me", new { fullName = "Staff Member", studyYear = 4, isGraduate = true }, tokenStaff);
+Check(graduateWithYear.Status == 400 && graduateWithYear.Body.Contains("graduate has no study year"),
+    "Profile: Graduate together with a study year is rejected (400)");
+var becomeGraduate = await Put("/api/auth/me", new { fullName = "Staff Member", isGraduate = true }, tokenStaff);
+Check(becomeGraduate.Status == 200 && becomeGraduate.Json.GetProperty("isGraduate").GetBoolean()
+      && becomeGraduate.Json.GetProperty("studyYear").ValueKind == JsonValueKind.Null
+      && (await Get("/api/auth/me", tokenStaff)).Json.GetProperty("isGraduate").GetBoolean(),
+    "Profile: a user can choose Graduate and it is saved and returned");
+var noLongerGraduate = await Put("/api/auth/me", new { fullName = "Staff Member" }, tokenStaff);
+Check(noLongerGraduate.Status == 200 && !noLongerGraduate.Json.GetProperty("isGraduate").GetBoolean()
+      && !await Db(db => db.UserAccounts.AnyAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailStaff) && u.IsGraduate)),
+    "Profile: leaving Graduate out clears it, like the other profile fields");
+var constraintHeld = false;
+try
+{
+    await Db(async db =>
+    {
+        db.UserAccounts.Add(new UserAccount
+        {
+            FullName = "Constraint Probe", Email = "constraint.probe@example.com",
+            NormalizedEmail = UserAccount.NormalizeEmail("constraint.probe@example.com"),
+            StudyYear = 2, IsGraduate = true, CreatedAtUtc = DateTime.UtcNow
+        });
+        await db.SaveChangesAsync();
+        return 0;
+    });
+}
+catch (DbUpdateException)
+{
+    constraintHeld = true;
+}
+Check(constraintHeld, "Database: a graduate with a study year is refused by the check constraint");
+
 var meStaff = await Get("/api/auth/me", tokenStaff);
 Check(meStaff.Status == 200 && meStaff.Json.GetProperty("departmentId").ValueKind == JsonValueKind.Null
       && meStaff.Json.GetProperty("studyYear").ValueKind == JsonValueKind.Null,
@@ -321,6 +361,10 @@ Check(users.Json.EnumerateArray().Count(u => string.Equals(u.GetProperty("email"
         && u.GetProperty("fullName").GetString() == "New Student"
         && u.GetProperty("hasCompletedRegistration").GetBoolean()) == 1,
     "User list: an account created by open registration appears once, as registered");
+Check(users.Json.EnumerateArray().Single(u => string.Equals(u.GetProperty("email").GetString(), EmailNew, StringComparison.OrdinalIgnoreCase))
+        .GetProperty("isGraduate").GetBoolean()
+      && users.Json.EnumerateArray().Count(u => u.GetProperty("isGraduate").GetBoolean()) == 1,
+    "User list shows who is a graduate");
 Check(users.Json.EnumerateArray().Count(u => u.GetProperty("email").GetString() == EmailOne
         && u.GetProperty("hasCompletedRegistration").GetBoolean()) == 1,
     "User list: a record added in advance stays one row and shows as registered after its owner registers");
@@ -328,6 +372,8 @@ Check(users.Json.EnumerateArray().Count(u => u.GetProperty("email").GetString() 
 var newUser = new { fullName = " New Person ", email = "new.person@example.com", departmentId = 1, studyYear = 2, isAdministrator = true, password = "ignored-value" };
 Check((await Post("/api/admin/users", newUser)).Status == 401, "Add user: anonymous is rejected (401)");
 Check((await Post("/api/admin/users", newUser, tokenOne)).Status == 403, "Add user: a student is rejected (403)");
+Check((await Post("/api/admin/users", new { fullName = "Graduate With Year", email = "graduate.year@example.com", studyYear = 3, isGraduate = true }, adminToken)).Status == 400,
+    "Add user: Graduate together with a study year is rejected (400)");
 var added = await Post("/api/admin/users", newUser, adminToken);
 Check(added.Status == 201 && added.Text("fullName") == "New Person" && !added.Json.GetProperty("isAdministrator").GetBoolean()
       && !added.Json.GetProperty("hasCompletedRegistration").GetBoolean(),

@@ -25,5 +25,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication.Dtos
         // Optional; when given it must be 1-6.
         [Range(1, 6, ErrorMessage = "StudyYear must be between 1 and 6.")]
         public int? StudyYear { get; set; }
+        // True for a graduate; StudyYear must then be empty.
+        public bool IsGraduate { get; set; }
     }
 }

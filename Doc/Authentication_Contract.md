@@ -15,6 +15,7 @@ One shared model, in `Features/Users/UserAccount.cs`; mapping in `Data/Configura
 | `PasswordHash` | `text` | **yes** | Null until the person completes registration; then hash only — see section 2 |
 | `DepartmentId` | `integer` | **yes** | Foreign key to `Departments`. Null for an account without a student profile |
 | `StudyYear` | `integer` | **yes** | 1–6 when given (validated in the API) |
+| `IsGraduate` | `boolean` | no | Default `false`. `true` for a graduate, who has no study year; the constraint `CK_UserAccounts_GraduateHasNoStudyYear` refuses a graduate with a `StudyYear` |
 | `IsAdministrator` | `boolean` | no | Default `false`; never set from a request |
 | `CreatedAtUtc` | `timestamp with time zone` | no | Set when the account is created (registration, import or administrator) |
 
@@ -76,23 +77,23 @@ The person then logs in again to get an administrator token. Nothing in the HTTP
 
 **Open points for the team:**
 
-- **Graduates.** Two people on the current list answered "Mezun" instead of a year. They can now be imported with an empty `StudyYear`: they can log in but cannot write reviews. Whether graduates should be able to review is still a team decision.
+- **Graduates.** Since 16 November 2026 "Graduate" is one of the choices in the Year of study list on the Register and My profile pages. It is stored as `IsGraduate = true` with an empty `StudyYear`, and the API answers `400` when both are sent. A graduate can log in but cannot write reviews, because review eligibility still requires a study year; whether graduates should be able to review is still a team decision. `import-users` has no graduate column yet: the two people who answered "Mezun" are imported with an empty `StudyYear` and are not marked as graduates until the import format is decided.
 - **Department IDs.** The import file needs the numeric `DepartmentId` used in the database (Aygül's Department table), not the department name typed in the form.
 
 ## 5. Endpoints
 
 | Request | Who | Body | Success | Errors |
 |---|---|---|---|---|
-| `POST /api/auth/register` | anyone | `fullName, email, password, departmentId, programmeId, studyYear` | `201` + `{ token, expiresAtUtc, user }` | `400`, `409` email already has an account, `429` |
+| `POST /api/auth/register` | anyone | `fullName, email, password, departmentId, programmeId, studyYear, isGraduate` | `201` + `{ token, expiresAtUtc, user }` | `400`, `409` email already has an account, `429` |
 | `POST /api/auth/login` | registered user | `email, password` | `200` + `{ token, expiresAtUtc, user }` | `401`, `429` |
 | `GET /api/auth/me` | logged in | — | `200` + `user` | `401` |
-| `PUT /api/auth/me` | logged in | `fullName, departmentId, studyYear` | `200` + `user` | `400`, `401` |
+| `PUT /api/auth/me` | logged in | `fullName, departmentId, programmeId, studyYear, isGraduate` | `200` + `user` | `400`, `401` |
 | `GET /api/admin/users` | administrator | — | `200` + list of `managedUser` | `401`, `403` |
 | `GET /api/admin/users/{id}` | administrator | — | `200` + `managedUser` | `401`, `403`, `404` |
-| `POST /api/admin/users` | administrator | `fullName, email, departmentId, studyYear` | `201` + `managedUser` | `400`, `401`, `403`, `409` email exists |
-| `PUT /api/admin/users/{id}` | administrator | `fullName, email, departmentId, studyYear` | `200` + `managedUser` | `400`, `401`, `403`, `404`, `409` |
+| `POST /api/admin/users` | administrator | `fullName, email, departmentId, programmeId, studyYear, isGraduate` | `201` + `managedUser` | `400`, `401`, `403`, `409` email exists |
+| `PUT /api/admin/users/{id}` | administrator | `fullName, email, departmentId, programmeId, studyYear, isGraduate` | `200` + `managedUser` | `400`, `401`, `403`, `404`, `409` |
 
-`user` is `{ userId, fullName, email, departmentId, studyYear, isAdministrator }`.
+`user` is `{ userId, fullName, email, departmentId, programmeId, studyYear, isGraduate, isAdministrator }`.
 `managedUser` is the same plus `hasCompletedRegistration` (false while the person has not chosen a password).
 
 No endpoint accepts or returns a password hash, and no endpoint lets one person set another person's password. There is no delete-user endpoint: reviews will reference their authors.
