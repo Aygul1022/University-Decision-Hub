@@ -21,7 +21,12 @@
 
     setField("courseCode", course.courseCode);
     setField("courseName", course.courseName);
-    setField("courseType", course.isElective ? "Elective" : "Compulsory");
+    const courseType =
+    course.isElective === true ? "Elective" :
+    course.isElective === false ? "Compulsory" :
+    "Unknown";
+
+    setField("courseType", courseType);
     // The department name is filled in by the API once departments exist; until then show its number.
     setField("department", course.departmentName || "Department " + course.departmentId);
     setField("recommendedStudyYear", course.recommendedStudyYear ? "Year " + course.recommendedStudyYear : "Not set yet");
@@ -33,7 +38,15 @@
     setField("courseDescription", description);
 
     // Link to the Read Reviews page, filtered to this course. Visitors go through login first (FR01).
-    const reviewsPath = "Pages/reviews/reviews.html?courseCode=" + encodeURIComponent(course.courseCode);
+     const reviewsQuery = new URLSearchParams({
+  courseId: String(course.courseId),
+  courseCode: course.courseCode,
+  departmentId: String(course.departmentId),
+});
+
+  const reviewsPath =
+  "Pages/reviews/reviews.html?" +
+  reviewsQuery.toString().replaceAll("+", "%20");
     const link = article.querySelector("[data-reviews-link]");
     link.href = Site.membersUrl(reviewsPath);
     link.textContent = Session.isLoggedIn ? "Read reviews for this course" : "Log in to read reviews";

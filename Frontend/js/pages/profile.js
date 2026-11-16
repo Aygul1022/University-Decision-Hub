@@ -11,6 +11,7 @@
   const form = document.querySelector("[data-profile-form]");
   const formMessage = form.querySelector("[data-form-message]");
   const submitButton = form.querySelector("button[type=submit]");
+  let currentProgrammeId = null;
 
   function showFormMessage(text, kind) {
     formMessage.textContent = text;
@@ -27,12 +28,13 @@
   }
 
   function fill(profile) {
-    form.elements.email.value = profile.email;
-    form.elements.fullName.value = profile.fullName;
-    // Both are null for an account without a student profile.
-    form.elements.departmentId.value = profile.departmentId ?? "";
-    form.elements.studyYear.value = profile.studyYear ?? "";
-  }
+  currentProgrammeId = profile.programmeId ?? null;
+
+  form.elements.email.value = profile.email;
+  form.elements.fullName.value = profile.fullName;
+  form.elements.departmentId.value = profile.departmentId ?? "";
+  form.elements.studyYear.value = profile.studyYear ?? "";
+}
 
   // An empty field is sent as null, not as 0.
   function optionalNumber(text) {
@@ -67,10 +69,11 @@
     showFormMessage("", "");
 
     const values = {
-      fullName: form.elements.fullName.value.trim(),
-      departmentId: optionalNumber(form.elements.departmentId.value),
-      studyYear: optionalNumber(form.elements.studyYear.value),
-    };
+  fullName: form.elements.fullName.value.trim(),
+  departmentId: optionalNumber(form.elements.departmentId.value),
+  programmeId: currentProgrammeId,
+  studyYear: optionalNumber(form.elements.studyYear.value),
+};
 
     const errors = {};
     if (values.fullName.length < 2) errors.fullName = ["Enter your full name."];
@@ -82,6 +85,7 @@
     }
 
     submitButton.disabled = true;
+    
     try {
       const profile = await apiFetch("/api/auth/me", { method: "PUT", body: values });
       rememberProfile(profile);
