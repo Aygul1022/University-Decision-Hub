@@ -15,12 +15,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication
     public class AuthController : ControllerBase
     {
         private const string InvalidCredentials = "Email or password is incorrect.";
-        private const string AlreadyRegistered = "This account is already registered. Log in instead.";
-
-        // One message for "email not on the list" and "a detail is different", so the answer does not
-        // reveal which emails are on the list or which field was wrong.
-        private const string NoMatch = "These details do not match a pre-registered user. " +
-            "Check your name, email, department and year, or contact an administrator.";
+        private const string AlreadyRegistered = "An account with this email already exists. Log in instead.";
 
         private readonly ApplicationDbContext _db;
         private readonly IPasswordHasher<UserAccount> _hasher;
@@ -34,45 +29,80 @@ namespace UniversityDecisionHub.Api.Features.Authentication
         }
 
         // POST api/auth/register
-        // Completes the registration of an account that was created in advance: the name, email,
-        // department and year must match the stored record, and the person chooses a password.
-        //   201 + token   registration completed
-        //   400           invalid input
-        //   404           no pre-registered user matches these details
-        //   409           the account is already registered
+        // Open registration: anyone can create an account with an email that has no account yet.
+        //   201 + token   account created and logged in
+        //   400           invalid input, or an unknown department or programme
+        //   409           an account with this email already exists
+        // A record that was added in advance (import or administrator) and never got a password is
+        // not an account yet: its owner registers like everyone else and the typed details replace it.
         [HttpPost("register")]
         [EnableRateLimiting(RateLimitPolicies.Authentication)]
         public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
         {
-            var normalizedEmail = UserAccount.NormalizeEmail(request.Email);
-            var user = await _db.UserAccounts.AsNoTracking().FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
-
-            var matches = user != null
-                && UserAccount.NormalizeName(user.FullName) == UserAccount.NormalizeName(request.FullName)
-                && user.DepartmentId == request.DepartmentId
-                && user.StudyYear == request.StudyYear;
-            if (user == null || !matches)
-                return NotFound(NoMatch);
-
-            if (user.HasCompletedRegistration)
-                return Conflict(AlreadyRegistered);
-
-            var selectedProgramme = request.ProgrammeId ?? user.ProgrammeId;
-            var profile = await ProgrammeProfile.ResolveAsync(_db, selectedProgramme, user.DepartmentId);
+            var profile = await ProgrammeProfile.ResolveAsync(_db, request.ProgrammeId, request.DepartmentId);
             if (profile.Error is not null) return BadRequest(profile.Error);
 
-            // Set the password only if nobody has set one in the meantime: when two requests for the
-            // same account arrive together, exactly one of them wins and the other gets 409.
+            var normalizedEmail = UserAccount.NormalizeEmail(request.Email);
+            var user = await _db.UserAccounts.AsNoTracking().FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
+            if (user is { HasCompletedRegistration: true })
+                return Conflict(AlreadyRegistered);
+
+            var fullName = request.FullName.Trim();
+            var email = request.Email.Trim();
+
+            if (user is null)
+            {
+                // IsAdministrator is never taken from the request; see RegisterRequest.
+                user = new UserAccount
+                {
+                    FullName = fullName,
+                    Email = email,
+                    NormalizedEmail = normalizedEmail,
+                    DepartmentId = profile.DepartmentId,
+                    ProgrammeId = request.ProgrammeId,
+                    StudyYear = request.StudyYear,
+                    IsAdministrator = false,
+                    CreatedAtUtc = DateTime.UtcNow
+                };
+                user.PasswordHash = _hasher.HashPassword(user, request.Password);
+                _db.UserAccounts.Add(user);
+
+                try
+                {
+                    await _db.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    // The same email was registered at the same moment; the unique index stopped this insert.
+                    _db.Entry(user).State = EntityState.Detached;
+                    if (await _db.UserAccounts.AnyAsync(u => u.NormalizedEmail == normalizedEmail))
+                        return Conflict(AlreadyRegistered);
+                    throw;
+                }
+
+                return StatusCode(StatusCodes.Status201Created, ToResponse(user));
+            }
+
+            // Added in advance without a password. Set the password only if nobody has set one in the
+            // meantime: when two requests arrive together, exactly one of them wins and the other gets 409.
             var passwordHash = _hasher.HashPassword(user, request.Password);
             var updated = await _db.UserAccounts
                 .Where(u => u.UserId == user.UserId && u.PasswordHash == null)
-                .ExecuteUpdateAsync(setters => setters.SetProperty(u => u.PasswordHash, passwordHash)
-                    .SetProperty(u => u.ProgrammeId, selectedProgramme).SetProperty(u => u.DepartmentId, profile.DepartmentId));
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(u => u.PasswordHash, passwordHash)
+                    .SetProperty(u => u.FullName, fullName)
+                    .SetProperty(u => u.Email, email)
+                    .SetProperty(u => u.DepartmentId, profile.DepartmentId)
+                    .SetProperty(u => u.ProgrammeId, request.ProgrammeId)
+                    .SetProperty(u => u.StudyYear, request.StudyYear));
             if (updated == 0)
                 return Conflict(AlreadyRegistered);
 
-            user.ProgrammeId = selectedProgramme;
+            user.FullName = fullName;
+            user.Email = email;
             user.DepartmentId = profile.DepartmentId;
+            user.ProgrammeId = request.ProgrammeId;
+            user.StudyYear = request.StudyYear;
             return StatusCode(StatusCodes.Status201Created, ToResponse(user));
         }
 

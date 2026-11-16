@@ -1,5 +1,7 @@
 # Testing with accounts — step by step
 
+> **Changed on 16 November 2026:** registration is now open. Putting people on the list first is no longer required, and Register no longer answers `404` for details that do not match; an email that already has an account answers `409`. The steps below that describe the list and the `404` answer are historical. See section 4 of `Authentication_Contract.md`.
+
 How to create a student and an administrator in a local test environment and use them against the API. Use synthetic data for shared testing: no real names, emails or passwords in the repository, in chat or in a shared database.
 
 The full contract is in `Authentication_Contract.md`.
