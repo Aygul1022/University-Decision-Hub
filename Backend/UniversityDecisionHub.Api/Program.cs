@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using UniversityDecisionHub.Api.Features.Reviews;
 using Microsoft.EntityFrameworkCore;
 using UniversityDecisionHub.Api.Data;
@@ -74,6 +75,34 @@ else
     // In Development the frontend may call the plain-http port; a redirect would break its CORS preflight.
     app.UseHttpsRedirection();
 }
+
+var frontendPath = Path.GetFullPath(
+    Path.Combine(
+        app.Environment.ContentRootPath,
+        "..",
+        "..",
+        "Frontend"
+    )
+);
+
+if (!Directory.Exists(frontendPath))
+{
+    throw new DirectoryNotFoundException(
+        $"Frontend directory was not found: {frontendPath}"
+    );
+}
+
+using var frontendFiles = new PhysicalFileProvider(frontendPath);
+
+app.UseDefaultFiles(new DefaultFilesOptions
+{
+    FileProvider = frontendFiles
+});
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = frontendFiles
+});
 
 app.UseCors();
 app.UseRateLimiter();

@@ -4,7 +4,8 @@
 // The backend address defaults to the "http" launch profile. To point a browser at another
 // address (for example the https profile) run this once in the browser console:
 //   localStorage.setItem("udh.apiBaseUrl", "https://localhost:7214")
-const API_BASE_URL = localStorage.getItem("udh.apiBaseUrl") || "http://localhost:5154";
+const API_BASE_URL =
+  localStorage.getItem("udh.apiBaseUrl") || window.location.origin;
 
 // The login state kept in this browser: the token from /api/auth/login and the user's profile.
 const Session = {

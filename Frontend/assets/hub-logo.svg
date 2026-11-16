@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172 90" role="img" aria-labelledby="title">
+  <title id="title">HUB — University Decision Hub</title>
+  <path fill="#fff" d="M22 4h128a18 18 0 0 1 18 18v36a18 18 0 0 1-18 18H51L26 89V76h-4A18 18 0 0 1 4 58V22A18 18 0 0 1 22 4Z"/>
+  <g fill="#a6192e">
+    <path d="M27 24h9v13h15V24h9v35h-9V45H36v14h-9Z"/>
+    <path d="M70 24h9v21q0 7 7 7t7-7V24h9v21q0 15-16 15T70 45Z"/>
+    <path fill-rule="evenodd" d="M113 24h17q14 0 14 9 0 6-5 8 7 2 7 8 0 10-15 10h-18Zm9 7v7h7q6 0 6-3.5t-6-3.5Zm0 14v7h8q7 0 7-3.5t-7-3.5Z"/>
+  </g>
+</svg>

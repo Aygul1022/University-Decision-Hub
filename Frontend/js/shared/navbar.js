@@ -66,7 +66,15 @@ const Site = (function () {
     const inner = element("div", "navbar-inner");
     header.appendChild(inner);
 
-    inner.appendChild(link("University Decision Hub", Site.url("index.html"), "navbar-brand"));
+    const brand = link("", Site.url("index.html"), "navbar-brand");
+    brand.setAttribute("aria-label", "University Decision Hub home");
+    const logo = element("img");
+    logo.src = Site.url("assets/hub-logo.svg");
+    logo.alt = "HUB";
+    logo.width = 94;
+    logo.height = 49;
+    brand.appendChild(logo);
+    inner.appendChild(brand);
 
     const nav = element("nav");
     nav.setAttribute("aria-label", "Main");
