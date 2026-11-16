@@ -1,0 +1,46 @@
+{
+  "preparedOn": "2026-11-16",
+  "sources": [
+    {
+      "file": "Catalogue_Mapping_Evidence.xlsx",
+      "sha256": "9e0a01fd4b53fc5c80e82f892b1fbc764f49147dc468857cf90d682d3e0208c5"
+    },
+    {
+      "file": "Course_Pilot_Anestezi.xlsx",
+      "sha256": "f624a8da108a05026045ff92d3cc670548d7774c8beca2f961776e01982baa27"
+    },
+    {
+      "file": "Course_Staging.xlsx",
+      "sha256": "ac63f8219ee12b0d9db0109232e2cd332512c42f43ac9dd0ee74568d2ebefb6d"
+    },
+    {
+      "file": "Data_Preparation_Status.xlsx",
+      "sha256": "f756cc0e8eaaa12f03eca622a4c22162191ccfac1edb9c9986c537d32466633d"
+    },
+    {
+      "file": "Department_Decisions.xlsx",
+      "sha256": "acf6c9b447ab7c8eff66df1bc8569356def694c2772597631df6bd0eb1cc2116"
+    },
+    {
+      "file": "Departments.xlsx",
+      "sha256": "a39e71a7c91ca56cd3ed7da7661a342818997045f67b6d455e8102c498ba9a26"
+    },
+    {
+      "file": "Faculty.xlsx",
+      "sha256": "63233d9beb4f46e0946f256d17a7af54a502fa99ad0b0c66785726ae1ced3e93"
+    },
+    {
+      "file": "Instructors.xlsx",
+      "sha256": "b0b56ab415ec3ed0e01f3986d4498cc644425f5da583185f94547a6de2b6bdea"
+    },
+    {
+      "file": "Programmes.xlsx",
+      "sha256": "c16866017950dcac69dc0fc8b630d178aa2a98cb3b2e4579c28eb060c13b35fb"
+    },
+    {
+      "file": "Resolved_Instructor_Records.xlsx",
+      "sha256": "e1c2c956eb276d21e87e914096571b3de545e8bd1c9f28d6672c5ac37e4f309d"
+    }
+  ],
+  "outputSha256": "d8def14490e0c032f9ea470b5fc5b33c5629584f4625a5f7d852c2a31ab676f0"
+}
