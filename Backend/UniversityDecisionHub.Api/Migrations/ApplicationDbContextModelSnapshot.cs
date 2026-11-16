@@ -351,6 +351,15 @@ namespace UniversityDecisionHub.Api.Migrations
                     b.Property<int>("InstructorId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModeratedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ModeratedByUserId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("OfferingId")
                         .HasColumnType("integer");
 
