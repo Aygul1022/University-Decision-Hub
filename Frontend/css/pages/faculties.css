@@ -1,0 +1,49 @@
+.faculty-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.faculty-panel {
+  padding: 0;
+}
+
+.faculty-summary {
+  padding: 16px 20px;
+  border-radius: inherit;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.faculty-summary:hover {
+  color: var(--color-red-dark);
+  background: var(--color-red-soft);
+}
+
+.faculty-count {
+  margin-inline-start: 8px;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+.faculty-departments,
+.faculty-empty {
+  margin: 0;
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--color-line);
+  overflow-wrap: anywhere;
+}
+
+.faculty-departments {
+  padding-inline-start: 40px;
+}
+
+.faculty-departments li + li {
+  margin-top: 4px;
+}
+
+.faculty-empty {
+  color: var(--color-muted);
+}
