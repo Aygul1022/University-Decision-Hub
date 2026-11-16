@@ -12,7 +12,7 @@
   <main class="auth-shell">
     <div class="auth-card">
       <h1>My profile</h1>
-      <p class="auth-lead">Your department and year decide which courses you can review. Keep them up to date.</p>
+      <p class="auth-lead">Your programme and year decide which courses you can review. Keep them up to date.</p>
 
       <p class="notice" data-status role="status">Loading your profile…</p>
 
@@ -31,9 +31,11 @@
 
         <div class="field-row">
           <div class="field">
-            <!-- Can become a department list: GET /api/departments now exists. -->
-            <label for="departmentId">Department number</label>
-            <input id="departmentId" name="departmentId" type="number" min="1" step="1" inputmode="numeric">
+            <!-- Options are added from GET /api/departments (js/shared/departments.js). -->
+            <label for="departmentId">Department</label>
+            <select id="departmentId" name="departmentId">
+              <option value="">Not a student</option>
+            </select>
             <p class="field-hint">Students only. Needed to write reviews.</p>
             <p class="field-error" data-error-for="departmentId"></p>
           </div>
@@ -53,6 +55,16 @@
           </div>
         </div>
 
+        <div class="field">
+          <!-- Options are added from GET /api/programmes?departmentId=... for the chosen department. -->
+          <label for="programmeId">Programme</label>
+          <select id="programmeId" name="programmeId" aria-describedby="programme-hint">
+            <option value="">Not selected</option>
+          </select>
+          <p class="field-hint" id="programme-hint" data-programme-hint>Choose your department first.</p>
+          <p class="field-error" data-error-for="programmeId"></p>
+        </div>
+
         <p class="form-message" data-form-message role="alert" hidden></p>
 
         <button type="submit" class="button">Save changes</button>
@@ -61,6 +73,7 @@
   </main>
 
   <script src="../../js/shared/api.js"></script>
+  <script src="../../js/shared/departments.js"></script>
   <script src="../../js/shared/navbar.js"></script>
   <script src="../../js/pages/profile.js"></script>
 </body>
