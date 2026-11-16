@@ -61,11 +61,12 @@ Answers:
 |---|---|
 | Email has no account | `201`, account created and logged in |
 | Email already has an account with a password | `409` |
+| Email belongs to a record added in advance that has no password yet | `403`, the record is left unchanged |
 | Missing or invalid field, password shorter than 8, unknown department or programme | `400` |
 
-**Records added in advance.** `import-users` (section 7) and `POST /api/admin/users` still add a record without a password. Such a record cannot log in and is not treated as an existing account: its owner registers like everyone else, and the typed name, department, programme and year replace the stored ones. The details no longer have to match the list, so nobody is locked out. A teammate confirmed this on 16 November 2026: the same row is completed, and it appears in the administrator user list as registered.
+**Records added in advance.** `import-users` (section 7) and `POST /api/admin/users` still add a record without a password. Such a record cannot log in. Since the review of pull request 2 (16 November 2026) it also cannot be completed through Register: the answer is `403` with "This email was added in advance and cannot be registered yet. Contact an administrator." and the stored name, department, programme and year are not touched. This stays closed until the team decides how to verify that the person registering owns the email. The real survey list is not being imported in the first version, so in practice only records an administrator adds by hand are affected.
 
-**Known limitation:** nothing proves that the person owns the email address, so anyone can create an account with any unused email, including someone else's. The first registration wins and the real owner then gets `409`. The register answer also shows whether an email already has an account. The 10-requests-per-minute limit on register and login slows guessing; email verification would close the gap. Ozan's decision for the demo (16 November 2026): no ownership check, including for records added in advance; the other teammates have not yet confirmed this. Sending a code by email would need a mail service the project does not have.
+**Known limitation:** nothing proves that the person owns the email address, so anyone can create an account with any email that has no record yet, including someone else's. The first registration wins and the real owner then gets `409`. The register answer also shows whether an email already has a record. The 10-requests-per-minute limit on register and login slows guessing; email verification would close the gap, but sending a code by email would need a mail service the project does not have. A record added in advance is protected from this because it cannot be completed at all for now.
 
 **Administrators:** a team member registers like everyone else, then on the machine that runs the backend:
 
@@ -84,7 +85,7 @@ The person then logs in again to get an administrator token. Nothing in the HTTP
 
 | Request | Who | Body | Success | Errors |
 |---|---|---|---|---|
-| `POST /api/auth/register` | anyone | `fullName, email, password, departmentId, programmeId, studyYear, isGraduate` | `201` + `{ token, expiresAtUtc, user }` | `400`, `409` email already has an account, `429` |
+| `POST /api/auth/register` | anyone | `fullName, email, password, departmentId, programmeId, studyYear, isGraduate` | `201` + `{ token, expiresAtUtc, user }` | `400`, `403` email was added in advance, `409` email already has an account, `429` |
 | `POST /api/auth/login` | registered user | `email, password` | `200` + `{ token, expiresAtUtc, user }` | `401`, `429` |
 | `GET /api/auth/me` | logged in | — | `200` + `user` | `401` |
 | `PUT /api/auth/me` | logged in | `fullName, departmentId, programmeId, studyYear, isGraduate` | `200` + `user` | `400`, `401` |

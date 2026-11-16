@@ -135,6 +135,7 @@
       showFieldErrors(error.fieldErrors || {});
       showFormMessage(error.message || "Something went wrong. Please try again.", "error");
       // 409 on Register: this email already has an account, so point to the Log in page.
+      // (403 means the email was added in advance and cannot be registered yet; no link then.)
       if (mode === "register" && error.status === 409) {
         const loginLink = document.querySelector(".auth-switch a");
         if (loginLink) {

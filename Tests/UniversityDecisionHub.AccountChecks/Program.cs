@@ -124,11 +124,14 @@ var courseId = await Db(async db =>
         }).ToList()
     });
     await db.SaveChangesAsync();
-    db.UserAccounts.AddRange(
-        Listed("Yiğit Şahin", EmailOne, 1, 3),
-        Listed("Student Two", EmailTwo, 2, 4),
-        Listed("Never Registered", EmailNever, 1, 1),
-        Listed("Staff Member", EmailStaff, null, null)); // no student profile
+    // The only record added in advance. It has a programme, so the checks below can prove that a refused
+    // registration leaves the programme and every other stored field untouched.
+    var listedProgramme = new Programme { ProgrammeKey = "TEST-P0", ProgrammeName = "Listed Programme", DepartmentId = 1 };
+    db.Programmes.Add(listedProgramme);
+    await db.SaveChangesAsync();
+    var never = Listed("Never Registered", EmailNever, 1, 1);
+    never.ProgrammeId = listedProgramme.ProgrammeId;
+    db.UserAccounts.Add(never);
     var course = new Course
     {
         CourseCode = "CS101", CourseName = "Introduction to Computing", CourseDescription = "Synthetic course.",
@@ -140,12 +143,12 @@ var courseId = await Db(async db =>
 });
 
 // ================================================================ registration and login
-// auth request 1/10 — a record added in advance without a password; its owner registers with that email
+// auth request 1/10 — open registration with surrounding spaces in the name
 var register = await Post("/api/auth/register", new
 {
     fullName = "  Yiğit Şahin ", email = EmailOne, departmentId = 1, studyYear = 3, password = PasswordOne
 });
-Check(register.Status == 201, "A record added in advance becomes an account when its owner registers");
+Check(register.Status == 201, "Open registration: a new email creates an account (201)");
 var tokenOne = register.Text("token") ?? "";
 Check(tokenOne.Length > 0, "Registration returns a token");
 Check(register.Json.TryGetProperty("user", out var registeredUser)
@@ -154,14 +157,24 @@ Check(register.Json.TryGetProperty("user", out var registeredUser)
     "Registration answers with the trimmed name and email");
 Check(register.HasNoPrivateFields(PasswordOne), "Registration response has no password, hash or normalized email");
 Check(await Db(db => db.UserAccounts.CountAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailOne))) == 1,
-    "Registering a record added in advance does not create a second account");
+    "Open registration creates exactly one account for the email");
 
-// auth request 2/10
-var again = await Post("/api/auth/register", new
+// auth request 2/10 — a record added in advance without a password is not handed over (email ownership is
+// unverified). The request sends other details and no programmeId; the stored row must stay as it was.
+var claim = await Post("/api/auth/register", new
 {
-    fullName = "Yiğit Şahin", email = EmailOne, departmentId = 1, studyYear = 3, password = "another-password"
+    fullName = "Someone Claiming", email = "Never.Registered@Example.com", departmentId = 2, studyYear = 4, password = "another-password"
 });
-Check(again.Status == 409, "A second registration for the same account is rejected (409)");
+Check(claim.Status == 403 && claim.Body.Contains("added in advance"),
+    "A record added in advance without a password cannot be registered (403)");
+Check(claim.Text("token") == null, "The refused registration returns no token");
+var neverAfterClaim = await Db(db => db.UserAccounts.AsNoTracking().SingleAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailNever)));
+var listedProgrammeId = await Db(db => db.Programmes.Where(p => p.ProgrammeKey == "TEST-P0").Select(p => p.ProgrammeId).SingleAsync());
+Check(neverAfterClaim.PasswordHash == null && neverAfterClaim.FullName == "Never Registered" && neverAfterClaim.Email == EmailNever
+      && neverAfterClaim.DepartmentId == 1 && neverAfterClaim.StudyYear == 1 && !neverAfterClaim.IsGraduate,
+    "The refused registration leaves the pre-added name, email, department and year unchanged, with no password");
+Check(neverAfterClaim.ProgrammeId == listedProgrammeId,
+    "Regression: a registration without programmeId does not clear a programme that was assigned in advance");
 
 // auth request 3/10 — open registration: an email that has no account and is on no list
 const string EmailNew = "new.student@example.com";
@@ -190,7 +203,7 @@ var duplicateNew = await Post("/api/auth/register", new
 {
     fullName = "Someone Else", email = EmailNew.ToUpperInvariant(), departmentId = 2, studyYear = 4, password = PasswordTwo
 });
-Check(duplicateNew.Status == 409 && duplicateNew.Body == again.Body,
+Check(duplicateNew.Status == 409 && duplicateNew.Body.Contains("already exists") && duplicateNew.Body != claim.Body,
     "An email that already has an account cannot register again, whatever its letter case (409)");
 Check(await Db(db => db.UserAccounts.CountAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailNew))) == 1
       && await Db(db => db.UserAccounts.AnyAsync(u => u.NormalizedEmail == UserAccount.NormalizeEmail(EmailNew) && u.FullName == "New Student")),
@@ -365,9 +378,10 @@ Check(users.Json.EnumerateArray().Single(u => string.Equals(u.GetProperty("email
         .GetProperty("isGraduate").GetBoolean()
       && users.Json.EnumerateArray().Count(u => u.GetProperty("isGraduate").GetBoolean()) == 1,
     "User list shows who is a graduate");
-Check(users.Json.EnumerateArray().Count(u => u.GetProperty("email").GetString() == EmailOne
-        && u.GetProperty("hasCompletedRegistration").GetBoolean()) == 1,
-    "User list: a record added in advance stays one row and shows as registered after its owner registers");
+Check(users.Json.EnumerateArray().Count(u => u.GetProperty("email").GetString() == EmailNever) == 1
+      && users.Json.EnumerateArray().Single(u => u.GetProperty("email").GetString() == EmailNever)
+          .GetProperty("programmeId").GetInt32() == listedProgrammeId,
+    "User list: the record added in advance is still one row with its programme after the refused registration");
 
 var newUser = new { fullName = " New Person ", email = "new.person@example.com", departmentId = 1, studyYear = 2, isAdministrator = true, password = "ignored-value" };
 Check((await Post("/api/admin/users", newUser)).Status == 401, "Add user: anonymous is rejected (401)");
