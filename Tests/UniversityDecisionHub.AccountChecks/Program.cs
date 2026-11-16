@@ -316,6 +316,14 @@ Check(users.HasNoPrivateFields(PasswordOne), "User list has no password, hash or
 Check(users.Json.EnumerateArray().Single(u => u.GetProperty("email").GetString() == EmailNever)
         .GetProperty("hasCompletedRegistration").GetBoolean() == false,
     "User list shows who has not completed registration yet");
+// Register and the administrator list read the same UserAccounts table.
+Check(users.Json.EnumerateArray().Count(u => string.Equals(u.GetProperty("email").GetString(), EmailNew, StringComparison.OrdinalIgnoreCase)
+        && u.GetProperty("fullName").GetString() == "New Student"
+        && u.GetProperty("hasCompletedRegistration").GetBoolean()) == 1,
+    "User list: an account created by open registration appears once, as registered");
+Check(users.Json.EnumerateArray().Count(u => u.GetProperty("email").GetString() == EmailOne
+        && u.GetProperty("hasCompletedRegistration").GetBoolean()) == 1,
+    "User list: a record added in advance stays one row and shows as registered after its owner registers");
 
 var newUser = new { fullName = " New Person ", email = "new.person@example.com", departmentId = 1, studyYear = 2, isAdministrator = true, password = "ignored-value" };
 Check((await Post("/api/admin/users", newUser)).Status == 401, "Add user: anonymous is rejected (401)");
