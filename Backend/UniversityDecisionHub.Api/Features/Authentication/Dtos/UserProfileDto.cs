@@ -11,6 +11,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication.Dtos
         public int? DepartmentId { get; set; }
         public int? ProgrammeId { get; set; }
         public int? StudyYear { get; set; }
+        public bool IsGraduate { get; set; }
         public bool IsAdministrator { get; set; }
 
         public static UserProfileDto From(UserAccount user) => new()
@@ -21,6 +22,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication.Dtos
             DepartmentId = user.DepartmentId,
             ProgrammeId = user.ProgrammeId,
             StudyYear = user.StudyYear,
+            IsGraduate = user.IsGraduate,
             IsAdministrator = user.IsAdministrator
         };
     }

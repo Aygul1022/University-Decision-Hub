@@ -11,7 +11,8 @@ namespace UniversityDecisionHub.Api.Data.Configurations
 
         public void Configure(EntityTypeBuilder<UserAccount> builder)
         {
-            builder.ToTable("UserAccounts");
+            builder.ToTable("UserAccounts", t => t.HasCheckConstraint(
+                "CK_UserAccounts_GraduateHasNoStudyYear", "NOT (\"IsGraduate\" AND \"StudyYear\" IS NOT NULL)"));
             builder.HasKey(u => u.UserId);
 
             builder.Property(u => u.FullName).IsRequired().HasMaxLength(FullNameMaxLength);
@@ -20,6 +21,7 @@ namespace UniversityDecisionHub.Api.Data.Configurations
             // Nullable: an account created in advance has no password until its owner completes registration.
             builder.Property(u => u.PasswordHash).IsRequired(false);
             builder.Ignore(u => u.HasCompletedRegistration);
+            builder.Property(u => u.IsGraduate).HasDefaultValue(false);
 
             // Case-insensitive email uniqueness is enforced by the database, not only by the controller.
             builder.HasIndex(u => u.NormalizedEmail).IsUnique();

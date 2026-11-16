@@ -66,7 +66,7 @@ Check(course.GetIndexes().Any(i => i.IsUnique && i.Properties.Select(p => p.Name
     .SequenceEqual(new[] { "DepartmentId", "CourseCode" })), "Department and code remain a composite unique index");
 Check(model.GetEntityTypes().Count() == 11, "Catalog, programme, user profile and review entities are implemented");
 var assembly = db.GetService<IMigrationsAssembly>();
-Check(assembly.Migrations.Count == 8, "Course, catalog, review, import-key and programme migrations are discoverable");
+Check(assembly.Migrations.Count == 9, "Course, catalog, review, import-key, programme and graduate-status migrations are discoverable");
 Check(!db.Database.HasPendingModelChanges(), "Migration snapshot matches current model");
 var sql = db.GetService<IMigrator>().GenerateScript("20261013171125_InitialCourses", "20261022000000_AddRecommendedStudyYear");
 Check(sql.Contains("ADD \"RecommendedStudyYear\" integer"), "Migration adds the nullable year column");

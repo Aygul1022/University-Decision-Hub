@@ -17,6 +17,11 @@ namespace UniversityDecisionHub.Api.Features.Authentication
         private const string InvalidCredentials = "Email or password is incorrect.";
         private const string AlreadyRegistered = "An account with this email already exists. Log in instead.";
 
+        // A record added in advance (import or administrator) that has no password yet. Nothing proves that
+        // the person registering owns that email, so the record is not handed over.
+        private const string AddedInAdvance = "This email was added in advance and cannot be registered yet. " +
+            "Contact an administrator.";
+
         private readonly ApplicationDbContext _db;
         private readonly IPasswordHasher<UserAccount> _hasher;
         private readonly JwtTokenService _tokens;
@@ -32,13 +37,17 @@ namespace UniversityDecisionHub.Api.Features.Authentication
         // Open registration: anyone can create an account with an email that has no account yet.
         //   201 + token   account created and logged in
         //   400           invalid input, or an unknown department or programme
+        //   403           the email belongs to a record added in advance that has no password yet
         //   409           an account with this email already exists
-        // A record that was added in advance (import or administrator) and never got a password is
-        // not an account yet: its owner registers like everyone else and the typed details replace it.
+        // Completing a record added in advance stays closed until the team decides how to verify the email
+        // owner. The record is left exactly as it is: name, department, programme and year are not touched.
         [HttpPost("register")]
         [EnableRateLimiting(RateLimitPolicies.Authentication)]
         public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
         {
+            if (UserAccount.GraduateError(request.IsGraduate, request.StudyYear) is { } graduateError)
+                return BadRequest(graduateError);
+
             var profile = await ProgrammeProfile.ResolveAsync(_db, request.ProgrammeId, request.DepartmentId);
             if (profile.Error is not null) return BadRequest(profile.Error);
 
@@ -61,6 +70,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication
                     DepartmentId = profile.DepartmentId,
                     ProgrammeId = request.ProgrammeId,
                     StudyYear = request.StudyYear,
+                    IsGraduate = request.IsGraduate,
                     IsAdministrator = false,
                     CreatedAtUtc = DateTime.UtcNow
                 };
@@ -83,27 +93,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication
                 return StatusCode(StatusCodes.Status201Created, ToResponse(user));
             }
 
-            // Added in advance without a password. Set the password only if nobody has set one in the
-            // meantime: when two requests arrive together, exactly one of them wins and the other gets 409.
-            var passwordHash = _hasher.HashPassword(user, request.Password);
-            var updated = await _db.UserAccounts
-                .Where(u => u.UserId == user.UserId && u.PasswordHash == null)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(u => u.PasswordHash, passwordHash)
-                    .SetProperty(u => u.FullName, fullName)
-                    .SetProperty(u => u.Email, email)
-                    .SetProperty(u => u.DepartmentId, profile.DepartmentId)
-                    .SetProperty(u => u.ProgrammeId, request.ProgrammeId)
-                    .SetProperty(u => u.StudyYear, request.StudyYear));
-            if (updated == 0)
-                return Conflict(AlreadyRegistered);
-
-            user.FullName = fullName;
-            user.Email = email;
-            user.DepartmentId = profile.DepartmentId;
-            user.ProgrammeId = request.ProgrammeId;
-            user.StudyYear = request.StudyYear;
-            return StatusCode(StatusCodes.Status201Created, ToResponse(user));
+            return StatusCode(StatusCodes.Status403Forbidden, AddedInAdvance);
         }
 
         // POST api/auth/login  -> 200 + token, 401 for any wrong email/password combination
@@ -163,6 +153,9 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             var user = await _db.UserAccounts.FirstOrDefaultAsync(u => u.UserId == userId.Value);
             if (user == null) return Unauthorized();
 
+            if (UserAccount.GraduateError(request.IsGraduate, request.StudyYear) is { } graduateError)
+                return BadRequest(graduateError);
+
             var profile = await ProgrammeProfile.ResolveAsync(_db, request.ProgrammeId, request.DepartmentId);
             if (profile.Error is not null) return BadRequest(profile.Error);
 
@@ -170,6 +163,7 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             user.DepartmentId = profile.DepartmentId;
             user.ProgrammeId = request.ProgrammeId;
             user.StudyYear = request.StudyYear;
+            user.IsGraduate = request.IsGraduate;
             await _db.SaveChangesAsync();
 
             return Ok(UserProfileDto.From(user));

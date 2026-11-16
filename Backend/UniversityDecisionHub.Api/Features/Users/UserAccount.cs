@@ -31,6 +31,10 @@ namespace UniversityDecisionHub.Api.Features.Users
         // DepartmentId is a foreign key to Departments.
         public int? DepartmentId { get; set; }
         public int? StudyYear { get; set; }
+        // A graduate has no study year: the two never go together (see GraduateRule and the
+        // CK_UserAccounts_GraduateHasNoStudyYear constraint). Whether graduates may write reviews is
+        // an open team decision; until then review eligibility still requires a study year.
+        public bool IsGraduate { get; set; }
         // No programme is guessed from a legacy department. Profile integration follows separately.
         public int? ProgrammeId { get; set; }
 
@@ -40,6 +44,12 @@ namespace UniversityDecisionHub.Api.Features.Users
         public DateTime CreatedAtUtc { get; set; }
 
         public bool HasCompletedRegistration => PasswordHash != null;
+
+        public const string GraduateRule = "A graduate has no study year. Choose either Graduate or a year of study.";
+
+        // The one validation shared by registration, profile update and user administration.
+        public static string? GraduateError(bool isGraduate, int? studyYear) =>
+            isGraduate && studyYear is not null ? GraduateRule : null;
 
         public static string NormalizeEmail(string email) => email.Trim().ToUpperInvariant();
 

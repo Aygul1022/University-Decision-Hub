@@ -408,6 +408,11 @@ namespace UniversityDecisionHub.Api.Migrations
                     b.Property<bool>("IsAdministrator")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsGraduate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("NormalizedEmail")
                         .IsRequired()
                         .HasMaxLength(254)
@@ -431,7 +436,10 @@ namespace UniversityDecisionHub.Api.Migrations
 
                     b.HasIndex("ProgrammeId");
 
-                    b.ToTable("UserAccounts", (string)null);
+                    b.ToTable("UserAccounts", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_UserAccounts_GraduateHasNoStudyYear", "NOT (\"IsGraduate\" AND \"StudyYear\" IS NOT NULL)");
+                        });
                 });
 
             modelBuilder.Entity("UniversityDecisionHub.Api.Features.Courses.Course", b =>

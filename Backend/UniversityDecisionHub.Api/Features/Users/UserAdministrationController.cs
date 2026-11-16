@@ -43,6 +43,9 @@ namespace UniversityDecisionHub.Api.Features.Users
         [HttpPost]
         public async Task<ActionResult<ManagedUserDto>> Post([FromBody] ManagedUserSaveDto dto)
         {
+            if (UserAccount.GraduateError(dto.IsGraduate, dto.StudyYear) is { } graduateError)
+                return BadRequest(graduateError);
+
             var profile = await ProgrammeProfile.ResolveAsync(_db, dto.ProgrammeId, dto.DepartmentId);
             if (profile.Error is not null) return BadRequest(profile.Error);
 
@@ -59,6 +62,7 @@ namespace UniversityDecisionHub.Api.Features.Users
                 DepartmentId = profile.DepartmentId,
                 ProgrammeId = dto.ProgrammeId,
                 StudyYear = dto.StudyYear,
+                IsGraduate = dto.IsGraduate,
                 IsAdministrator = false,
                 CreatedAtUtc = DateTime.UtcNow
             };
@@ -86,6 +90,8 @@ namespace UniversityDecisionHub.Api.Features.Users
         {
             var user = await _db.UserAccounts.FirstOrDefaultAsync(u => u.UserId == id);
             if (user == null) return NotFound();
+            if (UserAccount.GraduateError(dto.IsGraduate, dto.StudyYear) is { } graduateError)
+                return BadRequest(graduateError);
             var profile = await ProgrammeProfile.ResolveAsync(_db, dto.ProgrammeId, dto.DepartmentId);
             if (profile.Error is not null) return BadRequest(profile.Error);
 
@@ -100,6 +106,7 @@ namespace UniversityDecisionHub.Api.Features.Users
             user.DepartmentId = profile.DepartmentId;
             user.ProgrammeId = dto.ProgrammeId;
             user.StudyYear = dto.StudyYear;
+            user.IsGraduate = dto.IsGraduate;
 
             try
             {
