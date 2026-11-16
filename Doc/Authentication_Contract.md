@@ -95,6 +95,7 @@ The person then logs in again to get an administrator token. Nothing in the HTTP
 | `PUT /api/admin/users/{id}` | administrator | `fullName, email, departmentId, programmeId, studyYear, isGraduate` | `200` + `managedUser` | `400`, `401`, `403`, `404`, `409` |
 
 `user` is `{ userId, fullName, email, departmentId, programmeId, studyYear, isGraduate, isAdministrator }`.
+`GET /api/auth/me` and `PUT /api/auth/me` also include `departmentName` and `programmeName` when the corresponding catalogue records are available. The profile page uses these names in its saved view.
 `managedUser` is the same plus `hasCompletedRegistration` (false while the person has not chosen a password).
 
 No endpoint accepts or returns a password hash, and no endpoint lets one person set another person's password. There is no delete-user endpoint: reviews will reference their authors.
@@ -176,7 +177,7 @@ Pages:
 | Page | Open as | Notes |
 |---|---|---|
 | `Pages/auth/login.html`, `register.html` | — | Register creates an account; department is chosen from the department list, and department and year may be left empty |
-| `Pages/auth/profile.html` | — | Logged-in user edits name, department and year; reached from the name in the navbar |
+| `Pages/auth/profile.html` | — | Shows the saved profile. Edit profile opens the form for name, department, programme and study year or Graduate status. Reached from the name in the navbar |
 | `Pages/courses/course-detail.html` | `?id=<CourseId>` | Reads Aygül's `GET /api/courses/{id}`; no second Course model |
 | `Pages/reviews/instructors.html` | — | Name and department filters, empty state |
 | `Pages/reviews/instructor-detail.html` | `?id=<InstructorId>` | Profile and course reviews are separate sections (UI05) |

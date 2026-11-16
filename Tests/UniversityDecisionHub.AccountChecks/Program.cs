@@ -290,8 +290,9 @@ var me = await Get("/api/auth/me", tokenOne);
 Check(me.Status == 200 && me.Json.GetProperty("departmentId").GetInt32() == 1 && me.Json.GetProperty("studyYear").GetInt32() == 3
       && me.Json.GetProperty("userId").GetInt32() == stored[EmailOne].UserId,
     "GET /api/auth/me returns the caller's own id, department and study year");
-Check(me.PropertyNames().SetEquals(["userId", "fullName", "email", "departmentId", "programmeId", "studyYear", "isGraduate", "isAdministrator"]),
-    "The profile contains exactly the eight public fields");
+Check(me.PropertyNames().SetEquals(["userId", "fullName", "email", "departmentId", "programmeId", "departmentName", "studyYear", "isGraduate", "isAdministrator"])
+      && me.Text("departmentName") == "Synthetic Department 1",
+    "The profile exposes the matching department name and omits a missing programme name");
 
 var middle = tokenOne.Length - 10;
 var tampered = tokenOne[..middle] + (tokenOne[middle] == 'A' ? 'B' : 'A') + tokenOne[(middle + 1)..];
@@ -573,13 +574,26 @@ var (reviewCourseId, programmeId) = await Db(async db =>
     await db.SaveChangesAsync();
     return (course.CourseId, programme.ProgrammeId);
 });
-Check((await Put("/api/auth/me", new { fullName = "Student One", programmeId, studyYear = 4 }, tokenOne)).Status == 200,
-    "Profile derives department from programme");
+var programmeUpdate = await Put("/api/auth/me", new { fullName = "Student One", programmeId, studyYear = 4 }, tokenOne);
+Check(programmeUpdate.Status == 200 && programmeUpdate.Json.GetProperty("departmentId").GetInt32() == 2
+      && programmeUpdate.Text("departmentName") == "Synthetic Department 2" && programmeUpdate.Text("programmeName") == "Test Programme",
+    "Profile derives department from programme and returns both catalogue names");
+var programmeReload = await Get("/api/auth/me", tokenOne);
+Check(programmeReload.Json.GetProperty("programmeId").GetInt32() == programmeId
+      && programmeReload.Text("programmeName") == "Test Programme",
+    "A new profile request returns the persisted programme ID and name");
 Check((await Put("/api/auth/me", new { fullName = "Student One", programmeId, departmentId = 1, studyYear = 4 }, tokenOne)).Status == 400,
     "Profile rejects mismatched programme and department");
 Check((await Put("/api/auth/me", new { fullName = "Student One", programmeId = 999999, studyYear = 4 }, tokenOne)).Status == 400,
     "Profile rejects unknown programme");
 Check((await Get("/api/programmes")).Status == 200, "Programme lookup is available during registration");
+var programmesForDepartment = await Get("/api/programmes?departmentId=2");
+Check(programmesForDepartment.Status == 200 && programmesForDepartment.Json.GetArrayLength() == 1
+      && programmesForDepartment.Json[0].GetProperty("programmeId").GetInt32() == programmeId,
+    "Programme lookup returns the programme for the requested department only");
+var emptyProgrammeList = await Get("/api/programmes?departmentId=5");
+Check(emptyProgrammeList.Status == 200 && emptyProgrammeList.Json.GetArrayLength() == 0,
+    "An existing department without programmes returns an empty successful list");
 Check((await Get($"/api/programmes/{programmeId}/courses")).Status == 401, "Curriculum lookup requires login");
 Check((await Get($"/api/programmes/{programmeId}/courses", tokenOne)).Json.GetArrayLength() == 1, "Curriculum includes historical inactive elective course");
 var review = new { courseId = reviewCourseId, instructorId = adaId, academicYear = "2025-2026", semester = "Fall", attendanceConfirmed = true, reviewText = "Synthetic review text." };
