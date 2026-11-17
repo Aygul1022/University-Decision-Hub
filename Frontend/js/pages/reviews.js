@@ -175,8 +175,50 @@
     button.type = "button";
     button.setAttribute("aria-label", "View review for " + courseTitle(review));
     button.addEventListener("click", () => showDetail(review.reviewId));
-    article.append(button);
+    const actions = textElement("div", "review-actions", "");
+    actions.append(button);
+    // Only a convenience: hiding the button protects nothing. The server checks the Administrator role itself.
+    if (isAdministrator) {
+      const deleteButton = textElement("button", "button secondary", "Delete");
+      deleteButton.type = "button";
+      deleteButton.setAttribute("aria-label", "Delete review for " + courseTitle(review));
+      deleteButton.addEventListener("click", () => deleteReview(review, deleteButton));
+      actions.append(deleteButton);
+    }
+    article.append(actions);
     return article;
+  }
+
+  const deleting = new Set();
+  async function deleteReview(review, deleteButton) {
+    if (deleting.has(review.reviewId)) return;
+    if (!window.confirm("Delete this review permanently? This cannot be undone.")) return;
+
+    deleting.add(review.reviewId);
+    deleteButton.disabled = true;
+    deleteButton.textContent = "Deleting…";
+    try {
+      // 204 with an empty body: apiFetch answers null for it.
+      await apiFetch("/api/reviews/" + review.reviewId, { method: "DELETE" });
+      deleting.delete(review.reviewId);
+      await loadReviews("Review deleted.", true);
+    } catch (error) {
+      deleting.delete(review.reviewId);
+      if (error.status === 401) return redirectToLogin();
+      if (error.status === 404) {
+        await loadReviews("This review no longer exists.", true);
+        return;
+      }
+      deleteButton.disabled = false;
+      deleteButton.textContent = "Delete";
+      if (error.status === 403) {
+        setNotice(status, "Only administrators can delete reviews.", true);
+      } else if (error.status === 0) {
+        setNotice(status, "The review was not deleted: " + error.message + " Try again.", true);
+      } else {
+        setNotice(status, "The review was not deleted. " + (error.message || "Try again."), true);
+      }
+    }
   }
 
   function setPageLink(selector, page, available) {
@@ -188,12 +230,18 @@
     link.href = Site.url(pageUrl(query));
   }
 
-  async function loadReviews(message = "") {
+  async function loadReviews(message = "", stepBackIfEmpty = false) {
     try {
       const suffix = params.size ? "?" + params.toString() : "";
       const { items, totalCount, page, pageSize } = await apiFetch("/api/reviews" + suffix);
-      results.replaceChildren(...items.map(renderReview));
       const lastPage = Math.max(1, Math.ceil(totalCount / pageSize));
+      // The last review of the last page was deleted: show the new last page, keeping every filter.
+      if (stepBackIfEmpty && !items.length && totalCount > 0 && page > lastPage) {
+        params.set("page", String(lastPage));
+        window.history.replaceState(null, "", Site.url(pageUrl(params)));
+        return loadReviews(message);
+      }
+      results.replaceChildren(...items.map(renderReview));
       pagination.hidden = lastPage <= 1 && page <= 1;
       setPageLink("[data-previous-page]", Math.min(page - 1, lastPage), page > 1);
       setPageLink("[data-next-page]", page + 1, page < lastPage && page < 100000);
