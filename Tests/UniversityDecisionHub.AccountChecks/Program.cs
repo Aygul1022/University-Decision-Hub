@@ -600,6 +600,37 @@ Check((await Post("/api/reviews", review, tokenOne)).Status == 409, "Review: a s
 Check((await Post("/api/reviews", new { review.courseId, review.academicYear, review.semester, review.attendanceConfirmed, review.instructorId, review.reviewText, userId = 1 }, adminToken)).Status == 400,
     "Review: a userId in the request body is rejected (400)");
 
+// ================================================================ review moderation
+var reviewId = submitted.Json.GetProperty("reviewId").GetInt32();
+var reviewPath = $"/api/reviews/{reviewId}";
+var moderationPath = reviewPath + "/moderation";
+var courseReviews = $"/api/reviews?courseId={reviewCourseId}";
+var hideReview = new { isHidden = true };
+
+Check((await Get(reviewPath, tokenStaff)).Status == 200, "A second account can read a submitted review");
+Check((await Put(moderationPath, hideReview)).Status == 401, "Moderation rejects anonymous callers");
+Check((await Put(moderationPath, hideReview, tokenOne)).Status == 403, "Moderation rejects the review author");
+Check((await Put(moderationPath, new { }, adminToken)).Status == 400, "Moderation requires a visibility value");
+Check((await Put("/api/reviews/999999/moderation", hideReview, adminToken)).Status == 404,
+    "Moderation rejects an unknown review");
+Check((await Put(moderationPath, hideReview, adminToken)).Status == 204, "An administrator can hide a review");
+Check((await Put(moderationPath, hideReview, adminToken)).Status == 204, "Repeating the same visibility change succeeds");
+Check((await Get(courseReviews, tokenStaff)).Json.GetProperty("totalCount").GetInt32() == 0,
+    "Hidden reviews are excluded from the filtered list and total count");
+Check((await Get(reviewPath, tokenStaff)).Status == 404, "Hidden review details are unavailable to readers");
+Check((await Get(courseReviews + "&includeHidden=true", tokenStaff)).Status == 403,
+    "Only administrators can request the hidden review list");
+var hiddenResults = (await Get(courseReviews + "&includeHidden=true", adminToken)).Json;
+Check(hiddenResults.GetProperty("items")[0].GetProperty("isHidden").GetBoolean()
+    && (await Get(reviewPath, adminToken)).Status == 200, "Administrators can find and open hidden reviews");
+var moderation = await Db(db => db.Reviews.SingleAsync(row => row.ReviewId == reviewId));
+Check(moderation.ModeratedAt.HasValue && moderation.ModeratedByUserId.HasValue,
+    "Moderation records the acting administrator and time");
+Check((await Post("/api/reviews", review, tokenOne)).Status == 409,
+    "Hiding a review preserves the one-review-per-course rule");
+Check((await Put(moderationPath, new { isHidden = false }, adminToken)).Status == 204
+    && (await Get(reviewPath, tokenStaff)).Status == 200, "An administrator can restore a review for readers");
+
 // ================================================================ catalogue v2 import
 // Separate in-memory database: no records are inserted in the user's PostgreSQL.
 using (var catalogConnection = new SqliteConnection("Data Source=:memory:"))

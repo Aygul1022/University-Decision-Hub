@@ -16,6 +16,7 @@ public sealed class ReviewReadDto
     public string InstructorName { get; set; } = string.Empty;
     public string ReviewText { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
+    public bool IsHidden { get; set; }
 }
 
 public sealed class PagedReviewsDto

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversityDecisionHub.Api.Data;
+using UniversityDecisionHub.Api.Features.Authentication;
 using UniversityDecisionHub.Api.Features.Reviews.Dtos;
 
 namespace UniversityDecisionHub.Api.Features.Reviews;
@@ -13,9 +14,12 @@ public sealed class ReviewReadingController(ApplicationDbContext db) : Controlle
 {
     // GET /api/reviews?courseCode=COME&departmentId=1&instructorId=2&academicYear=2026-2027&semester=Fall
     [HttpGet]
-    public async Task<ActionResult<PagedReviewsDto>> List([FromQuery] ReviewReadQuery search, CancellationToken ct)
+    public async Task<ActionResult<PagedReviewsDto>> List(
+        [FromQuery] ReviewReadQuery search, [FromQuery] bool includeHidden, CancellationToken ct)
     {
-        var query = ReviewReadFiltering.Apply(ProjectReviews(), search);
+        if (includeHidden && !User.IsInRole(AuthRoles.Administrator)) return Forbid();
+
+        var query = ReviewReadFiltering.Apply(ProjectReviews(includeHidden), search);
 
         var totalCount = await query.CountAsync(ct);
         var items = await ReviewReadFiltering.Page(query, search).ToListAsync(ct);
@@ -36,14 +40,16 @@ public sealed class ReviewReadingController(ApplicationDbContext db) : Controlle
     {
         if (id <= 0) return BadRequest("Review id must be positive.");
 
-        var review = await ProjectReviews().FirstOrDefaultAsync(r => r.ReviewId == id, ct);
+        var review = await ProjectReviews(User.IsInRole(AuthRoles.Administrator))
+            .FirstOrDefaultAsync(r => r.ReviewId == id, ct);
         return review is null ? NotFound() : Ok(review);
     }
 
-    private IQueryable<ReviewReadDto> ProjectReviews()
+    private IQueryable<ReviewReadDto> ProjectReviews(bool includeHidden)
     {
         // Reviews with an offering can still get missing period fields from that legacy record.
         return from review in db.Reviews.AsNoTracking()
+               where includeHidden || !review.IsHidden
                join course in db.Courses.AsNoTracking() on review.CourseId equals course.CourseId
                join instructor in db.Instructors.AsNoTracking() on review.InstructorId equals instructor.InstructorId
                join legacyOffering in db.CourseOfferings.AsNoTracking()
@@ -62,7 +68,8 @@ public sealed class ReviewReadingController(ApplicationDbContext db) : Controlle
                    InstructorId = instructor.InstructorId,
                    InstructorName = instructor.FullName,
                    ReviewText = review.ReviewText,
-                   CreatedAt = review.CreatedAt
+                   CreatedAt = review.CreatedAt,
+                   IsHidden = review.IsHidden
                };
     }
 }
