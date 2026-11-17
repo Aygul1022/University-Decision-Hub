@@ -60,7 +60,13 @@ namespace UniversityDecisionHub.Api.Features.Courses
 
             if (course == null) return NotFound();
 
-            return Ok(ToDto(course));
+            // The detail page shows the department by name; without it the page falls back to "Department <id>".
+            var dto = ToDto(course);
+            dto.DepartmentName = await _db.Departments.AsNoTracking()
+                .Where(d => d.DepartmentId == course.DepartmentId)
+                .Select(d => d.DepartmentName)
+                .FirstOrDefaultAsync();
+            return Ok(dto);
         }
 
         [HttpPost]
