@@ -39,6 +39,7 @@
       <div class="review-filter-actions">
         <button class="button" type="submit">Search reviews</button>
         <a href="reviews.html">Clear filters</a>
+        <label data-moderation-filter hidden><input type="checkbox" name="includeHidden"> Include hidden reviews</label>
       </div>
     </form>
 
@@ -61,6 +62,7 @@
       <p class="review-context" data-detail-context hidden></p>
       <p class="notice" data-detail-status role="status"></p>
       <p class="review-text" data-detail-text hidden></p>
+      <button class="button secondary" type="button" data-review-moderation hidden></button>
     </dialog>
   </main>
   <script src="../../js/shared/api.js"></script>
