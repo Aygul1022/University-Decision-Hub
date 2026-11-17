@@ -93,6 +93,7 @@
 .navbar-account .navbar-user {
   font-weight: 600;
   overflow-wrap: anywhere;
+  font-weight: bolder;
 }
 
 .navbar-role {
