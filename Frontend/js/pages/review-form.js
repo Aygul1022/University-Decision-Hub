@@ -145,6 +145,20 @@
         }
       }
 
+      // Long lists are searched, not scrolled. Without the helper script the plain selects still work.
+      // This runs after the options and any linked course are in place, so the box shows the chosen course.
+      // (typeof, not window.SearchableSelect: a top-level const is not a property of window.)
+      if (typeof SearchableSelect !== "undefined") {
+        SearchableSelect.enhance(form.elements.courseId, {
+          placeholder: "Search by course code or name",
+          noun: "courses",
+        });
+        SearchableSelect.enhance(form.elements.instructorId, {
+          placeholder: "Search by name or title",
+          noun: "academic staff",
+        });
+      }
+
       ready = true;
       showStatus("");
       form.hidden = false;
