@@ -133,10 +133,8 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             var userId = User.GetUserId();
             if (userId == null) return Unauthorized();
 
-            var user = await _db.UserAccounts.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId.Value);
-            if (user == null) return Unauthorized();
-
-            return Ok(UserProfileDto.From(user));
+            var profile = await ReadProfileAsync(userId.Value);
+            return profile is null ? Unauthorized() : Ok(profile);
         }
 
         // PUT api/auth/me  -> the logged-in user updates their own name, department and year.
@@ -166,7 +164,25 @@ namespace UniversityDecisionHub.Api.Features.Authentication
             user.IsGraduate = request.IsGraduate;
             await _db.SaveChangesAsync();
 
-            return Ok(UserProfileDto.From(user));
+            var savedProfile = await ReadProfileAsync(user.UserId);
+            return savedProfile is null ? Unauthorized() : Ok(savedProfile);
+        }
+
+        private async Task<UserProfileDto?> ReadProfileAsync(int userId)
+        {
+            var row = await _db.UserAccounts.AsNoTracking()
+                .Where(user => user.UserId == userId)
+                .Select(user => new
+                {
+                    User = user,
+                    DepartmentName = _db.Departments.Where(department => department.DepartmentId == user.DepartmentId)
+                        .Select(department => department.DepartmentName).FirstOrDefault(),
+                    ProgrammeName = _db.Programmes.Where(programme => programme.ProgrammeId == user.ProgrammeId)
+                        .Select(programme => programme.ProgrammeName).FirstOrDefault()
+                })
+                .SingleOrDefaultAsync();
+
+            return row is null ? null : UserProfileDto.From(row.User, row.DepartmentName, row.ProgrammeName);
         }
 
         private AuthResponse ToResponse(UserAccount user)

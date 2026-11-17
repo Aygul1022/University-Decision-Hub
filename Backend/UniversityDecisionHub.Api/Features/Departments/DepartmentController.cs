@@ -10,9 +10,26 @@ namespace UniversityDecisionHub.Api.Features.Departments;
 public class DepartmentController(ApplicationDbContext db) : CatalogControllerBase(db)
 {
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] int? facultyId, CancellationToken ct) => Ok(await Db.Departments.AsNoTracking()
-        .Where(d => facultyId == null || d.FacultyId == facultyId).OrderBy(d => d.DepartmentId)
-        .Select(d => new { d.DepartmentId, d.FacultyId, d.DepartmentCode, d.DepartmentName }).ToListAsync(ct));
+public async Task<IActionResult> Get(
+    [FromQuery] int? facultyId,
+    CancellationToken ct)
+{
+    var departments = await Db.Departments
+        .AsNoTracking()
+        .Where(d => facultyId == null || d.FacultyId == facultyId)
+        .OrderBy(d => d.DepartmentId)
+        .Select(d => new
+        {
+            d.DepartmentId,
+            d.FacultyId,
+            d.DepartmentKey,
+            d.DepartmentCode,
+            d.DepartmentName
+        })
+        .ToListAsync(ct);
+
+    return Ok(departments);
+}
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
