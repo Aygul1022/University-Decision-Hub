@@ -62,6 +62,12 @@
   margin: 12px 0 0;
 }
 
+.review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .review-text {
   white-space: pre-wrap;
   overflow-wrap: anywhere;

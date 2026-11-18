@@ -68,7 +68,7 @@ using var db = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationD
 var controller = new ReviewReadingController(db);
 var method = controllerType.GetMethod("ProjectReviews", BindingFlags.NonPublic | BindingFlags.Instance);
 Check(method is not null, "Projection query method exists");
-var query = (IQueryable<ReviewReadDto>)method!.Invoke(controller, null)!;
+var query = (IQueryable<ReviewReadDto>)method!.Invoke(controller, [false])!;
 var sql = query.ToQueryString();
 Check(sql.Contains("\"Reviews\"", StringComparison.Ordinal)
     && sql.Contains("\"Courses\"", StringComparison.Ordinal)

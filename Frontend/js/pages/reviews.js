@@ -10,6 +10,7 @@
   const detailContext = dialog.querySelector("[data-detail-context]");
   const detailStatus = dialog.querySelector("[data-detail-status]");
   const detailText = dialog.querySelector("[data-detail-text]");
+  const moderationButton = dialog.querySelector("[data-review-moderation]");
 
   const currentQuery = new URLSearchParams(window.location.search);
   const params = new URLSearchParams();
@@ -35,6 +36,13 @@
     return;
   }
 
+  const isAdministrator = Session.user?.isAdministrator === true;
+  if (isAdministrator) {
+    form.querySelector("[data-moderation-filter]").hidden = false;
+    form.elements.includeHidden.checked = currentQuery.get("includeHidden") === "true";
+    if (form.elements.includeHidden.checked) params.set("includeHidden", "true");
+  }
+
   function setNotice(element, message, isError = false) {
     element.textContent = message;
     element.classList.toggle("error", isError);
@@ -57,6 +65,7 @@
         && search.get("departmentId") === params.get("departmentId")) {
       search.set("courseId", params.get("courseId"));
     }
+    if (isAdministrator && form.elements.includeHidden.checked) search.set("includeHidden", "true");
     if (params.has("pageSize")) search.set("pageSize", params.get("pageSize"));
     window.location.assign(Site.url(pageUrl(search)));
   });
@@ -107,6 +116,8 @@
     detailTitle.textContent = "Review detail";
     detailContext.hidden = true;
     detailText.hidden = true;
+    moderationButton.hidden = true;
+    moderationButton.onclick = null;
     setNotice(detailStatus, "Loading review…");
     dialog.showModal();
     try {
@@ -117,11 +128,36 @@
       detailContext.hidden = !detailContext.textContent;
       detailText.textContent = review.reviewText;
       detailText.hidden = false;
-      setNotice(detailStatus, "");
+      setNotice(detailStatus, review.isHidden ? "This review is hidden from readers." : "");
+      if (isAdministrator) {
+        moderationButton.textContent = review.isHidden ? "Restore review" : "Hide review";
+        moderationButton.onclick = () => setReviewVisibility(review, request);
+        moderationButton.hidden = false;
+      }
     } catch (error) {
       if (request !== detailRequest || !dialog.open) return;
       if (error.status === 401) return redirectToLogin();
       setNotice(detailStatus, error.status === 404 ? "This review is no longer available." : error.message, true);
+    }
+  }
+
+  async function setReviewVisibility(review, request) {
+    const isHidden = !review.isHidden;
+    if (isHidden && !window.confirm("Hide this review from readers?")) return;
+
+    moderationButton.disabled = true;
+    try {
+      await apiFetch("/api/reviews/" + review.reviewId + "/moderation", {
+        method: "PUT",
+        body: { isHidden },
+      });
+      if (request === detailRequest && dialog.open) dialog.close();
+      await loadReviews(isHidden ? "Review hidden." : "Review restored.");
+    } catch (error) {
+      if (error.status === 401) return redirectToLogin();
+      if (request === detailRequest && dialog.open) setNotice(detailStatus, error.message, true);
+    } finally {
+      moderationButton.disabled = false;
     }
   }
 
@@ -131,6 +167,7 @@
     const context = reviewContext(review);
     article.append(textElement("h3", "", courseTitle(review)));
     if (context) article.append(textElement("p", "review-context", context));
+    if (review.isHidden) article.append(textElement("p", "review-context", "Hidden from readers"));
     const text = review.reviewText || "";
     const excerpt = text.length > 240 ? text.slice(0, 237).trimEnd() + "…" : text;
     article.append(textElement("p", "review-text", excerpt));
@@ -138,8 +175,50 @@
     button.type = "button";
     button.setAttribute("aria-label", "View review for " + courseTitle(review));
     button.addEventListener("click", () => showDetail(review.reviewId));
-    article.append(button);
+    const actions = textElement("div", "review-actions", "");
+    actions.append(button);
+    // Only a convenience: hiding the button protects nothing. The server checks the Administrator role itself.
+    if (isAdministrator) {
+      const deleteButton = textElement("button", "button secondary", "Delete");
+      deleteButton.type = "button";
+      deleteButton.setAttribute("aria-label", "Delete review for " + courseTitle(review));
+      deleteButton.addEventListener("click", () => deleteReview(review, deleteButton));
+      actions.append(deleteButton);
+    }
+    article.append(actions);
     return article;
+  }
+
+  const deleting = new Set();
+  async function deleteReview(review, deleteButton) {
+    if (deleting.has(review.reviewId)) return;
+    if (!window.confirm("Delete this review permanently? This cannot be undone.")) return;
+
+    deleting.add(review.reviewId);
+    deleteButton.disabled = true;
+    deleteButton.textContent = "Deleting…";
+    try {
+      // 204 with an empty body: apiFetch answers null for it.
+      await apiFetch("/api/reviews/" + review.reviewId, { method: "DELETE" });
+      deleting.delete(review.reviewId);
+      await loadReviews("Review deleted.", true);
+    } catch (error) {
+      deleting.delete(review.reviewId);
+      if (error.status === 401) return redirectToLogin();
+      if (error.status === 404) {
+        await loadReviews("This review no longer exists.", true);
+        return;
+      }
+      deleteButton.disabled = false;
+      deleteButton.textContent = "Delete";
+      if (error.status === 403) {
+        setNotice(status, "Only administrators can delete reviews.", true);
+      } else if (error.status === 0) {
+        setNotice(status, "The review was not deleted: " + error.message + " Try again.", true);
+      } else {
+        setNotice(status, "The review was not deleted. " + (error.message || "Try again."), true);
+      }
+    }
   }
 
   function setPageLink(selector, page, available) {
@@ -151,20 +230,27 @@
     link.href = Site.url(pageUrl(query));
   }
 
-  async function loadReviews() {
+  async function loadReviews(message = "", stepBackIfEmpty = false) {
     try {
       const suffix = params.size ? "?" + params.toString() : "";
       const { items, totalCount, page, pageSize } = await apiFetch("/api/reviews" + suffix);
-      results.replaceChildren(...items.map(renderReview));
       const lastPage = Math.max(1, Math.ceil(totalCount / pageSize));
+      // The last review of the last page was deleted: show the new last page, keeping every filter.
+      if (stepBackIfEmpty && !items.length && totalCount > 0 && page > lastPage) {
+        params.set("page", String(lastPage));
+        window.history.replaceState(null, "", Site.url(pageUrl(params)));
+        return loadReviews(message);
+      }
+      results.replaceChildren(...items.map(renderReview));
       pagination.hidden = lastPage <= 1 && page <= 1;
       setPageLink("[data-previous-page]", Math.min(page - 1, lastPage), page > 1);
       setPageLink("[data-next-page]", page + 1, page < lastPage && page < 100000);
       pagination.querySelector("[data-page-number]").textContent =
         page <= lastPage ? "Page " + page + " of " + lastPage : "Page " + page;
-      setNotice(status, items.length
-        ? totalCount + (totalCount === 1 ? " review found" : " reviews found")
-        : totalCount ? "There are no reviews on this page." : "No reviews match your filters.");
+      const resultsMessage = items.length
+        ? totalCount + (totalCount === 1 ? " review found." : " reviews found.")
+        : totalCount ? "There are no reviews on this page." : "No reviews match your filters.";
+      setNotice(status, message ? message + " " + resultsMessage : resultsMessage);
     } catch (error) {
       if (error.status === 401) return redirectToLogin();
       const fieldMessages = Object.values(error.fieldErrors || {}).flat();

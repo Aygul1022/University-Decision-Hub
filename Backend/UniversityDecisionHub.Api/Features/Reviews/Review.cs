@@ -12,4 +12,7 @@ public class Review
     public bool? AttendanceConfirmed { get; set; }
     public string ReviewText { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
+    public bool IsHidden { get; set; }
+    public DateTime? ModeratedAt { get; set; }
+    public int? ModeratedByUserId { get; set; }
 }
