@@ -666,6 +666,64 @@ if (emptyFaculty.Status == 201)
             "Last empty department may be deleted without inventing a replacement");
 }
 
+// ================================================================ administrator review deletion
+var targetReviewId = submitted.Json.GetProperty("reviewId").GetInt32();
+var targetReviewPath = $"/api/reviews/{targetReviewId}";
+var courseReviewsPath = $"/api/reviews?courseId={reviewCourseId}&pageSize=1";
+var otherAuthorId = stored[EmailStaff].UserId;
+var (offeringId, otherReviewId) = await Db(async db =>
+{
+    var offering = new CourseOffering { CourseId = reviewCourseId, AcademicYear = review.academicYear,
+        Semester = review.semester, Status = "Published" };
+    db.CourseOfferings.Add(offering);
+    await db.SaveChangesAsync();
+    db.OfferingInstructors.Add(new OfferingInstructor { OfferingId = offering.OfferingId, InstructorId = adaId });
+    await db.SaveChangesAsync();
+    var target = await db.Reviews.SingleAsync(row => row.ReviewId == targetReviewId);
+    target.OfferingId = offering.OfferingId;
+    var other = new Review { UserId = otherAuthorId, CourseId = reviewCourseId, OfferingId = offering.OfferingId,
+        InstructorId = adaId, ReviewText = "Another synthetic review.", CreatedAt = DateTime.UtcNow };
+    db.Reviews.Add(other);
+    await db.SaveChangesAsync();
+    return (offering.OfferingId, other.ReviewId);
+});
+
+async Task CheckDeleteDenied(string? token, int expected, string label)
+{
+    var answer = await Send(HttpMethod.Delete, targetReviewPath, token: token);
+    Check(answer.Status == expected && await Db(db => db.Reviews.AnyAsync(row => row.ReviewId == targetReviewId)), label);
+}
+
+await CheckDeleteDenied(null, 401, "Review delete: anonymous request gets 401 and leaves the review");
+await CheckDeleteDenied(tokenStaff, 403, "Review delete: a different nonadministrator gets 403 and leaves the review");
+await CheckDeleteDenied(tokenOne, 403, "Review delete: the nonadministrator author gets 403 and leaves the review");
+var beforeDeletion = await Get(courseReviewsPath, tokenOne);
+Check(beforeDeletion.Status == 200 && beforeDeletion.Json.GetProperty("totalCount").GetInt32() == 2,
+    "Review delete: the course initially has two reviews");
+var deletedReview = await Send(HttpMethod.Delete, targetReviewPath, token: adminToken);
+Check(deletedReview.Status == 204 && deletedReview.Body.Length == 0
+    && !await Db(db => db.Reviews.AnyAsync(row => row.ReviewId == targetReviewId)),
+    "Review delete: administrator gets empty 204 and the target row is removed");
+var repeatedDeletion = await Send(HttpMethod.Delete, targetReviewPath, token: adminToken);
+Check(repeatedDeletion.Status == 404 && repeatedDeletion.Text("type") == "urn:udh:review-not-found",
+    "Review delete: repeated deletion gets the specific review-not-found 404");
+var afterDeletion = await Get(courseReviewsPath, tokenOne);
+Check((await Get(targetReviewPath, tokenOne)).Status == 404 && afterDeletion.Status == 200
+    && afterDeletion.Json.GetProperty("totalCount").GetInt32() == 1
+    && afterDeletion.Json.GetProperty("items").EnumerateArray().Single().GetProperty("reviewId").GetInt32() == otherReviewId,
+    "Review delete: detail disappears and the filtered list count and remaining item are correct");
+Check(await Db(async db => await db.Reviews.AnyAsync(row => row.ReviewId == otherReviewId)
+    && await db.UserAccounts.AnyAsync(row => row.UserId == stored[EmailOne].UserId)
+    && await db.UserAccounts.AnyAsync(row => row.UserId == otherAuthorId)
+    && await db.Courses.AnyAsync(row => row.CourseId == reviewCourseId)
+    && await db.Instructors.AnyAsync(row => row.InstructorId == adaId)
+    && await db.ProgrammeCourses.AnyAsync(row => row.ProgrammeId == programmeId && row.CourseId == reviewCourseId)
+    && await db.CourseOfferings.AnyAsync(row => row.OfferingId == offeringId)
+    && await db.OfferingInstructors.AnyAsync(row => row.OfferingId == offeringId && row.InstructorId == adaId)),
+    "Review delete: other review, accounts, course, instructor, curriculum, offering and assignment are preserved");
+Check((await Post("/api/reviews", review, tokenOne)).Status == 201,
+    "Review delete: physical deletion releases the user-course slot under the current submission rule");
+
 // ---------------------------------------------------------------- result
 await app.StopAsync();
 Console.WriteLine();
