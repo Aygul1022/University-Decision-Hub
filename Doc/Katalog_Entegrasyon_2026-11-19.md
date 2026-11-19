@@ -1,28 +1,61 @@
-# 19 Kas?m 2026 - g?ncel katalog entegrasyonu
+# Güncel katalog entegrasyonu — 19 Kasım 2026
 
-Bu dal yaln?zca veri, kaynak kan?tlar? ve belgelendirme i?erir. Uygulama kodu de?i?tirilmedi. Temel: feature/democontrol, 5b79729. Ortak dala merge yap?lmad?.
+Bu dal veri, kaynak kanıtları ve belgeleri içerir. Uygulama kodu değiştirilmedi. Temel sürüm `feature/democontrol @ 5b79729`'dur. Ortak dala birleştirme yapılmadı.
 
-## Kullan?lacak dosyalar
+## Dosyalar ve aktarım
 
-- DataBase/Imports/catalog.ready.json: esas, schemaVersion 2 katalog.
-- Esas aktar?m yolu mevcut import-catalog arac?d?r. Eski catalog.ready.insert-only.sql giri?ine a??klay?c? durdurma eklendi; 92 programl? eski SQL history/ alt?nda korunur ve g?ncel paket olarak kullan?lmaz. Yeni tam SQL denemesi mevcut algoritman?n 120 saniye s?n?r?na tak?l?p geri al?nd??? i?in desteklenen aktar?m yolu olarak sunulmad?. Uygulama aktar?m arac? ba?ar?yla do?ruland?.
-- DataBase/Sources/catalogue-2026-11-19/Katalog_Guncel_2026-11-19.xlsx: 19 sayfal?k ?al??ma kitab? ve kaynak kan?tlar?.
-- DataBase/Imports/2026-11-19/: dar kapsaml? d?zeltmeler ve kontrol sorgular?. Dosyalar?n tamam?n? s?rayla rastgele ?al??t?rmay?n. Yerel say?sal ID'ler ta??nabilir kimlik de?ildir.
+- Esas dosya `DataBase/Imports/catalog.ready.json`, biçim schemaVersion 2.
+- Excel: `DataBase/Sources/catalogue-2026-11-19/Katalog_Guncel_2026-11-19.xlsx` (19 sayfa). CSV, veri sözlüğü ve kaynak kanıtları aynı klasördedir.
+- `DataBase/Imports/2026-11-19/` düzeltme ve kontrol SQL'lerini içerir; geri alma dosyası da bulunduğundan tümünü rastgele çalıştırmayın.
+- Eski `catalog.ready.insert-only.sql` giriş noktası durduruldu; 92 programlı eski SQL `history/` altında korunur. Yeni tam SQL denemesi 120 saniyelik süre sınırında geri alındı. Doğrulanan aktarım yolu mevcut uygulama komutudur.
 
-## Bu bilgisayarda do?rulanan
+Geliştirme ortamında, özel bağlantı ayarı doğru hedefi gösterirken:
 
-Yerel UniversityDecisionHub / port 5432. Yedek al?nd? ve ar?iv i?eri?i okunabildi; yedek ve ba?lant? bilgileri GitHub'a eklenmedi. Kaynakla do?rulanm?? 20 CourseCredit alan? null de?erinden do?ru de?ere g?ncellendi. Katalog tam alan kar??la?t?rmas? s?f?r fark; dokuz tekrar kontrol?nde s?f?r grup. Kredi g?ncellemesi boyunca hesap ve yorumlar?n b?t?n sat?r parmak izleri korundu.
+```powershell
+dotnet run --project Backend/UniversityDecisionHub.Api --no-launch-profile -- validate-catalog DataBase/Imports/catalog.ready.json
+dotnet run --project Backend/UniversityDecisionHub.Api --no-launch-profile -- import-catalog DataBase/Imports/catalog.ready.json --apply
+```
 
-9 fak?lte, 135 b?l?m, 456 ??retim eleman?, 104 program, 9346 ders, 12591 m?fredat ba?lant?s?. Toplam 22641. Ger?ek uygulama aktar?m arac? tekrar ?al??t?r?ld?: 0 added, 22641 unchanged; yeni m?kerrer kay?t, g?ncelleme veya silme yok.
+Doğrulama veritabanına yazmaz. Aktarımdan önce hedef, yedek, migration ve mevcut alan farklarını kontrol edin. Aktarıcı mevcut farklı değerleri otomatik güncellemez.
 
-Mevcut 20261116191117_AddReviewModeration migration'? bu yerel veritaban?na uyguland?. Yeni migration ?retilmedi. ?? Reviews s?tunu kontrol edildi. Eski ?al??an API kapat?lmad?; g?ncel API ayr? 5156 portunda salt okunur katalog kontrol? i?in ba?lat?ld?. 104 program, 135 b?l?m ve 456 ??retim eleman? HTTP ile okundu; Bilgisayar M?hendisli?i b?l?m/program filtresi do?ruland?. Yeni s?r?mde kay?t/yorum g?nderme/y?netici silme u?tan uca testi bu turda yap?lmad?; ger?ek yorum silinmedi.
+## Ana yerel veritabanı
 
-## Di?er bilgisayarda yap?lacak
+Hedef `UniversityDecisionHub`, port 5432. Özel yedek alındı; arşiv listesi okunabildi. Yedek ve bağlantı bilgileri GitHub'a eklenmedi.
 
-Git pull veritaban?n? g?ncellemez. Hedef/port/yedek/migration kontrol?nden sonra tam alan kar??la?t?rmas?n? ?al??t?r?n. Bo? hedefte g?ncel JSON aktar?labilir. Eski 92 programl? hedefte mevcut alan ve kadro ili?kisi farklar? incelenmeli; anahtar de?i?tirme, sil-yeniden ekle veya zorla g?ncelleme yapmay?n. Ge?mi? 62 alan d?zeltmesinin tamam? bu paketteki 20 alan SQL'inin i?inde de?ildir. Teknik veri sahibiyle hedefe ?zel fark plan? haz?rlay?n.
+| Veri | Kayıt |
+|---|---:|
+| Fakülte/birim kökü | 9 |
+| Bölüm/akademik birim | 135 |
+| Öğretim elemanı | 456 |
+| Program | 104 |
+| Ders | 9.346 |
+| Müfredat bağlantısı | 12.591 |
 
-Paketin ?nceki README_TESLIM_ONCESI.md dosyas? tarihsel durumu anlat?r; 20 kredi art?k bu bilgisayarda uygulanm??t?r. Ekip demo/hedef PostgreSQL'i ayr?ca do?rulanmad?. Anket kullan?c?lar? eklenmedi. Kaynakta do?rulanmayan de?erler null tutulur. G?T 1002 konusu ertelenmi?tir. 84 program?n plan kan?tlar? g?ncel derlemede e?le?ir; kalan tarihsel programlar yeniden ara?t?r?lm?? gibi sunulmaz. ?oklu kadro API deste?i ve profil/kay?t etiketleri i?in onays?z eski kod yamas? ta??nmad?.
+Toplam 22.641 kayıt. Son 20 kredi düzeltmesi uygulandı. Tam alan karşılaştırması sıfır fark; dokuz tekrar kontrolü sıfır grup verdi. Kredi düzeltmesi sırasında hesap ve yorumların bütün satır parmak izleri korundu. Tekrar aktarım `0 added, 22641 unchanged` verdi.
 
-JWT anahtar? bu yerelde tan?ml? de?il; API yeniden ba?lay?nca giri? oturumlar? d??er. Sabit anahtar yaln?zca ?zel yerel ayarda tutulmal?, repoya konmamal?d?r.
+Mevcut `20261116191117_AddReviewModeration` migration'ı uygulandı ve üç sütunu doğrulandı; yeni migration üretilmedi.
 
-SQL performans denemesi s?ras?nda hata/timeout i?lemi geri ald?; kaynak verisi silinmedi. C# API veya aray?z kodu de?i?tirilmeden, katalog aktar?m? uygulaman?n mevcut arac?yla tamamland?.
+## Ayrı geçici PostgreSQL'de kullanıcı akışı
+
+Ana veritabanından yalnızca şema, katalog ve migration geçmişi alındı; gerçek hesap/yorum kopyalanmadı. Üç kurgu hesap ve bir kurgu yorum kullanıldı.
+
+- Tarayıcıda kayıt → profil → Computer Engineering programı → kaydet → yenile → yorum formu çalıştı.
+- Formda 175 farklı ders geldi; COME 214 için açıkça kurgu olarak işaretlenmiş yorum kaydedildi.
+- Farklı okuyucu hesabıyla giriş yapılıp yorum okundu.
+- Test API'si durdurulup yeniden başlatıldı. Yorum farklı hesapla tarayıcıda yeniden okundu; PostgreSQL satırı ayrıca doğrulandı.
+- 104 programın kimliği doğrulanmış `/api/programmes/{id}/courses` yanıtları kaynak katalogla alan bazında karşılaştırıldı; 12.591 müfredat bağlantısı eşleşti. Bu, 104 programın hepsinde tarayıcıdan yorum gönderildiği anlamına gelmez.
+- Aynı kullanıcı/derse ikinci yorum 409; girişsiz okuma/silme 401; normal yazarın silmesi 403 verdi.
+- Kurgu mezun hesapta `isGraduate=true`, sınıf boş korundu. Okuma çalıştı; yorum yazma 403 ile engellendi.
+- Ana hesap/yorumların test öncesi/sonrası bütün satır parmak izleri aynı kaldı. Test API'leri kapatıldı ve geçici veritabanı silindi.
+
+Test imza anahtarı yalnızca geçici çalışma ortamındaydı. Ana yerelde sabit `Jwt:Key` yoksa yeniden başlatmada oturumlar düşebilir. Anahtarlar repoya eklenmemelidir.
+
+Kanıtlar: `Doc/Verification/catalogue-2026-11-19/`. Yönetici silme/gizleme bu turda yeniden sınanmadı; önceki ekip testlerinden ayrı tutulur.
+
+## Ortak demoda ve anket tarafında bekleyenler
+
+Ortak demo bilgisayarı, kesin dal/commit ve hedef veritabanı henüz teyit edilmedi. GitHub'dan çekmek başka bilgisayarın veritabanını güncellemez. Hedef belirlenince yedek, migration ve tam alan fark kontrolü yapılmalıdır. Eski 92 programlı hedefte geçmiş 62 alan ve kadro düzeltmeleri ayrıca incelenmeli; anahtar değiştirerek veya silip yeniden ekleyerek geçilmemelidir.
+
+Gerçek anket hesapları aktarılmadı. Mevcut dört sütunlu kullanıcı aktarıcısı ve parolasız hesabı sahiplenmeyi kapatan kayıt davranışı nedeniyle doğrulama, program/mezun alanları ve parola tamamlama sözleşmesi teknik ekipçe netleştirilmelidir. Ayrıntılar `Anket_Aktarimi_Bekleyen_Kararlar_2026-11-19.md` dosyasındadır.
+
+Bilinmeyen kaynak değerleri boş kalır. GİT 1002 kullanıcının isteğiyle ertelendi. 84 programın plan kanıtları güncel derlemede eşleşir; kalan tarihsel programlar yeniden araştırılmış gibi sunulmaz. Profil/kayıt etiketleri ve çoklu kadro gösterimi için arkadaşların koduna yama taşınmadı.

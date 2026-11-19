@@ -1,0 +1,105 @@
+﻿programmeKey,programmeName,departmentKey,departmentName,facultyName,degreeLevel,instructionLanguage,uniqueCourseCount,curriculumCount,catalogueProgrammePresent,localDatabaseFieldAudit,authenticatedCourseEndpoint,browserReviewFlow,sharedDemoDatabase
+PRG-0001,Ağız ve Diş Sağlığı,DEP-0020,Ağız ve Diş Sağlığı,Meslek Yüksekokulu,Associate Degree,Turkish,68,88,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0002,Anestezi,DEP-0019,Anestezi,Meslek Yüksekokulu,Associate Degree,Turkish,75,102,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0003,Aşçılık,DEP-0021,Aşçılık,Meslek Yüksekokulu,Associate Degree,Turkish,60,60,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0004,Bankacılık ve Sigortacılık,DEP-0022,Bankacılık ve Sigortacılık,Meslek Yüksekokulu,Associate Degree,Turkish,63,63,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0005,Bilgisayar Destekli Tasarım ve Animasyon,DEP-0023,Bilgisayar Destekli Tasarım ve Animasyon,Meslek Yüksekokulu,Associate Degree,Turkish,69,69,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0006,Computer Engineering,DEP-0064,Computer Engineering,Mühendislik ve Doğa Bilimleri Fakültesi,Bachelor's Degree,English,175,232,True,VERIFIED_2026-11-19,PASS,PASS,TARGET_NOT_CONFIRMED
+PRG-0007,Bilgisayar Programcılığı,DEP-0024,Bilgisayar Programcılığı,Meslek Yüksekokulu,Associate Degree,Turkish,107,108,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0008,Bilgisayar Teknolojisi,DEP-0025,Bilgisayar Teknolojisi,Meslek Yüksekokulu,Associate Degree,Turkish,104,104,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0009,Bilgisayar ve Enformasyon Bilimleri,DEP-0002,Bilgisayar ve Enformasyon Bilimleri,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,40,115,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0010,Bilişim Güvenliği Teknolojisi,DEP-0026,Bilişim Güvenliği Teknolojisi,Meslek Yüksekokulu,Associate Degree,Turkish,66,66,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0011,Cerrahi Hastalıklar Hemşireliği,DEP-0004,Cerrahi Hastalıklar Hemşireliği,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,18,30,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0012,Çocuk Gelişimi,DEP-0056,Çocuk Gelişimi,Meslek Yüksekokulu,Associate Degree,Turkish,67,87,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0013,Dış Ticaret,DEP-0028,Dış Ticaret,Meslek Yüksekokulu,Associate Degree,Turkish,67,67,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0014,Foreign Trade,DEP-0034,Foreign Trade,Meslek Yüksekokulu,Associate Degree,English,67,67,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0015,Dijital Dönüşüm Elektroniği,DEP-0027,Dijital Dönüşüm Elektroniği,Meslek Yüksekokulu,Associate Degree,Turkish,59,59,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0016,Dijital Oyun Tasarımı,DEP-0072,Dijital Oyun Tasarımı,Sanat ve Tasarım Fakültesi,Bachelor's Degree,Turkish,174,248,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0017,Eczane Hizmetleri,DEP-0029,Eczane Hizmetleri,Meslek Yüksekokulu,Associate Degree,Turkish,69,90,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0018,Elektrik,DEP-0030,Elektrik,Meslek Yüksekokulu,Associate Degree,Turkish,58,58,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0019,Elektrik-Elektronik Mühendisliği,DEP-0065,Elektrik-Elektronik Mühendisliği,Mühendislik ve Doğa Bilimleri Fakültesi,Bachelor's Degree,Turkish,201,214,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0020,Elektrik-Elektronik Mühendisliği,DEP-0005,Elektrik-Elektronik Mühendisliği,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,54,198,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0021,Elektrik-Elektronik Mühendisliği,DEP-0005,Elektrik-Elektronik Mühendisliği,Lisansüstü Eğitim Enstitüsü,Doctorate,Turkish,29,50,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0022,Elektronik Teknolojisi,DEP-0031,Elektronik Teknolojisi,Meslek Yüksekokulu,Associate Degree,Turkish,60,60,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0023,Elektronörofizyoloji,DEP-0032,Elektronörofizyoloji,Meslek Yüksekokulu,Associate Degree,Turkish,70,91,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0024,Endüstri Mühendisliği,DEP-0066,Endüstri Mühendisliği,Mühendislik ve Doğa Bilimleri Fakültesi,Bachelor's Degree,Turkish,196,235,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0025,Industrial Engineering,DEP-0067,Industrial Engineering,Mühendislik ve Doğa Bilimleri Fakültesi,Bachelor's Degree,English,131,166,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0026,Endüstriyel Tasarım,DEP-0073,Endüstriyel Tasarım,Sanat ve Tasarım Fakültesi,Bachelor's Degree,Turkish,99,146,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0027,Finansal İktisat,DEP-0007,Finansal İktisat,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,28,90,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0028,Finansal İktisat,DEP-0007,Finansal İktisat,Lisansüstü Eğitim Enstitüsü,Doctorate,Turkish,21,27,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0029,Fizyoterapi,DEP-0033,Fizyoterapi,Meslek Yüksekokulu,Associate Degree,Turkish,71,91,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0030,Gastronomi ve Mutfak Sanatları,DEP-0074,Gastronomi ve Mutfak Sanatları,Sanat ve Tasarım Fakültesi,Bachelor's Degree,Turkish,157,223,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0031,Görsel İletişim Tasarımı,DEP-0076,Görsel İletişim Tasarımı,Sanat ve Tasarım Fakültesi,Bachelor's Degree,Turkish,176,196,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0032,Grafik,DEP-0075,Grafik,Sanat ve Tasarım Fakültesi,Bachelor's Degree,Turkish,190,262,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0033,Grafik Tasarımı,DEP-0035,Grafik Tasarımı,Meslek Yüksekokulu,Associate Degree,Turkish,63,63,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0034,Halkla İlişkiler ve Tanıtım,DEP-0036,Halkla İlişkiler ve Tanıtım,Meslek Yüksekokulu,Associate Degree,Turkish,61,61,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0035,Hemşirelik,DEP-0080,Hemşirelik,Sağlık Bilimleri Yüksekokulu,Bachelor's Degree,Turkish,193,266,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0036,Hukuk,DEP-0001,Hukuk,Hukuk Fakültesi,Bachelor's Degree,Turkish,126,190,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0037,İç Mekan Tasarımı,DEP-0063,İç Mekan Tasarımı,Meslek Yüksekokulu,Associate Degree,Turkish,58,58,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0038,İç Mimarlık,DEP-0079,İç Mimarlık,Sanat ve Tasarım Fakültesi,Bachelor's Degree,Turkish,227,421,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0039,İktisat,DEP-0091,İktisat,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,Turkish,166,167,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0040,Economics,DEP-0082,Economics,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,English,99,99,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0041,İletişim Bilimleri,DEP-0016,İletişim Bilimleri,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,49,170,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0042,İlk ve Acil Yardım,DEP-0057,İlk ve Acil Yardım,Meslek Yüksekokulu,Associate Degree,Turkish,73,97,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0043,İmalat Yürütme Sistemleri Operatörlüğü,DEP-0058,İmalat Yürütme Sistemleri Operatörlüğü,Meslek Yüksekokulu,Associate Degree,Turkish,66,66,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0044,English Language and Literature,DEP-0083,English Language and Literature,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,English,115,167,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0045,English Translation and Interpreting,DEP-0093,İngilizce Mütercim ve Tercümanlık,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,English,115,144,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0046,İnsan Kaynakları Yönetimi,DEP-0059,İnsan Kaynakları Yönetimi,Meslek Yüksekokulu,Associate Degree,Turkish,68,68,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0047,İnsansız Araç Teknikerliği,DEP-0060,İnsansız Araç Teknikerliği,Meslek Yüksekokulu,Associate Degree,Turkish,58,58,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0048,İnşaat Teknolojisi,DEP-0062,İnşaat Teknolojisi,Meslek Yüksekokulu,Associate Degree,Turkish,62,62,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0049,İnternet Ağ ve Teknolojileri,DEP-0061,İnternet Ağ ve Teknolojileri,Meslek Yüksekokulu,Associate Degree,Turkish,67,67,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0050,İşletme,DEP-0094,İşletme,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,Turkish,249,320,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0051,İşletme,DEP-0017,İşletme,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,46,91,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0052,İşletme,DEP-0017,İşletme,Lisansüstü Eğitim Enstitüsü,Doctorate,Turkish,18,22,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0053,Business Administration,DEP-0081,Business Administration,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,English,100,100,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0054,Business Administration,DEP-0003,Business Administration,Lisansüstü Eğitim Enstitüsü,Master's Degree,English,20,62,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0055,Kamu Hukuku,DEP-0009,Kamu Hukuku,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,24,61,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0056,Karbon Yönetimi Teknikerliği,DEP-0037,Karbon Yönetimi Teknikerliği,Meslek Yüksekokulu,Associate Degree,Turkish,66,66,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0057,Kurumsal Bilişim Uzmanlığı,DEP-0038,Kurumsal Bilişim Uzmanlığı,Meslek Yüksekokulu,Associate Degree,Turkish,68,68,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0058,Küresel İlişkiler ve Avrupa Birliği,DEP-0010,Küresel İlişkiler ve Avrupa Birliği,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,30,56,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0059,Lojistik ve Tedarik Zinciri Yönetimi,DEP-0011,Lojistik ve Tedarik Zinciri Yönetimi,Lisansüstü Eğitim Enstitüsü,Doctorate,Turkish,28,43,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0060,Mahkeme Büro Hizmetleri (Adalet),DEP-0039,Mahkeme Büro Hizmetleri (Adalet),Meslek Yüksekokulu,Associate Degree,Turkish,78,78,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0061,Makine,DEP-0040,Makine,Meslek Yüksekokulu,Associate Degree,Turkish,65,65,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0062,Makine Mühendisliği,DEP-0068,Makine Mühendisliği,Mühendislik ve Doğa Bilimleri Fakültesi,Bachelor's Degree,Turkish,147,171,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0063,Mechanical Engineering,DEP-0069,Mechanical Engineering,Mühendislik ve Doğa Bilimleri Fakültesi,Bachelor's Degree,English,144,168,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0064,Mekatronik,DEP-0041,Mekatronik,Meslek Yüksekokulu,Associate Degree,Turkish,69,69,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0065,Mühendislik ve Teknoloji Yönetimi,DEP-0012,Mühendislik ve Teknoloji Yönetimi,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,38,107,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0066,Odyometri,DEP-0042,Odyometri,Meslek Yüksekokulu,Associate Degree,Turkish,68,92,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0067,Optisyenlik,DEP-0043,Optisyenlik,Meslek Yüksekokulu,Associate Degree,Turkish,68,88,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0068,Otomotiv Teknolojisi,DEP-0044,Otomotiv Teknolojisi,Meslek Yüksekokulu,Associate Degree,Turkish,66,66,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0069,Otonom Sistemler Teknikerliği,DEP-0045,Otonom Sistemler Teknikerliği,Meslek Yüksekokulu,Associate Degree,Turkish,68,68,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0070,Otopsi Yardımcılığı,DEP-0046,Otopsi Yardımcılığı,Meslek Yüksekokulu,Associate Degree,Turkish,69,95,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0071,Oyunculuk,DEP-0077,Oyunculuk,Sanat ve Tasarım Fakültesi,Bachelor's Degree,Turkish,91,102,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0072,Özel Hukuk,DEP-0015,Özel Hukuk,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,47,90,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0073,Patoloji Laboratuvar Teknikleri,DEP-0047,Patoloji Laboratuvar Teknikleri,Meslek Yüksekokulu,Associate Degree,Turkish,75,97,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0074,Psikoloji,DEP-0087,Psikoloji,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,18,34,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0075,Psychology,DEP-0088,Psychology,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,English,111,186,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0076,Robotik ve Yapay Zekâ,DEP-0048,Robotik ve Yapay Zekâ,Meslek Yüksekokulu,Associate Degree,Turkish,71,71,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0077,Sivil Havacılık Kabin Hizmetleri,DEP-0049,Sivil Havacılık Kabin Hizmetleri,Meslek Yüksekokulu,Associate Degree,Turkish,67,88,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0078,Siyaset Bilimi ve Kamu Yönetimi,DEP-0089,Siyaset Bilimi ve Kamu Yönetimi,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,Turkish,169,212,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0079,Stratejik Pazarlama ve Marka Yönetimi,DEP-0013,Stratejik Pazarlama ve Marka Yönetimi,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,30,52,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0080,Tekstil ve Moda Tasarımı,DEP-0078,Tekstil ve Moda Tasarımı,Sanat ve Tasarım Fakültesi,Bachelor's Degree,Turkish,138,226,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0081,Tıbbi Dokümantasyon ve Sekreterlik,DEP-0051,Tıbbi Dokümantasyon ve Sekreterlik,Meslek Yüksekokulu,Associate Degree,Turkish,67,87,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0082,Tıbbi Görüntüleme Teknikleri,DEP-0052,Tıbbi Görüntüleme Teknikleri,Meslek Yüksekokulu,Associate Degree,Turkish,70,92,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0083,Tıbbi Laboratuvar Teknikleri,DEP-0053,Tıbbi Laboratuvar Teknikleri,Meslek Yüksekokulu,Associate Degree,Turkish,74,96,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0084,Turizm ve Otel İşletmeciliği,DEP-0050,Turizm ve Otel İşletmeciliği,Meslek Yüksekokulu,Associate Degree,Turkish,74,74,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0085,Uluslararası İlişkiler,DEP-0014,Uluslararası İlişkiler,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,48,97,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0086,International Relations,DEP-0084,International Relations,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,English,106,129,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0087,International Trade and Business,DEP-0085,International Trade and Business,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,English,107,107,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0088,Web Tasarımı ve Kodlama,DEP-0054,Web Tasarımı ve Kodlama,Meslek Yüksekokulu,Associate Degree,Turkish,65,65,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0089,Yapay Zeka Operatörlüğü,DEP-0055,Yapay Zeka Operatörlüğü,Meslek Yüksekokulu,Associate Degree,Turkish,70,70,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0090,Yazılım Geliştirme,DEP-0070,Yazılım Geliştirme,Mühendislik ve Doğa Bilimleri Fakültesi,Bachelor's Degree,Turkish,230,391,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0091,Yazılım Mühendisliği,DEP-0071,Yazılım Mühendisliği,Mühendislik ve Doğa Bilimleri Fakültesi,Bachelor's Degree,Turkish,188,249,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0092,Yönetim Bilişim Sistemleri,DEP-0090,Yönetim Bilişim Sistemleri,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,Turkish,168,223,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0094,Endüstri Mühendisliği,DEP-0135,Endüstri Mühendisliği,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,44,144,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0095,Psikoloji,DEP-0127,Psikoloji (Türkçe),"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,Turkish,132,222,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0093,Graphics,DEP-0119,Grafik (İngilizce),Sanat ve Tasarım Fakültesi,Bachelor's Degree,English,97,154,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-0096,İletişim Bilimleri,DEP-0092,İletişim Bilimleri,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,Turkish,175,241,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-DOU-BOLOGNA-75,İnşaat Mühendisliği,DEP-0118,İnşaat Mühendisliği,Mühendislik ve Doğa Bilimleri Fakültesi,Bachelor's Degree,Turkish,144,163,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-DOU-BOLOGNA-73,Sosyoloji,DEP-0128,Sosyoloji,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,Turkish,108,239,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-DOU-BOLOGNA-71,Türk Dili ve Edebiyatı,DEP-0129,Türk Dili ve Edebiyatı,"İktisadi, İdari ve Sosyal Bilimler Fakültesi",Bachelor's Degree,Turkish,110,189,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-DOU-BOLOGNA-44,Mimarlık,DEP-0122,Mimarlık,Sanat ve Tasarım Fakültesi,Bachelor's Degree,Turkish,124,174,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-DOU-BOLOGNA-78,İş Sağlığı ve Güvenliği,DEP-0110,İş Sağlığı ve Güvenliği,Meslek Yüksekokulu,Associate Degree,Turkish,66,86,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-DOU-BOLOGNA-81,Sosyal Hizmetler,DEP-0105,Sosyal Hizmetler,Meslek Yüksekokulu,Associate Degree,Turkish,66,89,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-DOU-BOLOGNA-4141,İnsan Kaynakları Yönetimi (Tezli),DEP-0097,İnsan Kaynakları Yönetimi,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,32,56,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED
+PRG-DOU-BOLOGNA-4142,İnsan Kaynakları Yönetimi (Tezsiz),DEP-0097,İnsan Kaynakları Yönetimi,Lisansüstü Eğitim Enstitüsü,Master's Degree,Turkish,30,54,True,VERIFIED_2026-11-19,PASS,NOT_TESTED_THIS_RUN,TARGET_NOT_CONFIRMED

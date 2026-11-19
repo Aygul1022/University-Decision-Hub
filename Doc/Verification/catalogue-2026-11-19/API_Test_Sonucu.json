@@ -1,0 +1,80 @@
+{
+  "temporary_postgresql": true,
+  "main_database_mutations": 0,
+  "programmes_with_matching_authenticated_course_responses": 104,
+  "matching_curriculum_rows": 12591,
+  "checks": [
+    {
+      "check": "browser-created account login",
+      "status": "PASS",
+      "http_status": 200
+    },
+    {
+      "check": "saved profile reload",
+      "status": "PASS",
+      "http_status": 200
+    },
+    {
+      "check": "reader synthetic account registration",
+      "status": "PASS",
+      "http_status": 201
+    },
+    {
+      "check": "different account reads synthetic review",
+      "status": "PASS",
+      "http_status": 200
+    },
+    {
+      "check": "anonymous review reading denied",
+      "status": "PASS",
+      "http_status": 401
+    },
+    {
+      "check": "anonymous delete denied",
+      "status": "PASS",
+      "http_status": 401
+    },
+    {
+      "check": "normal author delete denied",
+      "status": "PASS",
+      "http_status": 403
+    },
+    {
+      "check": "duplicate course review rejected",
+      "status": "PASS",
+      "http_status": 409
+    },
+    {
+      "check": "graduate synthetic registration",
+      "status": "PASS",
+      "http_status": 201
+    },
+    {
+      "check": "graduate stored profile",
+      "status": "PASS",
+      "http_status": 200
+    },
+    {
+      "check": "graduate reads reviews",
+      "status": "PASS",
+      "http_status": 200
+    },
+    {
+      "check": "graduate review writing remains blocked",
+      "status": "PASS",
+      "http_status": 403
+    }
+  ],
+  "restart_persistence": "PASS_BROWSER_AND_POSTGRESQL",
+  "shared_demo_database": "NOT_CONFIRMED",
+  "browser_flow": {
+    "registration": "PASS",
+    "profile_programme_save_reload": "PASS",
+    "computer_engineering_unique_courses": 175,
+    "review_submission": "PASS",
+    "different_reader_account": "PASS",
+    "restart_persistence": "PASS"
+  },
+  "temporary_database_removed": true,
+  "main_accounts_reviews_unchanged": true
+}

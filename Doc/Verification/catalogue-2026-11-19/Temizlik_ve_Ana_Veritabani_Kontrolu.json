@@ -1,0 +1,11 @@
+﻿{
+    "temporary_database":  "udh_catalogue_check_20261119133149",
+    "temporary_database_removed":  true,
+    "main_accounts_reviews_full_rows_unchanged":  true,
+    "real_accounts_or_reviews_copied":  false,
+    "main_database_test_writes":  0,
+    "synthetic_accounts":  3,
+    "synthetic_reviews":  1,
+    "restart_persistence_verified":  true,
+    "shared_demo_target":  "NOT_CONFIRMED"
+}

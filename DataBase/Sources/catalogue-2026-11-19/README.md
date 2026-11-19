@@ -1,5 +1,5 @@
-# G?ncel kaynak paketi
+# Güncel kaynak paketi
 
-Esas entegrasyon durumu ve kullan?m s?ras?: ../../../Doc/Katalog_Entegrasyon_2026-11-19.md
+Güncel durum ve aktarım sırası için [entegrasyon notunu](../../../Doc/Katalog_Entegrasyon_2026-11-19.md) okuyun.
 
-README_TESLIM_ONCESI.md tarihsel teslim durumudur. 20 kredi d?zeltmesi daha sonra yerel veritaban?na uygulanm??t?r. Bu klas?r ger?ek ??renci hesaplar?n? i?ermez.
+`README_TESLIM_ONCESI.md` önceki teslim durumunu anlatır. Son 20 kredi düzeltmesi daha sonra bu bilgisayarda uygulanmıştır. Gerçek öğrenci hesapları bu klasörde bulunmaz. Ortak demo ortamı ayrıca teyit beklemektedir.
