@@ -45,10 +45,14 @@
           </div>
 
           <div class="field">
-            <label for="instructorId">Academic staff member</label>
-            <select id="instructorId" name="instructorId" required>
-              <option value="">Choose an academic staff member</option>
-            </select>
+            <div data-instructor-picker hidden>
+              <label for="instructorId">Academic staff member</label>
+              <select id="instructorId" name="instructorId" required disabled
+                      aria-describedby="instructor-status">
+                <option value="">Choose an academic staff member</option>
+              </select>
+            </div>
+            <p id="instructor-status" class="field-hint" role="status">Choose a course to see academic staff from its faculty.</p>
           </div>
 
           <div class="field-row">

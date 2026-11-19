@@ -1,4 +1,4 @@
-// Login and Register pages. Register also requires js/shared/departments.js.
+// Login and Register pages.
 (function () {
   const form = document.querySelector("form[data-auth-form]");
   if (!form) return;
@@ -43,6 +43,65 @@
     });
   }
 
+  // Group registration options by department name and teaching language. For the
+  // same name and language, prefer the department with an undergraduate programme.
+  // Other department IDs remain available on the profile page.
+  function registrationDepartments(departments, programmes) {
+    const undergraduate = new Set(["Bachelor's Degree", "Associate Degree"]);
+    // These translations refer to the same department family in the catalogue.
+    const translatedNames = new Map([
+      ["Business Administration", "İşletme"],
+      ["Economics", "İktisat"],
+      ["Foreign Trade", "Dış Ticaret"],
+      ["Industrial Engineering", "Endüstri Mühendisliği"],
+      ["International Relations", "Uluslararası İlişkiler"],
+      ["Mechanical Engineering", "Makine Mühendisliği"],
+      ["Psychology", "Psikoloji"],
+    ]);
+    const languageLabels = { Turkish: "Türkçe", English: "İngilizce" };
+    const programmesByDepartment = new Map();
+    for (const programme of programmes) {
+      const linked = programmesByDepartment.get(programme.departmentId) || [];
+      linked.push(programme);
+      programmesByDepartment.set(programme.departmentId, linked);
+    }
+
+    const choices = new Map();
+    for (const department of departments) {
+      const linked = programmesByDepartment.get(department.departmentId);
+      if (!linked) continue;
+
+      const name = department.departmentName.trim();
+      const baseName = name.replace(/\s*\((T\u00fcrk\u00e7e|\u0130ngilizce|Turkish|English)\)\s*$/iu, "");
+      const familyName = translatedNames.get(baseName) ?? baseName;
+      const nameKey = familyName.normalize("NFC").toLocaleLowerCase("tr")
+        .replace(/\s*[-\u2013\u2014]\s*/gu, "-").replace(/\s+/gu, " ");
+      const languages = [...new Set(linked.map(programme => programme.instructionLanguage))].sort();
+      const groupKey = JSON.stringify([nameKey, languages]);
+      const rank = linked.some(programme => undergraduate.has(programme.degreeLevel)) ? 0 : 1;
+      const current = choices.get(groupKey);
+      if (!current || rank < current.rank ||
+          (rank === current.rank && department.departmentId < current.departmentId)) {
+        choices.set(groupKey, { ...department, familyName, nameKey, languages, rank });
+      }
+    }
+
+    const available = [...choices.values()];
+    const languagesByName = new Map();
+    for (const department of available) {
+      const languages = languagesByName.get(department.nameKey) || new Set();
+      for (const language of department.languages) languages.add(language);
+      languagesByName.set(department.nameKey, languages);
+    }
+    return available.map(department => {
+      const languages = languagesByName.get(department.nameKey);
+      const label = languages.has("Turkish") && languages.has("English")
+        ? `${department.familyName} (${department.languages.map(language => languageLabels[language] ?? language).join(" / ")})`
+        : department.departmentName.trim();
+      return { departmentId: department.departmentId, label };
+    }).sort((a, b) => a.label.localeCompare(b.label, "tr"));
+  }
+
   async function loadDepartmentOptions() {
     const departmentSelect = form.elements.departmentId;
     const departmentStatus = document.querySelector("[data-department-status]");
@@ -50,12 +109,20 @@
     departmentSelect.disabled = true;
 
     try {
-      const count = await Departments.fillSelect(departmentSelect);
-      for (const option of departmentSelect.options) {
-        if (option.value) registrationDepartmentIds.add(Number(option.value));
+      const [departments, programmes] = await Promise.all([
+        apiFetch("/api/departments"),
+        apiFetch("/api/programmes"),
+      ]);
+      if (!Array.isArray(departments) || !Array.isArray(programmes)) {
+        throw new Error("Department options could not be loaded.");
+      }
+      const choices = registrationDepartments(departments, programmes);
+      for (const choice of choices) {
+        departmentSelect.add(new Option(choice.label, String(choice.departmentId)));
+        registrationDepartmentIds.add(choice.departmentId);
       }
 
-      if (count === 0) {
+      if (choices.length === 0) {
         departmentStatus.textContent = "No department choices are available. You can still register without student information.";
         departmentStatus.hidden = false;
       } else {

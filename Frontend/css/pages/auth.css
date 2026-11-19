@@ -83,6 +83,19 @@
   display: none;
 }
 
+.auth-recovery {
+  text-align: right;
+}
+
+.auth-recovery-label {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+}
+
 .form-message {
   margin: 0 0 16px;
   padding: 10px 12px;
