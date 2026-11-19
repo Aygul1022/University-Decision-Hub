@@ -1,0 +1,16 @@
+{
+  "target": "local UniversityDecisionHub",
+  "catalogue": "104 programmes / 9346 courses / 12591 curriculum rows",
+  "corrected_fields": 20,
+  "remaining_field_differences": 0,
+  "duplicate_groups": 0,
+  "accounts_and_reviews_unchanged": true,
+  "private_backup_verified": true,
+  "migrations_applied": true,
+  "team_demo_database_verified": false,
+  "migration": "20261116191117_AddReviewModeration",
+  "repeat_import_added": 0,
+  "repeat_import_unchanged": 22641,
+  "api_read_checks": "104 programmes, 135 departments, 456 instructors; programme department filter passed",
+  "authenticated_review_flow": "not run"
+}

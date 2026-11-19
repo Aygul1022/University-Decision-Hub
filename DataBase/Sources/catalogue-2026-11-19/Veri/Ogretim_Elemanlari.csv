@@ -1,0 +1,457 @@
+﻿instructorKey,departmentKey,fullName,academicTitle
+1,DEP-0095,Abdullah DİNÇKOL,Prof. Dr.
+3,DEP-0095,Bihterin DİNÇKOL,Prof. Dr.
+4,DEP-0095,Buket ÖZ TÜYDAŞ,Arş. Gör. Dr.
+5,DEP-0095,Ece TOPTAŞ,Arş. Gör.
+6,DEP-0095,Ender TÜRK,Dr. Öğr. Üyesi
+7,DEP-0095,Hamide ZAFER,Prof. Dr.
+8,DEP-0095,Muhammed Ali AYDIN,Dr. Öğr. Üyesi
+9,DEP-0095,Sinem MERAL,Arş. Gör.
+10,DEP-0095,Yağız YAVUZ,Dr. Öğr. Üyesi
+11,DEP-0095,Çetin İlhan AKBULUT,Dr. Öğr. Üyesi
+12,DEP-0096,Ayşe Begüm KELEŞ GÜVEN,Dr. Öğr. Üyesi
+13,DEP-0096,Can Yöney,Dr. Öğr. Üyesi
+14,DEP-0096,Defne KAHVECİ,Arş. Gör.
+15,DEP-0096,Ela KARATAY,Arş. Gör.
+16,DEP-0096,Hande DENİZ,Dr. Öğr. Üyesi
+17,DEP-0096,M. Serhat SARISÖZEN,Prof. Dr.
+18,DEP-0096,Muhammet Evrensel Barış TÜRKMEN,Arş. Gör.
+19,DEP-0096,Mustafa Alper GÜMÜŞ,Prof. Dr.
+21,DEP-0096,Sami Özgür MEMİŞOĞLU,Dr. Öğr. Üyesi
+22,DEP-0096,Sinem CAMCI,Dr. Öğr. Üyesi
+23,DEP-0096,Çıdam Nur VURUCU,Arş. Gör.
+24,DEP-0096,İpek KOCAGİL ERSOY,Dr. Öğr. Üyesi
+25,DEP-0096,İrem İLERİ KULABEROĞLU,Arş. Gör.
+26,DEP-0097,Özden ALTINDAĞ,Öğr.Gör.Dr.
+27,DEP-0019,Hakan YENEL,Öğr. Gör. Dr.
+28,DEP-0019,Hasan Hüseyin KILIÇ,Dr. Öğr. Üyesi
+29,DEP-0019,Merve KILIÇ,Dr. Öğr. Üyesi
+30,DEP-0019,Onur BUKAĞIKIRAN,Öğr. Gör.
+31,DEP-0020,Ayşegül ERKOÇ,Öğr. Gör.
+32,DEP-0020,Songül KASAPOĞLU,Öğr.Gör.
+33,DEP-0021,Ayten ÖZÇELİK,Öğr. Gör. Dr.
+34,DEP-0021,Birsel ERBAŞ,Öğr. Gör.
+35,DEP-0021,Muhammed Eren MASAT,Öğr. Gör.
+36,DEP-0021,İsmail ÜSTÜNEL,Öğr. Gör.
+37,DEP-0022,Barış POLAT,Öğr. Gör.
+38,DEP-0022,Görkem GÜNGÖR,Öğr. Gör. Dr.
+39,DEP-0022,Hülya AKTAŞ,Öğr. Gör.
+40,DEP-0022,Safiye Ezgi KOKAÇYA SEYAR,Öğr. Gör.
+41,DEP-0023,Onur UYANIK,Öğr. Gör.
+42,DEP-0023,Samet CAN KOCAGÜR,Öğr. Gör.
+43,DEP-0023,Seydi Murat KOÇ,Öğr. Gör.
+44,DEP-0024,Hasan BALCI,Öğr. Gör.
+45,DEP-0024,Pınar Yıldız AĞDEMİR,Öğr. Gör.
+46,DEP-0024,Sakın CAN,Öğr. Gör.
+47,DEP-0025,Alper UYUMAZ,Öğr. Gör
+48,DEP-0025,Hatice YILDIZ,Öğr.Gör.
+49,DEP-0025,Özge SAĞLIYAN,Öğr. Gör.
+50,DEP-0026,Ahu KARABULUT,Öğr. Gör.
+51,DEP-0026,Oktay CESUR,Öğr. Gör.
+52,DEP-0026,Tuna BULAK,Öğr. Gör.
+53,DEP-0027,Gökhan EKİNCİ,Öğr. Gör. Dr.
+54,DEP-0027,Serdar GÖKÇE,Öğr. Gör. Dr.
+55,DEP-0028,Harun DEMİR,Dr. Öğr. Üyesi
+56,DEP-0028,Eda ÖZOVACI YALÇIN,Öğr. Gör. Dr.
+57,DEP-0028,Şifa ÖZKAN ASLAN,Öğr. Gör. Dr.
+58,DEP-0034,Derya OKUMUŞ,Öğr. Gör.
+59,DEP-0034,Gökhan DÜZÜ,Öğr. Gör.
+60,DEP-0034,Yunus KALABALIK,Öğr. Gör.
+61,DEP-0029,Başak UNTUÇ,Öğr. Gör. Dr.
+62,DEP-0029,Melike Güler ŞİMŞEK,Öğr. Gör.
+63,DEP-0029,İkbal SARIKAYA YILDIZ,Dr. Öğr. Üyesi
+64,DEP-0030,Ebru ALTINKURT,Öğr. Gör.
+65,DEP-0030,Yücel ÇOŞKUN,Öğr. Gör.
+66,DEP-0030,İbrahim EVKAY,Öğr. Gör.
+67,DEP-0031,Emre DEMİRTAŞ,Öğr. Gör.
+68,DEP-0031,Ömer Rasim KINACI,Öğr. Gör.
+69,DEP-0031,Eftal GEZER,Öğr. Gör.
+70,DEP-0032,Mustafa BALIK,Öğr. Gör.
+71,DEP-0032,Yasin ABANOZ,Dr. Öğr. Üyesi
+72,DEP-0032,Yeşim ABANOZ,Dr. Öğr. Üyesi
+73,DEP-0033,Feyza MERAKLI,Öğr. Gör.
+74,DEP-0033,Merve DİNÇ,Öğr. Gör.
+75,DEP-0033,Nahide KOÇER,Öğr. Gör.
+76,DEP-0035,Barbaros AÇIKSÖZ,Öğr. Gör.
+77,DEP-0035,Beyza SALCI,Öğr. Gör.
+78,DEP-0035,Nuran ÇALIK GÜNGÖR,Dr. Öğr. Üyesi
+79,DEP-0035,İlayda ÇELİK BAĞLUM,Öğr. Gör.
+80,DEP-0036,Anıl DURMUŞAHMET,Dr. Öğr. Üyesi
+81,DEP-0036,Ecem TANERİ ERSOY,Öğr. Gör. Dr.
+82,DEP-0036,İlknur DOĞU ÖZTÜRK,Doç. Dr.
+83,DEP-0037,Ayşenur ÇINAR,Öğr. Gör.
+84,DEP-0037,Selin DEMİR,Dr. Öğr.Üyesi
+85,DEP-0037,Yusuf Serhat İŞ,Dr. Öğr. Üyesi
+86,DEP-0038,Bülent ÖKTELİK,Öğr. Gör.
+87,DEP-0038,Enise ODABAŞ,Öğr. Gör.
+88,DEP-0038,Osman PURÇAK,Öğr.Gör.
+89,DEP-0039,Ahmet KARTAL,Öğr. Gör.
+90,DEP-0039,Fethi Tuğhan TEZCAN,Öğr. Gör.
+91,DEP-0039,Yener YILDIRIMKAL,Dr. Öğr. Üyesi
+92,DEP-0040,Abdullah Cihan ÖZDEMİR,Öğr. Gör.
+93,DEP-0040,Azat SERVER,Öğr. Gör.
+94,DEP-0040,Ecem ORUÇ KEÇECİ,Öğr. Gör.
+95,DEP-0040,Emre ŞEMENİ,Öğr. Gör.
+96,DEP-0041,Abdullah Mevlüt MUTLUEL,Öğr. Gör.
+97,DEP-0041,Hüseyin BAKIR,Doç. Dr.
+98,DEP-0042,Fatmanur UYSAL,Dr. Öğr. Üyesi
+99,DEP-0042,Süleyman Hilmi YILMAZ,Dr. Öğr. Üyesi
+100,DEP-0042,Tayfun APUHAN,Prof. Dr.
+101,DEP-0043,Birten BARSBAY İNAÇ,Dr. Öğr. Üyesi
+102,DEP-0043,Cüneyt OCAK,Öğr. Gör. Dr.
+103,DEP-0043,Taner KARATEKE,Öğr. Gör.
+104,DEP-0044,Aslı SEZEN,Öğr. Gör.
+105,DEP-0044,Edanur BALİ,Öğr. Gör.
+106,DEP-0044,Mehmet Sabit YILANCILAR,Öğr.Gör.
+107,DEP-0045,Filiz ATAK METİNER,Öğr.Gör.
+108,DEP-0045,Nurullah Okan DİRİ,Öğr. Gör.
+109,DEP-0045,Umutcan GENÇ,Öğr.Gör.
+110,DEP-0046,ALEYNA ÇAĞAN,Öğr. Gör.
+111,DEP-0046,Gözde MASATCIOĞLU,Öğr. Gör.
+112,DEP-0046,Selen ÖZYER,Öğr. Gör.
+113,DEP-0047,Burak TOZUN,Öğr. Gör.
+114,DEP-0047,Cemaleddin ARSLAN,Öğr. Gör.
+115,DEP-0047,Emre DEYMENCİ,Öğr. Gör.
+116,DEP-0047,Hasan Hakan BOZKURT,Prof. Dr.
+117,DEP-0047,Rumeysa Yeşim MANAP,Öğr. Gör.
+118,DEP-0048,Gözde Sena KILIÇ,Öğr. Gör.
+119,DEP-0049,Bahar KAYNAR,Öğr.Gör.
+120,DEP-0049,Birnur AKTAŞ,Öğr.Gör.
+121,DEP-0049,Songül ŞENLİK,Öğr. Gör. Dr.
+122,DEP-0105,Burcu AYDAN,Öğr. Gör.
+123,DEP-0105,Damla AKARSU AYDIN,Öğr. Gör.
+124,DEP-0105,Roza SÜLEYMANOĞLU,Dr. Öğr. Üyesi
+125,DEP-0050,Kübra KİLİM,Öğr.Gör.
+126,DEP-0050,Muhammet Can BARMANBAY,Öğr. Gör.
+127,DEP-0050,Özlem TAŞKIRAN KARATAŞ,Dr. Öğr. Üyesi
+128,DEP-0051,Fatma UYAR,Öğr. Gör. Dr.
+129,DEP-0051,Tuba YALÇIN,Öğr. Gör.
+130,DEP-0051,Yusuf YALÇIN,Dr. Öğr. Üyesi
+131,DEP-0052,Hakkı ÖZASLAN,Öğr. Gör. Dr.
+132,DEP-0052,Seda DEMİR,Öğr.Gör.Dr.
+133,DEP-0052,Ümit NOŞERİ,Öğr. Gör.
+134,DEP-0053,Seda Genç ŞİMŞEK,Öğr. Gör.
+135,DEP-0053,Zeynep TAŞDAN,Öğr. Gör.
+136,DEP-0053,Ömer YÜZER,DR. ÖĞR. ÜYESİ
+137,DEP-0054,Ayşen CİHAN,Öğr. Gör.
+138,DEP-0054,Sevinç PARLAK,Öğr. Gör.
+139,DEP-0055,FEYZA NUR ÖZDEMİR,Öğr. Gör.
+140,DEP-0055,Gizem TÜRKER,Öğr. Gör.
+141,DEP-0055,Yasemin ATAYOLU,Öğr. Gör.
+142,DEP-0056,Fulya GÜRSOY SEVGİ,Öğr. Gör.
+143,DEP-0056,Abdul Fettah HAKİM,Öğr. Gör. Dr.
+144,DEP-0056,Melisa KÖSE AKKAYA,Öğr.Gör.
+145,DEP-0056,Gülten YÖRÜK,Öğr. Gör.
+146,DEP-0057,Ali Haydar AKÇA,Dr. Öğr. Üyesi
+147,DEP-0057,Seda DÜLCEK,Öğr.Gör.
+148,DEP-0057,Seda ÜSTÜN,Öğr. Gör.
+149,DEP-0058,Burçak AY,Öğr. Gör.
+150,DEP-0058,SÜMEYYE ÇİÇEK,Öğr. Gör.
+151,DEP-0059,Güler ERTAŞ ÇAPAN,Dr. Öğr. Üyesi
+152,DEP-0059,Merve BİLEN DEMİRKOL,Öğr. Gör. Dr.
+153,DEP-0059,Özden İBRAHİMAĞAOĞLU,Dr. Öğr. Üyesi
+154,DEP-0060,Kadir ŞENGÜL,Öğr.Gör.
+155,DEP-0060,Sezgin GİRGİNOL,Öğr. Gör.
+156,DEP-0060,Yeliz Yıldız,Öğr. Gör
+157,DEP-0061,Duran KÜÇÜKLER,Öğr. Gör.
+158,DEP-0061,Hilal SUCU,Öğr. Gör.
+159,DEP-0061,İLKER DURAN,Öğr. Gör.
+160,DEP-0062,Ayça AYTAÇ,Dr. Öğr. Üyesi
+161,DEP-0062,Çağla ŞEKERCİ DAMCI,Dr.Öğr.Üyesi
+162,DEP-0062,Ömer Fatih SANCAK,Dr. Öğr. Üyesi
+163,DEP-0063,Elif KÜÇÜK,Öğr. Gör.
+164,DEP-0063,Mete DALGIÇ,Öğr. Gör.
+166,DEP-0063,Sinem GÜNEŞ,Öğr. Gör.
+167,DEP-0063,İzel AKYEL EREN,Öğr. Gör .Dr.
+168,DEP-0063,Şenay EKŞİ,Öğr. Gör. Dr.
+169,DEP-0110,Ahmet Mert AYDIN,Öğr.Gör.
+170,DEP-0110,Hanife CANDIR ŞİMŞEK,Dr. Öğr. Üyesi
+171,DEP-0110,Hasan İŞCİ,Öğr. Gör.
+172,DEP-0064,Aysun GÜRAN,Doç. Dr.
+173,DEP-0064,Ayşenur ÖZDABAĞ,Arş. Gör.
+174,DEP-0064,Büşra CAN,Dr. Öğr. Üyesi
+175,DEP-0064,Esra TARAKCI,Arş. Gör.
+176,DEP-0064,Kazem AZİZİ,Prof. Dr.
+177,DEP-0064,Mustafa Zahid GÜRBÜZ,Dr. Öğr. Üyesi
+178,DEP-0064,Yasemin KARAGÜL,Dr. Öğr. Üyesi
+179,DEP-0064,İsmail Şuayip GÜLOĞLU,Prof. Dr.
+181,DEP-0064,Şirin KARADENİZ ORAN,Prof. Dr.
+182,DEP-0065,Nur Banu AKA,Arş. Gör.
+183,DEP-0065,Rabia Güzide AL,Arş. Gör.
+184,DEP-0065,Ayşe Nihan KATIRCI,Prof. Dr.
+185,DEP-0065,Ayşegül PEKMEZCİ KOCATEPE,Dr. Öğr. Üyesi
+186,DEP-0065,Elham MİNAYİ,Dr. Öğr. Üyesi
+187,DEP-0065,Lida KOUHALVANDI,Doç. Dr.
+188,DEP-0065,Merih YILDIZ,Doç. Dr.
+189,DEP-0065,Sinemis Zeynep ÇELİK,Arş. Gör.
+190,DEP-0065,Surhan BOZKURT,Dr. Öğr. Üyesi
+191,DEP-0065,Şahram MİNAYİ,Prof. Dr.
+193,DEP-0066,Ahmet Yekta KAYMAN,Dr. Öğr. Üyesi
+195,DEP-0066,Caner OKUTKAN,Dr. Öğr. Üyesi
+196,DEP-0066,Ekrem KAPLAN,Arş. Gör. Dr.
+197,DEP-0066,Menekşe Yeşim ÇAKIRLI,Arş. Gör. Dr.
+198,DEP-0066,Semra BİRGÜN,Prof. Dr.
+200,DEP-0066,Sevde Ceren YILDIZ ÖZENÇ,Dr. Öğr. Üyesi
+201,DEP-0066,Yeliz ÇOTOY HERSEK,Arş. Gör.
+202,DEP-0066,Emre ÇANKAYA,Dr. Öğr. Üyesi
+203,DEP-0066,Fatma Talya SUDABAŞ,Dr.Öğr.Üyesi
+204,DEP-0066,Kıvanç ONAN,Dr. Öğr. Üyesi
+206,DEP-0066,Nuray ARSLAN,Arş. Gör.
+207,DEP-0066,Turhan KARAKAYA,Dr. Öğr. Üyesi
+208,DEP-0066,Tuğba KÖK,Arş. Gör.
+209,DEP-0066,Ömer ÇELEPÇIKAY,Öğr. Gör.
+210,DEP-0067,Ayşe Yasemin ŞENGÜL,Dr. Öğr. Üyesi
+211,DEP-0067,Elifcan YAŞA,Dr. Öğr. Üyesi
+212,DEP-0067,Emel ÖNAL DUMANOĞLU,Doç. Dr.
+213,DEP-0067,Erol UMUT,Dr.Öğr.Üyesi
+214,DEP-0067,Melike ÖZTÜRK,Dr. Öğr. Üyesi
+215,DEP-0067,Mesut CABAR,Dr. Öğr. Üyesi
+216,DEP-0067,Mesut KUMRU,Prof. Dr.
+217,DEP-0068,Ahmet DOĞRUSADIK,Doç. Dr.
+218,DEP-0068,Ferhat AKPINAR,Arş. Gör.
+219,DEP-0068,Hüseyin Utku HELVACI,Dr. Öğr. Üyesi
+221,DEP-0068,Merve BAĞCI BİLGEN,Arş. Gör.
+222,DEP-0068,Selçuk İNAÇ,Dr. Öğr. Üyesi
+223,DEP-0068,Sermet DEMİR,Doç. Dr.
+224,DEP-0115,Ertuğrul TAÇGIN,Prof. Dr.
+226,DEP-0068,Sinan DÖNMEZ,Dr. Öğr. Üyesi
+227,DEP-0069,Ahmet KEÇECİ,Arş. Gör.
+228,DEP-0069,Aybike URAL YALÇIN,Dr. Öğr. Üyesi
+229,DEP-0069,Ayşenur UÇAR,Dr. Öğr. Üyesi
+230,DEP-0069,Berat Gürcan ŞENTÜRK,Dr. Öğr. Üyesi
+231,DEP-0069,Caner YÜKSEL,Arş. Gör.
+232,DEP-0069,Doğan ERBAHAR,Prof. Dr.
+233,DEP-0069,Seyed Mahdi Taheri MOUSAVI,Dr. Öğr. Üyesi
+234,DEP-0069,Sunullah ÖZBEK,Prof. Dr.
+235,DEP-0069,Tarık BAYKARA,Prof. Dr.
+236,DEP-0070,Ayşe Tuğba YAPICI,Dr. Öğr. Üyesi
+237,DEP-0070,Mustafa Deniz TÜRKOĞLU,Dr. Öğr. Üyesi
+238,DEP-0070,Zeynep SAĞLAM,Arş. Gör.
+239,DEP-0071,Berrin ASLAN ÖZTEZCAN,Dr. Öğr. Üyesi
+240,DEP-0071,Beyza ÖZATA,Arş. Gör.
+241,DEP-0071,Dilek TÜKEL,Dr. Öğr. Üyesi
+242,DEP-0071,Elif ERÇELİK,Dr. Öğr. Üyesi
+243,DEP-0071,Erkut DERE,Arş. Gör.
+244,DEP-0071,Ertuğrul KIRAÇ,Dr. Öğr. Üyesi
+245,DEP-0071,Nurdanur PEHLİVAN,Arş. Gör.
+246,DEP-0071,Samiye Aynur UYSAL,Prof. Dr.
+247,DEP-0071,Zeynep Behrin GÜVEN AYDIN,Dr.Öğr.Üyesi
+248,DEP-0118,Alper ÇIRAK,Arş.Gör.
+249,DEP-0118,Ayfer ERKEN,Prof. Dr.
+250,DEP-0118,Elvan KESKİN,Arş. Gör.
+251,DEP-0118,Emel İRTEM,Prof. Dr.
+253,DEP-0118,Esra AKBALIK,Dr. Öğr. Üyesi
+254,DEP-0118,Hazal YILMAZ SÖNMEZ,Dr. Öğr. Üyesi
+255,DEP-0118,Semra ŞİRİN KIRIŞ,Dr. Öğr. Üyesi
+256,DEP-0118,Taylan BAĞCI,Dr. Öğr. Üyesi
+257,DEP-0118,Ömer Fatih SAK,Dr. Öğr. Üyesi
+258,DEP-0073,Onur YILDIRIM,Öğr.Gör.
+259,DEP-0020,Yiğit AĞLAMAZ,Öğr.Gör.
+260,DEP-0072,Ayşe Nesrin AKÖREN,Doç. Dr.
+261,DEP-0072,Deniz GÜNEŞ,Öğr. Gör.
+262,DEP-0072,Ecehan TOPRAK,Dr. Öğr. Üyesi
+263,DEP-0072,Hale Aslı DEMİRKOPARAN,Arş.Gör.
+264,DEP-0072,Mustafa Kemal İZ,Dr. Öğr. Üyesi
+265,DEP-0072,Onur AŞKIN,Dr. Öğr. Üyesi
+266,DEP-0072,Sena Elif ÖZKAN GENÇALİ,Arş. Gör.
+267,DEP-0073,Celal Arslan ÖZBİÇER,Dr. Öğr. Üyesi
+268,DEP-0073,Duygu BEYKAL İZ,Dr. Öğr.Üyesi
+269,DEP-0073,Hazal DUMAN,Arş. Gör.
+270,DEP-0073,Nazmiye NURDOĞAN,Dr. Öğr. Üyesi
+271,DEP-0073,Selma SALTOĞLU,Öğr. Gör.
+272,DEP-0073,Özge DANACI,Arş. Gör.
+273,DEP-0074,Beyza KAYNAR,Arş. Gör.
+274,DEP-0074,Birgül AYDIN,Dr. Öğr. Üyesi
+275,DEP-0074,Dilek ARDUZLAR KAĞAN,Dr. Öğr. Üyesi
+276,DEP-0074,Emir Talha YARDIMCI,Arş. Gör.
+277,DEP-0074,Furkan DEMİRGÜL,Dr.Öğr.Üyesi
+278,DEP-0074,Görkem TEYİN,Dr. Öğr. Üyesi
+279,DEP-0074,Muhammet Cihat İNTEPE,Öğr. Gör.
+280,DEP-0074,Süleyman AKKAŞOĞLU,Dr. Öğr. Üyesi
+281,DEP-0074,Özge KIRKPINAR YILMAZ,Öğr.Gör.
+282,DEP-0075,Elif Gizem MALKOÇ,Öğr. Gör.
+284,DEP-0075,Mesut Mert UÇKAN,Dr. Öğr. Üyesi
+285,DEP-0075,Nilüfer Irmak AKÇADOĞAN,Prof. Dr.
+286,DEP-0075,Pınar Ezgi AYTAÇ KARAFAKI,Arş. Gör.
+287,DEP-0119,Nur BALKIR,Prof. Dr.
+289,DEP-0119,Nura ALİOSMAN,Dr. Öğr. Üyesi
+290,DEP-0119,Çağrı Barış KASAP,Doç. Dr.
+291,DEP-0119,Elif PEKMAN,Arş. Gör.
+292,DEP-0076,Eylem ÖZÇİMEN,Dr. Öğr. Üyesi
+293,DEP-0076,Yelda ÖZKOÇAK,Prof. Dr.
+294,DEP-0076,Berrin ÖZ,Arş. Gör.
+295,DEP-0076,Bünyamin DURANOĞLU,Öğr. Gör.
+296,DEP-0076,Funda GÜN,Prof. Dr.
+297,DEP-0076,Mustafa BÜLBÜL,Dr. Öğr. Üyesi
+298,DEP-0076,Volkan GÜLERYÜZ,Arş.Gör.
+299,DEP-0122,Ayşe DEDE KEPEKCİOĞLU,Öğr. Gör.
+300,DEP-0122,Ayşegül ŞAHAN,Dr. Öğr. Üyesi
+301,DEP-0122,Ece ALTINBAŞAK HAKLIDIR,Dr. Öğr. Üyesi
+302,DEP-0122,Elif Esra BOYLU,Arş. Gör.
+303,DEP-0122,Fazıla DUYAN,Dr. Öğr. Üyesi
+305,DEP-0122,Nesim Doğuş YELEKÇİ,Arş. Gör.
+306,DEP-0077,Asena YILDIRIM KONYA,Dr. Öğr. Üyesi
+307,DEP-0077,Ayşe Bengi BUĞAY,Prof. Dr.
+308,DEP-0077,Doğan BALCI,Öğr. Gör.
+309,DEP-0077,Muhammed Furkan TEKBIYIK,Öğr. Gör.
+310,DEP-0077,Nesli Meriç SANİOĞLU,DR. ÖĞR. ÜYESİ
+311,DEP-0077,Pınar Alkan,Öğr.Gör.
+312,DEP-0077,Özge TATAR,Arş. Gör.
+313,DEP-0077,İdil ÖZAYDIN,Arş. Gör.
+314,DEP-0078,Atalay MANSUROĞLU,Doç. Dr.
+315,DEP-0078,Beyza Çisem ATAK,Arş. Gör.
+316,DEP-0078,Defne BOZBIYIK,Dr. Öğr. Üyesi
+317,DEP-0078,Ecem KİPER ŞAHİN,Arş. Gör.
+318,DEP-0078,Zeynep GÜNGÖR,Öğr.Gör
+319,DEP-0078,İnci Selin GÜMÜŞ,Dr.Öğr.Üyesi
+320,DEP-0079,Aylin YAMANDAĞ ÖNER,Arş. Gör.
+321,DEP-0079,Gayem DOĞAN,Dr. Öğr. Üyesi
+322,DEP-0079,Gülsüm Damla AŞKIN,Dr. Öğr. Üyesi
+323,DEP-0079,Onur ARABACIOĞLU,Öğr. Gör.
+324,DEP-0079,Pınar ALPAY,Dr. Öğr. Üyesi
+325,DEP-0079,Rümeysa Reyna YILDIZ,Arş.Gör.
+326,DEP-0080,Ece Nur TEMİZ,Arş. Gör.
+327,DEP-0080,Emek Bakanoğlu KALKAVAN,Dr. Öğr.Üyesi
+328,DEP-0080,Sebahat ATEŞ,Prof. Dr.
+329,DEP-0080,Sena OKTEN,Öğr. Gör.
+330,DEP-0080,Yakup TOMAK,Prof. Dr.
+332,DEP-0080,Özgül AYDEMİR,Dr. Öğr. Üyesi
+333,DEP-0080,Şevval ÜNAL HACIOSMANOĞLU,Öğr. Gör.
+334,DEP-0123,AYLİN TALU,Öğr. Gör. Dr.
+335,DEP-0123,Figen HALLAÇOĞLU,Öğr. Gör.
+336,DEP-0123,Tuba ÖTKEN,Öğr. Gör.
+337,DEP-0124,Zümrüt Zeynep DEMİRSOY,Öğr. Gör.
+338,DEP-0125,Ülker TEZKAÇ,Öğr. Gör.
+339,DEP-0126,Arzu DEMİR,Öğr. Gör.
+340,DEP-0126,Burcu GÜMÜŞ KİRAZOĞLU,Öğr. Gör.
+341,DEP-0126,Bülent Nedim UÇA,Öğr. Gör.
+342,DEP-0126,Cansu ÖZKAN GÖR,Öğr. Gör.
+343,DEP-0126,Ebru KARABIÇAK,Öğr.Gör
+344,DEP-0126,Elif SARAH ÖZKAN,Öğr. Gör.
+345,DEP-0126,Elif SUBAŞ,Öğr. Gör.
+346,DEP-0126,Erdem ATEŞ,Öğr. Gör.
+347,DEP-0126,Esra Melek DEMİR ERYİĞİT,Öğr.Gör
+348,DEP-0126,Ezgi DEMİREL YILMAZ,Öğr. Gör.
+349,DEP-0126,Gizem ERGÜN ÖCEL,Öğr.Gör.
+350,DEP-0126,Hande KURT BULUT,Öğr. Gör.
+351,DEP-0126,Hatice Kübra KULA,Öğr. Gör.
+352,DEP-0126,Hüseyin SARI,Öğr. Gör.
+353,DEP-0126,Mary Maher GUIRGUIS OZA,Öğr. Gör.
+354,DEP-0126,Melisa Gizem ÖZDEMİR,Öğr. Gör.
+355,DEP-0126,Meral ÖZTÜRK,Öğr.Gör
+356,DEP-0126,Mihriban Müge ARAS,Öğr.Gör.
+357,DEP-0126,Mücahit ASLAN,Öğr. Gör. Dr.
+358,DEP-0126,Müge VARDARLIOĞLU,Öğr. Gör.
+359,DEP-0126,Pelin KARADUMAN,Öğr. Gör. Dr.
+360,DEP-0126,Pelin PAKYÜZ,Öğr. Gör. Dr.
+361,DEP-0126,Selma KAHVECİOĞLU,Öğr.Gör
+362,DEP-0126,Seyran LÜLECİ,Öğr. Gör.
+363,DEP-0126,Sümeyye ATASOY,Öğr. Gör.
+364,DEP-0126,Sıla SELVER HÖBEK,Öğr. Gör.
+365,DEP-0126,Tansu ÖZVEREN,Öğr. Gör.
+366,DEP-0126,Tuğba Nilgün KIN,Öğr. Gör.
+367,DEP-0126,Tuğba ÇELİK KESKİN,Öğr. Gör.
+368,DEP-0126,Umut SAĞESEN,Öğr. Gör.
+369,DEP-0126,Yasemin Cansel İSKENDER,Öğr. Gör.
+370,DEP-0126,Zehra GÜRSOY SERDAR,Öğr. Gör.
+371,DEP-0126,Özlem YALÇIN ÇOLAKOĞLU,Öğr. Gör. Dr.
+372,DEP-0081,Deniz PARLAK,Prof. Dr.
+373,DEP-0081,Ezgi AYDOĞAN,Arş. Gör. Dr.
+374,DEP-0081,Hacer Şaduman OKUMUŞ,Prof. Dr.
+375,DEP-0081,Müge AĞYEL,Doç. Dr.
+376,DEP-0081,İlker TELÖREN,Arş. Gör.
+377,DEP-0082,Bora KURTULUŞ,Dr. Öğr. Üyesi
+378,DEP-0082,Mahsum ÖKMEN,Arş. Gör.
+379,DEP-0082,Mehmet Şuayb YILDIRIM,Arş. Gör.
+380,DEP-0082,Naci YILMAZ,Doç. Dr.
+381,DEP-0082,Oya Kent BIRIK,Doç.Dr.
+382,DEP-0082,Semra BOĞA ŞAHİN,Prof. Dr.
+384,DEP-0082,Suna GÖNÜLTAŞ,Dr. Öğr. Üyesi
+385,DEP-0083,Aslı Nur KAHRAMAN,Arş. Gör.
+386,DEP-0083,Birsen Özge GÖKÇE,Arş. Gör.
+387,DEP-0083,Bülent AYYILDIZ,Dr. Öğr. Üyesi
+388,DEP-0083,Murat SAYIM,Dr. Öğr. Üyesi
+389,DEP-0083,Neslihan ALBAY,Dr. Öğr. Üyesi
+390,DEP-0083,Sevilay YAVUZ ÇEŞMECİ,Dr. Öğr. Üyesi
+391,DEP-0085,Alper OVA,Dr.Öğr.Üyesi
+392,DEP-0085,Batuhan Enes GÜVEN,Arş. Gör.
+393,DEP-0085,Fatma Özge BARUÖNÜ,Doç. Dr.
+394,DEP-0085,Mehmet CİVELEK,Dr. Öğr. Üyesi
+395,DEP-0085,Merve TOSUN,Arş. Gör.
+399,DEP-0127,Dilara KAZANCI,Dr. Öğr. Üyesi
+400,DEP-0127,Merve OĞUR,Arş. Gör.
+401,DEP-0127,Merve İpek ŞENTÜRK,Arş. Gör.
+402,DEP-0127,Tuğçe ERDOĞRU DEMİR,Arş. Gör.
+403,DEP-0127,Özge ENGİN,Dr.Öğr.Üyesi
+404,DEP-0088,Betül Dursun ACEMOĞLU,Dr. Öğr. Üyesi
+405,DEP-0088,Fahri ÇELEBİ,Doç. Dr.
+406,DEP-0088,Nur İNCİ NAMLI,Dr. Öğr. Üyesi
+407,DEP-0088,Onur YILMAZ,Doç. Dr
+408,DEP-0088,Sevcan KARAKOÇ,Prof. Dr.
+410,DEP-0088,Yağmur ŞİMŞEK,Arş. Gör.
+411,DEP-0088,Ömer DEMİR,Arş. Gör.
+412,DEP-0088,Ülker Meral ÇULHA,Emeritus Prof. Dr.
+413,DEP-0089,Engin ŞAHİN,Prof. Dr.
+414,DEP-0089,Erdem Ünal DEMİRCİ,Dr. Öğr. Üyesi
+415,DEP-0089,Mehmet GENÇ,Prof. Dr.
+416,DEP-0089,Semih EVCİMAN,Arş. Gör. Dr.
+417,DEP-0089,Üstüner Okan ÇINAR,Arş. Gör. Dr.
+418,DEP-0128,Aslı TELSEREN ÖMEROĞLU,Doç. Dr.
+419,DEP-0128,Bennur ÖZTÜRK YÜCEL,Arş. Gör.
+420,DEP-0128,Ebru YILMAZ,Arş. Gör.
+421,DEP-0128,Umut ELDEM,Dr. Öğr. Üyesi
+422,DEP-0128,İsmail Burak MALKOÇ,Dr. Öğr. Üyesi
+423,DEP-0129,Bahadır SÜRELLİ,Dr. Öğr. Üyesi
+424,DEP-0129,Beyza TERZİ SARI,Arş. Gör. Dr.
+425,DEP-0129,Elif TÜRKER,Dr. Öğr. Üyesi
+426,DEP-0129,Enis MUTLU ATAK,Arş. Gör
+427,DEP-0129,Meriç KURTULUŞ,Dr. Öğr. Üyesi
+428,DEP-0129,Yasemin ÇÜRÜK,Dr. Öğr. Üyesi
+429,DEP-0129,Zeynep DURAK,Arş. Gör.
+430,DEP-0084,Çağatay YIRTICI,Arş. Gör.
+431,DEP-0084,Alperen YAVUZER,Arş. Gör.
+432,DEP-0084,Can UYAR,Dr. Öğr. Üyesi
+433,DEP-0084,Efe Can MÜDERRİSOĞLU,Dr. Öğr. Üyesi
+434,DEP-0084,Itır TOKSÖZ BULLENS,Dr. Öğr. Üyesi
+436,DEP-0084,Merve PEHLİVAN İLERİSOY,Arş. Gör.
+437,DEP-0084,Müge DALKIRAN,Dr.Öğr.Üyesi
+438,DEP-0084,Zeynep ALEMDAR,Prof. Dr.
+439,DEP-0090,Bayram SÖZBİR,Dr. Öğr. Üyesi
+440,DEP-0090,Gülşen YURDAKUL,Arş. Gör. Dr.
+441,DEP-0090,Hakan Eren ŞENGELEN,Arş.Gör.
+442,DEP-0090,Nurcan GÜCÜYENEN KAYMAK,Dr. Öğr. Üyesi
+443,DEP-0090,Senem ALTAN,Doç. Dr.
+445,DEP-0090,Yavuz Selim BALCIOĞLU,Doç. Dr.
+446,DEP-0090,Zülküf NARLIKAYA,Dr. Öğr. Üyesi
+447,DEP-0091,Ahmet Alkan ÇELİK,Prof. Dr.
+448,DEP-0091,Burak BEDER,Dr.Öğr.Üyesi
+450,DEP-0091,Ezgi DEMİRAL,Arş. Gör. Dr.
+451,DEP-0091,Kamil USLU,Prof. Dr.
+453,DEP-0091,Yağmur RENÇBER,Arş.Gör.Dr.
+454,DEP-0133,Şeyma ÇALIŞKAN ÇAVDAR,Prof. Dr.
+456,DEP-0016,Barış ÇOBAN,Prof. Dr.
+458,DEP-0016,Canan ARSLAN,Doç. Dr.
+459,DEP-0016,Harun ÖZALP,Arş. Gör. Dr.
+460,DEP-0016,Tuncay PUSAT,Arş.Gör.
+461,DEP-0016,Şükran Özlem ERKMEN,Doç. Dr.
+463,DEP-0093,Ahmet Serdar KÜÇÜK,Dr. Öğr. Üyesi
+464,DEP-0093,Aslı TAKANAY,Dr. Öğr. Üyesi
+465,DEP-0093,Begüm Çağla BULUT ÇİMEN,Arş. Gör.
+466,DEP-0093,Mine GÜVEN,Prof. Dr.
+467,DEP-0093,Rabia EŞİYOK,Arş. Gör.
+468,DEP-0093,Seyhan BOZKURT JOBANPUTRA,Dr. Öğr. Üyesi
+469,DEP-0094,Alev KOÇAK ALAN,Prof. Dr.
+470,DEP-0094,Ayşe İLGÜN KAMANLI,Dr. Öğr. Üyesi
+472,DEP-0094,Erkut ALTINDAĞ,Prof. Dr.
+473,DEP-0094,Halit Targan ÜNAL,Prof. Dr.
+474,DEP-0094,Nüket SARACEL,Prof. Dr.
+476,DEP-0094,Sunay ÇIRALI,Arş.Gör.
+477,DEP-0094,Tansu IŞIKAY,Arş. Gör. Dr.
+478,DEP-0094,Turgut ÖZKAN,Prof. Dr.
+396,DEP-0127,Hilal DURAK,Dr. Öğr. Üyesi
+397,DEP-0127,Serhat YÜKSEL,Dr. Öğr. Üyesi
+398,DEP-0127,Sirel KARAKAŞ,Emeritus Prof. Dr.
+INS-DOU-81967396539BFDE8470BAB9B,DEP-0064,Birsen GÜLDEN ÖZDEMİR,Dr. Öğr. Üyesi
+INS-DOU-6F3525F9D9DF86CB345A9DA5,DEP-0071,Hatice ÇOBAN,Dr. Öğr. Üyesi
+INS-DOU-2F638BC211730231F00CAD3B,DEP-0094,Mahmut Emin SARIKAYA,Arş.Gör.
+INS-DOU-9702B6DA34427B6C2B36D4DE,DEP-0081,Irmak AKSOY,Dr. Öğr. Üyesi

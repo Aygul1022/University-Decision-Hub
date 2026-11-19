@@ -1,0 +1,19 @@
+BEGIN
+database_name,port
+UniversityDecisionHub,5432
+table_name,actual_count,expected_count,status
+Courses,9346,9346,COUNTS_MATCH
+Departments,135,135,COUNTS_MATCH
+Faculties,9,9,COUNTS_MATCH
+Instructors,456,456,COUNTS_MATCH
+ProgrammeCourses,12591,12591,COUNTS_MATCH
+Programmes,104,104,COUNTS_MATCH
+expected_review_column,exists_in_target
+IsHidden,t
+ModeratedAt,t
+ModeratedByUserId,t
+ProgrammeKey,DepartmentKey,ProgrammeName,DegreeLevel,InstructionLanguage
+PRG-0076,DEP-0048,Robotik ve Yapay Zekâ,Associate Degree,Turkish
+PRG-DOU-BOLOGNA-4142,DEP-0097,İnsan Kaynakları Yönetimi (Tezsiz),Master's Degree,Turkish
+PRG-DOU-BOLOGNA-4141,DEP-0097,İnsan Kaynakları Yönetimi (Tezli),Master's Degree,Turkish
+COMMIT

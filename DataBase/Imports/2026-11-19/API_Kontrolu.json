@@ -1,0 +1,8 @@
+﻿{
+    "api":  "http://127.0.0.1:5156",
+    "programmes":  104,
+    "departments":  135,
+    "instructors":  456,
+    "computer_engineering_programme_lookup":  "passed",
+    "authenticated_review_flow":  "not run"
+}

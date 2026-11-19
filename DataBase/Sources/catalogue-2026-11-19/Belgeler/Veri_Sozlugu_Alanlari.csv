@@ -1,0 +1,75 @@
+﻿table,column,dotnet_type,postgresql_type,nullable,schema_source,database_application
+Courses,CourseId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,CourseCode,string,text,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,CourseCredit,decimal?,numeric,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,CourseDescription,string,text,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,CourseKey,string,character varying(100),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,CourseName,string,text,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,DepartmentId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,Ects,decimal?,numeric,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,IsActive,bool?,boolean,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,IsElective,bool?,boolean,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Courses,RecommendedStudyYear,int?,integer,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+CoursePrerequisites,CourseId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+CoursePrerequisites,PrerequisiteCourseId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Departments,DepartmentId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Departments,DepartmentCode,string,text,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Departments,DepartmentKey,string,character varying(100),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Departments,DepartmentName,string,text,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Departments,FacultyId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Faculties,FacultyId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Faculties,FacultyName,string,text,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Faculties,ImportKey,string,character varying(100),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Instructors,InstructorId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Instructors,AcademicTitle,string,character varying(50),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Instructors,DepartmentId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Instructors,FullName,string,character varying(150),False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Instructors,ImportKey,string,character varying(100),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+CourseOfferings,OfferingId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+CourseOfferings,AcademicYear,string,text,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+CourseOfferings,CourseId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+CourseOfferings,Semester,string,text,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+CourseOfferings,Status,string,text,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+OfferingInstructors,OfferingId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+OfferingInstructors,InstructorId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Programmes,ProgrammeId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Programmes,BolognaProgrammeId,string,character varying(100),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Programmes,DegreeLevel,string,character varying(100),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Programmes,DepartmentId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Programmes,InstructionLanguage,string,character varying(100),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Programmes,ProgrammeKey,string,character varying(100),False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Programmes,ProgrammeName,string,character varying(200),False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,ProgrammeCourseId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,CatalogueYear,string,character varying(50),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,CourseCredit,decimal?,numeric,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,CourseId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,CurriculumKey,string,character varying(100),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,Ects,decimal?,numeric,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,IsElective,bool?,boolean,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,ProgrammeId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,RecommendedStudyYear,int?,integer,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+ProgrammeCourses,Semester,int?,integer,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,ReviewId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,AcademicYear,string,character varying(9),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,AttendanceConfirmed,bool?,boolean,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,CourseId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,CreatedAt,DateTime,timestamp with time zone,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,InstructorId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,IsHidden,bool,boolean,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,ModeratedAt,DateTime?,timestamp with time zone,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,ModeratedByUserId,int?,integer,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,OfferingId,int?,integer,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,ReviewText,string,text,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,Semester,string,character varying(10),True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+Reviews,UserId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,UserId,int,integer,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,CreatedAtUtc,DateTime,timestamp with time zone,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,DepartmentId,int?,integer,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,Email,string,character varying(254),False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,FullName,string,character varying(150),False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,IsAdministrator,bool,boolean,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,IsGraduate,bool,boolean,False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,NormalizedEmail,string,character varying(254),False,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,PasswordHash,string,text,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,ProgrammeId,int?,integer,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
+UserAccounts,StudyYear,int?,integer,True,feature/democontrol @ 5b79729,HEDEF MIGRATION DURUMU ENTEGRASYONDA TEYIT EDILECEK
