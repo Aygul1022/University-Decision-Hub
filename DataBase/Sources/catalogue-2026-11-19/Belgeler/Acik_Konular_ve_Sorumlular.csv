@@ -1,12 +1,12 @@
-﻿issue,status,owner,detail
-GIT_1002,KULLANICI_TARAFINDAN_ERTELENDI,Ekip model karari + veri,Ayni bolum/kod iki farkli ders; iki kaynak satiri JSON disinda korunuyor.
-EKIP_DALI,TEYIT_GEREKIYOR,Aygul,En yeni feature/democontrol dalinin kesin ortak demo dali oldugu ekipce teyit edilmeli.
-MODERATION_MIGRATION,BU_TURDA_UYGULANMADI,Aygul / entegrasyon,AddReviewModeration hedef PostgreSQLde kontrol edilmeli; kaynakta olmasi uygulanmis oldugunu gostermez.
-REGISTER_DEPARTMENT_CHOICES,EKIP_KOD_INCELEMESI,Ozan / Sami,Guncel kayit sayfasi programi olmayan birimleri de secebilir; veri dosyasi duzeltmesiyle cozulmus sayilmaz.
-COMPUTER_ENGINEERING_LABEL,EKIP_KOD_INCELEMESI,Sami / Aygul,DepartmentCode ile DepartmentKey farki; DEP-0064 kontrolu yanlis alanda.
-MULTI_STAFF_MEMBERSHIP,EKIP_KOD_INCELEMESI,Aygul / Ozan,"Coklu kaynak kadro uyelikleri veri listesidir, yeni demo API koduna otomatik uygulanmadi."
-SURVEY_IMPORT,BEKLEMEDE,Ekip karari,23 anonim eslesme korunur; iki mezunun isGraduate=true ve studyYear=null; gercek hesap aktarimi yok.
-OLD_DIAGRAM,GUNCEL_KARSILASTIRMA_EKLENDI,Veri belgeleri,Ilk PDF teklifinde Programme/ProgrammeCourse ve yeni Review yapisi yok; mevcut model ER notu esas alinmali.
-MISSING_SOURCE_VALUES,TAHMIN_EDILMEDI,Veri / resmi kaynak,"Kredi, yariyil veya yil bosluklari kaynak ve model anlamina gore raporlanir; bilinmeyen 0 yapilmaz."
-COURSE_DESCRIPTION,JSON_ALANI_BOS; KART_KANITLARI_AYRI,Veri,Kisa resmi icerik alintilari Ders_Kartlari sayfasindadir; bunlar tam ders aciklamasi diye JSONa kopyalanmadi.
-LEGACY_SOURCE_COVERAGE,GECMIS_KATALOG_KORUNDU,Veri,Yeni kaynak eslesmesi olmayan tarihsel satirlar silinmedi veya bugun tek tek dogrulanmis sayilmadi.
+﻿issue,status,owner,detail,local_evidence,shared_demo_status
+GIT_1002,KULLANICI_TARAFINDAN_ERTELENDI,Ekip model karari + veri,Ayni bolum/kod iki farkli ders; iki kaynak satiri JSON disinda korunuyor.,,TARGET_NOT_CONFIRMED
+EKIP_DALI,TEYIT_GEREKIYOR,Aygul,En yeni feature/democontrol dalinin kesin ortak demo dali oldugu ekipce teyit edilmeli.,,TARGET_NOT_CONFIRMED
+MODERATION_MIGRATION,YERELDE_UYGULANDI_DEMO_TEYIT_BEKLIYOR,Aygul / entegrasyon,AddReviewModeration hedef PostgreSQLde kontrol edilmeli; kaynakta olmasi uygulanmis oldugunu gostermez.,20261116191117_AddReviewModeration applied and columns verified; Sami separately reports moderation browser checks.,TARGET_NOT_CONFIRMED
+REGISTER_DEPARTMENT_CHOICES,EKIP_KOD_INCELEMESI,Ozan / Sami,Guncel kayit sayfasi programi olmayan birimleri de secebilir; veri dosyasi duzeltmesiyle cozulmus sayilmaz.,Sami reports EEM appears three times. Data audit: DEP-0005 graduate degrees; DEP-0065 bachelor; DEP-0112 no programme. No records merged.,TARGET_NOT_CONFIRMED
+COMPUTER_ENGINEERING_LABEL,EKIP_KOD_INCELEMESI,Sami / Aygul,DepartmentCode ile DepartmentKey farki; DEP-0064 kontrolu yanlis alanda.,,TARGET_NOT_CONFIRMED
+MULTI_STAFF_MEMBERSHIP,EKIP_KOD_INCELEMESI,Aygul / Ozan,"Coklu kaynak kadro uyelikleri veri listesidir, yeni demo API koduna otomatik uygulanmadi.",,TARGET_NOT_CONFIRMED
+SURVEY_IMPORT,BEKLEMEDE,Ekip karari,23 anonim eslesme korunur; iki mezunun isGraduate=true ve studyYear=null; gercek hesap aktarimi yok.,,TARGET_NOT_CONFIRMED
+OLD_DIAGRAM,GUNCEL_KARSILASTIRMA_EKLENDI,Veri belgeleri,Ilk PDF teklifinde Programme/ProgrammeCourse ve yeni Review yapisi yok; mevcut model ER notu esas alinmali.,,TARGET_NOT_CONFIRMED
+MISSING_SOURCE_VALUES,TAHMIN_EDILMEDI,Veri / resmi kaynak,"Kredi, yariyil veya yil bosluklari kaynak ve model anlamina gore raporlanir; bilinmeyen 0 yapilmaz.","5700 null credits, 130 null semesters, 12591 null recommendedStudyYear. Existing matching evidence yields 0 unambiguous new credit/semester fills; no inferred values.",TARGET_NOT_CONFIRMED
+COURSE_DESCRIPTION,JSON_ALANI_BOS; KART_KANITLARI_AYRI,Veri,Kisa resmi icerik alintilari Ders_Kartlari sayfasindadir; bunlar tam ders aciklamasi diye JSONa kopyalanmadi.,,TARGET_NOT_CONFIRMED
+LEGACY_SOURCE_COVERAGE,GECMIS_KATALOG_KORUNDU,Veri,Yeni kaynak eslesmesi olmayan tarihsel satirlar silinmedi veya bugun tek tek dogrulanmis sayilmadi.,20 official programme pages checked anew; source-plan details in separate review evidence. No automatic year or thesis/non-thesis reassignment.,TARGET_NOT_CONFIRMED

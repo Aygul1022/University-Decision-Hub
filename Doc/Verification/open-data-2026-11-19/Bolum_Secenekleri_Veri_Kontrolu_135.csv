@@ -1,0 +1,136 @@
+﻿departmentKey,departmentName,facultyKey,programmeCount,programmeKeys,degrees,languages,instructorPrimaryLinks,newStudentChoiceCandidate
+DEP-0001,Hukuk,FAC-001,1,PRG-0036,Bachelor's Degree,Turkish,0,True
+DEP-0002,Bilgisayar ve Enformasyon Bilimleri,FAC-002,1,PRG-0009,Master's Degree,Turkish,0,True
+DEP-0003,Business Administration,FAC-002,1,PRG-0054,Master's Degree,English,0,True
+DEP-0004,Cerrahi Hastalıklar Hemşireliği,FAC-002,1,PRG-0011,Master's Degree,Turkish,0,True
+DEP-0005,Elektrik-Elektronik Mühendisliği,FAC-002,2,PRG-0020;PRG-0021,Doctorate;Master's Degree,Turkish,0,True
+DEP-0007,Finansal İktisat,FAC-002,2,PRG-0027;PRG-0028,Doctorate;Master's Degree,Turkish,0,True
+DEP-0009,Kamu Hukuku,FAC-002,1,PRG-0055,Master's Degree,Turkish,0,True
+DEP-0010,Küresel İlişkiler ve Avrupa Birliği,FAC-002,1,PRG-0058,Master's Degree,Turkish,0,True
+DEP-0011,Lojistik ve Tedarik Zinciri Yönetimi,FAC-002,1,PRG-0059,Doctorate,Turkish,0,True
+DEP-0012,Mühendislik ve Teknoloji Yönetimi,FAC-002,1,PRG-0065,Master's Degree,Turkish,0,True
+DEP-0013,Stratejik Pazarlama ve Marka Yönetimi,FAC-002,1,PRG-0079,Master's Degree,Turkish,0,True
+DEP-0014,Uluslararası İlişkiler,FAC-002,1,PRG-0085,Master's Degree,Turkish,0,True
+DEP-0015,Özel Hukuk,FAC-002,1,PRG-0072,Master's Degree,Turkish,0,True
+DEP-0016,İletişim Bilimleri,FAC-002,1,PRG-0041,Master's Degree,Turkish,5,True
+DEP-0017,İşletme,FAC-002,2,PRG-0051;PRG-0052,Doctorate;Master's Degree,Turkish,0,True
+DEP-0019,Anestezi,FAC-003,1,PRG-0002,Associate Degree,Turkish,4,True
+DEP-0020,Ağız ve Diş Sağlığı,FAC-003,1,PRG-0001,Associate Degree,Turkish,3,True
+DEP-0021,Aşçılık,FAC-003,1,PRG-0003,Associate Degree,Turkish,4,True
+DEP-0022,Bankacılık ve Sigortacılık,FAC-003,1,PRG-0004,Associate Degree,Turkish,4,True
+DEP-0023,Bilgisayar Destekli Tasarım ve Animasyon,FAC-003,1,PRG-0005,Associate Degree,Turkish,3,True
+DEP-0024,Bilgisayar Programcılığı,FAC-003,1,PRG-0007,Associate Degree,Turkish,3,True
+DEP-0025,Bilgisayar Teknolojisi,FAC-003,1,PRG-0008,Associate Degree,Turkish,3,True
+DEP-0026,Bilişim Güvenliği Teknolojisi,FAC-003,1,PRG-0010,Associate Degree,Turkish,3,True
+DEP-0027,Dijital Dönüşüm Elektroniği,FAC-003,1,PRG-0015,Associate Degree,Turkish,2,True
+DEP-0028,Dış Ticaret,FAC-003,1,PRG-0013,Associate Degree,Turkish,3,True
+DEP-0029,Eczane Hizmetleri,FAC-003,1,PRG-0017,Associate Degree,Turkish,3,True
+DEP-0030,Elektrik,FAC-003,1,PRG-0018,Associate Degree,Turkish,3,True
+DEP-0031,Elektronik Teknolojisi,FAC-003,1,PRG-0022,Associate Degree,Turkish,3,True
+DEP-0032,Elektronörofizyoloji,FAC-003,1,PRG-0023,Associate Degree,Turkish,3,True
+DEP-0033,Fizyoterapi,FAC-003,1,PRG-0029,Associate Degree,Turkish,3,True
+DEP-0034,Foreign Trade,FAC-003,1,PRG-0014,Associate Degree,English,3,True
+DEP-0035,Grafik Tasarımı,FAC-003,1,PRG-0033,Associate Degree,Turkish,4,True
+DEP-0036,Halkla İlişkiler ve Tanıtım,FAC-003,1,PRG-0034,Associate Degree,Turkish,3,True
+DEP-0037,Karbon Yönetimi Teknikerliği,FAC-003,1,PRG-0056,Associate Degree,Turkish,3,True
+DEP-0038,Kurumsal Bilişim Uzmanlığı,FAC-003,1,PRG-0057,Associate Degree,Turkish,3,True
+DEP-0039,Mahkeme Büro Hizmetleri (Adalet),FAC-003,1,PRG-0060,Associate Degree,Turkish,3,True
+DEP-0040,Makine,FAC-003,1,PRG-0061,Associate Degree,Turkish,4,True
+DEP-0041,Mekatronik,FAC-003,1,PRG-0064,Associate Degree,Turkish,2,True
+DEP-0042,Odyometri,FAC-003,1,PRG-0066,Associate Degree,Turkish,3,True
+DEP-0043,Optisyenlik,FAC-003,1,PRG-0067,Associate Degree,Turkish,3,True
+DEP-0044,Otomotiv Teknolojisi,FAC-003,1,PRG-0068,Associate Degree,Turkish,3,True
+DEP-0045,Otonom Sistemler Teknikerliği,FAC-003,1,PRG-0069,Associate Degree,Turkish,3,True
+DEP-0046,Otopsi Yardımcılığı,FAC-003,1,PRG-0070,Associate Degree,Turkish,3,True
+DEP-0047,Patoloji Laboratuvar Teknikleri,FAC-003,1,PRG-0073,Associate Degree,Turkish,5,True
+DEP-0048,Robotik ve Yapay Zekâ,FAC-003,1,PRG-0076,Associate Degree,Turkish,1,True
+DEP-0049,Sivil Havacılık Kabin Hizmetleri,FAC-003,1,PRG-0077,Associate Degree,Turkish,3,True
+DEP-0050,Turizm ve Otel İşletmeciliği,FAC-003,1,PRG-0084,Associate Degree,Turkish,3,True
+DEP-0051,Tıbbi Dokümantasyon ve Sekreterlik,FAC-003,1,PRG-0081,Associate Degree,Turkish,3,True
+DEP-0052,Tıbbi Görüntüleme Teknikleri,FAC-003,1,PRG-0082,Associate Degree,Turkish,3,True
+DEP-0053,Tıbbi Laboratuvar Teknikleri,FAC-003,1,PRG-0083,Associate Degree,Turkish,3,True
+DEP-0054,Web Tasarımı ve Kodlama,FAC-003,1,PRG-0088,Associate Degree,Turkish,2,True
+DEP-0055,Yapay Zeka Operatörlüğü,FAC-003,1,PRG-0089,Associate Degree,Turkish,3,True
+DEP-0056,Çocuk Gelişimi,FAC-003,1,PRG-0012,Associate Degree,Turkish,4,True
+DEP-0057,İlk ve Acil Yardım,FAC-003,1,PRG-0042,Associate Degree,Turkish,3,True
+DEP-0058,İmalat Yürütme Sistemleri Operatörlüğü,FAC-003,1,PRG-0043,Associate Degree,Turkish,2,True
+DEP-0059,İnsan Kaynakları Yönetimi,FAC-003,1,PRG-0046,Associate Degree,Turkish,3,True
+DEP-0060,İnsansız Araç Teknikerliği,FAC-003,1,PRG-0047,Associate Degree,Turkish,3,True
+DEP-0061,İnternet Ağ ve Teknolojileri,FAC-003,1,PRG-0049,Associate Degree,Turkish,3,True
+DEP-0062,İnşaat Teknolojisi,FAC-003,1,PRG-0048,Associate Degree,Turkish,3,True
+DEP-0063,İç Mekan Tasarımı,FAC-003,1,PRG-0037,Associate Degree,Turkish,5,True
+DEP-0064,Computer Engineering,FAC-004,1,PRG-0006,Bachelor's Degree,English,10,True
+DEP-0065,Elektrik-Elektronik Mühendisliği,FAC-004,1,PRG-0019,Bachelor's Degree,Turkish,10,True
+DEP-0066,Endüstri Mühendisliği,FAC-004,1,PRG-0024,Bachelor's Degree,Turkish,14,True
+DEP-0067,Industrial Engineering,FAC-004,1,PRG-0025,Bachelor's Degree,English,7,True
+DEP-0068,Makine Mühendisliği,FAC-004,1,PRG-0062,Bachelor's Degree,Turkish,7,True
+DEP-0069,Mechanical Engineering,FAC-004,1,PRG-0063,Bachelor's Degree,English,9,True
+DEP-0070,Yazılım Geliştirme,FAC-004,1,PRG-0090,Bachelor's Degree,Turkish,3,True
+DEP-0071,Yazılım Mühendisliği,FAC-004,1,PRG-0091,Bachelor's Degree,Turkish,10,True
+DEP-0072,Dijital Oyun Tasarımı,FAC-005,1,PRG-0016,Bachelor's Degree,Turkish,7,True
+DEP-0073,Endüstriyel Tasarım,FAC-005,1,PRG-0026,Bachelor's Degree,Turkish,7,True
+DEP-0074,Gastronomi ve Mutfak Sanatları,FAC-005,1,PRG-0030,Bachelor's Degree,Turkish,9,True
+DEP-0075,Grafik,FAC-005,1,PRG-0032,Bachelor's Degree,Turkish,4,True
+DEP-0076,Görsel İletişim Tasarımı,FAC-005,1,PRG-0031,Bachelor's Degree,Turkish,7,True
+DEP-0077,Oyunculuk,FAC-005,1,PRG-0071,Bachelor's Degree,Turkish,8,True
+DEP-0078,Tekstil ve Moda Tasarımı,FAC-005,1,PRG-0080,Bachelor's Degree,Turkish,6,True
+DEP-0079,İç Mimarlık,FAC-005,1,PRG-0038,Bachelor's Degree,Turkish,6,True
+DEP-0080,Hemşirelik,FAC-006,1,PRG-0035,Bachelor's Degree,Turkish,7,True
+DEP-0081,Business Administration,FAC-008,1,PRG-0053,Bachelor's Degree,English,6,True
+DEP-0082,Economics,FAC-008,1,PRG-0040,Bachelor's Degree,English,7,True
+DEP-0083,English Language and Literature,FAC-008,1,PRG-0044,Bachelor's Degree,English,6,True
+DEP-0084,International Relations,FAC-008,1,PRG-0086,Bachelor's Degree,English,8,True
+DEP-0085,International Trade and Business,FAC-008,1,PRG-0087,Bachelor's Degree,English,5,True
+DEP-0087,Psikoloji,FAC-002,1,PRG-0074,Master's Degree,Turkish,0,True
+DEP-0088,Psychology,FAC-008,1,PRG-0075,Bachelor's Degree,English,8,True
+DEP-0089,Siyaset Bilimi ve Kamu Yönetimi,FAC-008,1,PRG-0078,Bachelor's Degree,Turkish,5,True
+DEP-0090,Yönetim Bilişim Sistemleri,FAC-008,1,PRG-0092,Bachelor's Degree,Turkish,7,True
+DEP-0091,İktisat,FAC-008,1,PRG-0039,Bachelor's Degree,Turkish,5,True
+DEP-0093,İngilizce Mütercim ve Tercümanlık,FAC-008,1,PRG-0045,Bachelor's Degree,English,6,True
+DEP-0094,İşletme,FAC-008,1,PRG-0050,Bachelor's Degree,Turkish,9,True
+DEP-0095,Kamu Hukuku,FAC-001,0,,,,10,False
+DEP-0096,Özel Hukuk,FAC-001,0,,,,13,False
+DEP-0097,İnsan Kaynakları Yönetimi,FAC-002,2,PRG-DOU-BOLOGNA-4141;PRG-DOU-BOLOGNA-4142,Master's Degree,Turkish,1,True
+DEP-0098,Dış Ticaret (Türkçe),FAC-003,0,,,,0,False
+DEP-0099,Dış Ticaret (İngilizce),FAC-003,0,,,,0,False
+DEP-0100,Elektronik Teknolojisi Programı,FAC-003,0,,,,0,False
+DEP-0101,Halkla İlişkiler Tanıtım,FAC-003,0,,,,0,False
+DEP-0102,Kurumsal Bilişim Uzmanlığı Pr.,FAC-003,0,,,,0,False
+DEP-0103,Mahkeme Büro Hizmetleri,FAC-003,0,,,,0,False
+DEP-0104,Robotik ve Yapay Zeka,FAC-003,0,,,,0,False
+DEP-0105,Sosyal Hizmetler,FAC-003,1,PRG-DOU-BOLOGNA-81,Associate Degree,Turkish,3,True
+DEP-0106,Turizm ve Otel İşletmeci Programı,FAC-003,0,,,,0,False
+DEP-0107,Çocuk Gelişimi Programı,FAC-003,0,,,,0,False
+DEP-0108,Çocuk Gelişimİ,FAC-003,0,,,,0,False
+DEP-0109,İnternet ve Ağ Teknolojileri,FAC-003,0,,,,0,False
+DEP-0110,İş Sağlığı ve Güvenliği,FAC-003,1,PRG-DOU-BOLOGNA-78,Associate Degree,Turkish,3,True
+DEP-0111,Bilgisayar Mühendisliği,FAC-004,0,,,,0,False
+DEP-0112,Elektrik- Elektronik Mühendisliği,FAC-004,0,,,,0,False
+DEP-0113,Endüstri Mühendisliği (Türkçe),FAC-004,0,,,,0,False
+DEP-0114,Endüstri Mühendisliği (İngilizce),FAC-004,0,,,,0,False
+DEP-0115,Makine Mühendisliği (Türkçe / İngilizce),FAC-004,0,,,,1,False
+DEP-0116,Makine Mühendisliği (Türkçe),FAC-004,0,,,,0,False
+DEP-0117,Makine Mühendisliği (İngilizce),FAC-004,0,,,,0,False
+DEP-0118,İnşaat Mühendisliği,FAC-004,1,PRG-DOU-BOLOGNA-75,Bachelor's Degree,Turkish,9,True
+DEP-0119,Grafik (İngilizce),FAC-005,1,PRG-0093,Bachelor's Degree,English,4,True
+DEP-0120,Grafik Bölümü (İngilizce),FAC-005,0,,,,0,False
+DEP-0121,Görsel İletişim Tasarım,FAC-005,0,,,,0,False
+DEP-0122,Mimarlık,FAC-005,1,PRG-DOU-BOLOGNA-44,Bachelor's Degree,Turkish,6,True
+DEP-0123,Hazırlık Sonrası,FAC-007,0,,,,3,False
+DEP-0124,İkinci Yabancı Diller,FAC-007,0,,,,1,False
+DEP-0125,İngilizce Hazırlık,FAC-007,0,,,,1,False
+DEP-0126,İngilizce Hazırlık Programı,FAC-007,0,,,,33,False
+DEP-0127,Psikoloji (Türkçe),FAC-008,1,PRG-0095,Bachelor's Degree,Turkish,8,True
+DEP-0128,Sosyoloji,FAC-008,1,PRG-DOU-BOLOGNA-73,Bachelor's Degree,Turkish,5,True
+DEP-0129,Türk Dili ve Edebiyatı,FAC-008,1,PRG-DOU-BOLOGNA-71,Bachelor's Degree,Turkish,7,True
+DEP-0130,Uluslararası ilişkiler,FAC-008,0,,,,0,False
+DEP-0131,Uluslararası İlişkiler,FAC-008,0,,,,0,False
+DEP-0132,İktisat (Türkçe),FAC-008,0,,,,0,False
+DEP-0133,İktisat (İngilizce / Türkçe),FAC-008,0,,,,1,False
+DEP-0134,İşletme (Türkçe),FAC-008,0,,,,0,False
+DEP-0086,Psikoloji,FAC-008,0,,,,0,False
+DEP-0135,Endüstri Mühendisliği,FAC-002,1,PRG-0094,Master's Degree,Turkish,0,True
+DEP-0092,İletişim Bilimleri,FAC-008,1,PRG-0096,Bachelor's Degree,Turkish,0,True
+DEP-DOU-ENGINEERING-FIZIK,Fizik,FAC-004,0,,,,0,False
+DEP-DOU-ENGINEERING-KIMYA,Kimya,FAC-004,0,,,,0,False
+DEP-DOU-ENGINEERING-MATEMATIK,Matematik,FAC-004,0,,,,0,False

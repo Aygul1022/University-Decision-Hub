@@ -1,0 +1,162 @@
+[
+  {
+    "programmeKey": "PRG-0009",
+    "departmentKey": "DEP-0002",
+    "programmeName": "Bilgisayar ve Enformasyon Bilimleri",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0011",
+    "departmentKey": "DEP-0004",
+    "programmeName": "Cerrahi Hastalıklar Hemşireliği",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0020",
+    "departmentKey": "DEP-0005",
+    "programmeName": "Elektrik-Elektronik Mühendisliği",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0021",
+    "departmentKey": "DEP-0005",
+    "programmeName": "Elektrik-Elektronik Mühendisliği",
+    "degreeLevel": "Doctorate",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0027",
+    "departmentKey": "DEP-0007",
+    "programmeName": "Finansal İktisat",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0028",
+    "departmentKey": "DEP-0007",
+    "programmeName": "Finansal İktisat",
+    "degreeLevel": "Doctorate",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0035",
+    "departmentKey": "DEP-0080",
+    "programmeName": "Hemşirelik",
+    "degreeLevel": "Bachelor's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0041",
+    "departmentKey": "DEP-0016",
+    "programmeName": "İletişim Bilimleri",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0051",
+    "departmentKey": "DEP-0017",
+    "programmeName": "İşletme",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0052",
+    "departmentKey": "DEP-0017",
+    "programmeName": "İşletme",
+    "degreeLevel": "Doctorate",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0054",
+    "departmentKey": "DEP-0003",
+    "programmeName": "Business Administration",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "English",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0055",
+    "departmentKey": "DEP-0009",
+    "programmeName": "Kamu Hukuku",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0058",
+    "departmentKey": "DEP-0010",
+    "programmeName": "Küresel İlişkiler ve Avrupa Birliği",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0059",
+    "departmentKey": "DEP-0011",
+    "programmeName": "Lojistik ve Tedarik Zinciri Yönetimi",
+    "degreeLevel": "Doctorate",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0065",
+    "departmentKey": "DEP-0012",
+    "programmeName": "Mühendislik ve Teknoloji Yönetimi",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0072",
+    "departmentKey": "DEP-0015",
+    "programmeName": "Özel Hukuk",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0074",
+    "departmentKey": "DEP-0087",
+    "programmeName": "Psikoloji",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0079",
+    "departmentKey": "DEP-0013",
+    "programmeName": "Stratejik Pazarlama ve Marka Yönetimi",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0085",
+    "departmentKey": "DEP-0014",
+    "programmeName": "Uluslararası İlişkiler",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  },
+  {
+    "programmeKey": "PRG-0094",
+    "departmentKey": "DEP-0135",
+    "programmeName": "Endüstri Mühendisliği",
+    "degreeLevel": "Master's Degree",
+    "instructionLanguage": "Turkish",
+    "bolognaProgrammeId": null
+  }
+]

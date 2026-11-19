@@ -1,0 +1,4 @@
+﻿departmentKey,departmentName,facultyKey,programmeCount,programmeKeys,degrees,languages,instructorPrimaryLinks,newStudentChoiceCandidate
+DEP-0005,Elektrik-Elektronik Mühendisliği,FAC-002,2,PRG-0020;PRG-0021,Doctorate;Master's Degree,Turkish,0,True
+DEP-0065,Elektrik-Elektronik Mühendisliği,FAC-004,1,PRG-0019,Bachelor's Degree,Turkish,10,True
+DEP-0112,Elektrik- Elektronik Mühendisliği,FAC-004,0,,,,0,False

@@ -1,0 +1,37 @@
+﻿programmeKey,planLabel,bolognaProgrammeId,coursePlanUrl,selectedCatalogue,courseRows,actualCourseRows,status
+PRG-0009,Ders Planı ve Yapısı Tezli,4059,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4059,2026 (2026-2027 BİLGİSAYAR VE ENFORMASYON BİLİMLERİ TEZLİ YÜKSEK LİSANS TR),47,45,COURSE_ROWS_FETCHED
+PRG-0009,Ders Planı ve Yapısı Tezsiz,4062,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4062,2026 (2026-2027 BİLGİSAYAR VE ENFORMASYON BİLİMLERİ TEZSİZ YÜKSEK LİSANS TR),72,70,COURSE_ROWS_FETCHED
+PRG-0011,Ders Planı ve Yapısı Tezli,4138,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4138,2026 (2026-2027 CERRAHİ HASTALIKLAR HEMŞİRELİĞİ YL TEZLİ MÜFREDATI),32,30,COURSE_ROWS_FETCHED
+PRG-0020,Ders Planı ve Yapısı Tezli,4136,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4136,2026 (2026-2027 ELEKTRİK-ELEKTRONİK MÜHENDİSLİĞİ TEZLİ YÜKSEK LİSANS TR),102,100,COURSE_ROWS_FETCHED
+PRG-0020,Ders Planı ve Yapısı Tezsiz,4137,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4137,2026 (2026-2027 ELEKTRİK-ELEKTRONİK MÜHENDİSLİĞİ TEZSİZ YÜKSEK LİSANS TR),100,98,COURSE_ROWS_FETCHED
+PRG-0021,Ders Planı ve Yapısı,3767,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=3767,2019 (2019-2020 ELEKTRONİK VE HABERLEŞME MÜHENDİSLİĞİ DOKTORA),39,35,COURSE_ROWS_FETCHED
+PRG-0027,Ders Planı ve Yapısı Tezli,4086,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4086,2026 (2026-2027 FİNANSAL İKTİSAT YÜKSEK LİSANS TÜRKÇE TEZLİ),48,46,COURSE_ROWS_FETCHED
+PRG-0027,Ders Planı ve Yapısı Tezsiz,4092,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4092,2026 (2026-2027 FİNANSAL İKTİSAT TEZSİZ YÜKSEK LİSANS),46,44,COURSE_ROWS_FETCHED
+PRG-0028,Ders Planı ve Yapısı,4091,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4091,2026 (2026-2027 FİNANSAL İKTİSAT DOKTORA MÜFREDATI),29,27,COURSE_ROWS_FETCHED
+PRG-0028,Ders Planı ve Yapısı Bütünleşik,4087,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4087,2026 (2026-2027 FİNANSAL İKTİSAT DOKTORA BÜTÜNLEŞİK MÜFREDATI),73,71,COURSE_ROWS_FETCHED
+PRG-0028,Ders Planı ve Yapısı İngilizce,4090,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4090,,0,0,NO_ACTUAL_COURSES
+PRG-0035,Ders Plan ve Yapısı,4134,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4134,2026 (2026 HEMŞİRELİK MÜFREDATI),274,266,COURSE_ROWS_FETCHED
+PRG-0041,Ders Planı ve Yapısı Tezli,1320,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=1320,2018 (2018-2019 İLETİŞİM BİLİMLERİ MÜFREDATI TEZLİ ),14,12,COURSE_ROWS_FETCHED
+PRG-0041,Ders Planı ve Yapısı Tezsiz,3727,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=3727,2018 (2018-2019 İLETİŞİM BİLİMLERİ MÜFREDATI TEZSİZ),5,3,COURSE_ROWS_FETCHED
+PRG-0051,Ders Planı ve Yapısı Tezli,4094,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4094,2026 (2026-2027 İŞLETME YÜKSEK LİSANS TÜRKÇE TEZLİ),51,49,COURSE_ROWS_FETCHED
+PRG-0051,Ders Planı ve Yapısı Tezsiz,4098,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4098,2026 (2026-2027 İŞLETME YÜKSEK LİSANS TÜRKÇE TEZSİZ),44,42,COURSE_ROWS_FETCHED
+PRG-0052,Ders Planı ve Yapısı,4097,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4097,2026 (2026-2027 İŞLETME DOKTORA),24,22,COURSE_ROWS_FETCHED
+PRG-0052,Ders Planı ve Yapısı Bütünleşik,4099,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4099,2021 (2021-2022 İŞLETME DOKTORA (Bütünleşik) TR),49,45,COURSE_ROWS_FETCHED
+PRG-0054,Ders Planı ve Yapısı Tezli,4095,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4095,2026 (2026-2027 İŞLETME YÜKSEK LİSANS İNGİLİZCE TEZLİ),34,32,COURSE_ROWS_FETCHED
+PRG-0054,Ders Planı ve Yapısı Tezsiz,4096,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4096,2026 (2026-2027 İŞLETME YÜKSEK LİSANS İNGİLİZCE TEZSİZ),32,30,COURSE_ROWS_FETCHED
+PRG-0055,Ders Planı ve Yapısı Tezli,4084,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4084,2026 (2026-2027 KAMU HUKUKU MÜFREDATI TEZLİ),26,24,COURSE_ROWS_FETCHED
+PRG-0055,Ders Planı ve Yapısı Tezsiz,4085,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4085,2026 (2026-2027 KAMU HUKUKU MÜFREDATI TEZSİZ),39,37,COURSE_ROWS_FETCHED
+PRG-0059,Ders Planı ve Yapısı,4107,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4107,2026 (2026-2027 LOJİSTİK VE TEDARİK ZİNCİRİ YÖNETİMİ DOKTORA),45,43,COURSE_ROWS_FETCHED
+PRG-0059,Ders Planı ve Yapısı Bütünleşik,4102,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4102,,0,0,NO_ACTUAL_COURSES
+PRG-0065,Ders Planı ve Yapısı Tezli,4105,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4105,2026 (2026-2027 MÜHENDİSLİK VE TEKNOLOJİ YÖNETİMİ YÜKSEK LİSANS TEZLİ - TR),43,41,COURSE_ROWS_FETCHED
+PRG-0065,Ders Planı ve Yapısı Tezsiz,4100,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4100,2026 (2026-2027 MÜHENDİSLİK VE TEKNOLOJİ YÖNETİMİ YÜKSEK LİSANS TR - TEZSİZ),68,66,COURSE_ROWS_FETCHED
+PRG-0072,Ders Planı ve Yapısı Tezli,3724,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=3724,2018 (2018-2019 ÖZEL HUKUK MÜFREDATI TEZLİ ),5,5,COURSE_ROWS_FETCHED
+PRG-0072,Ders Planı ve Yapısı Tezsiz,3120,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=3120,2018 (2018-2019 ÖZEL HUKUK MÜFREDATI TEZSİZ ),3,3,COURSE_ROWS_FETCHED
+PRG-0074,Ders Planı ve Yapısı Tezli,4044,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4044,2026 (2026-2027 PSİKOLOJİ (TEZLİ) YÜKSEK LİSANS MÜFREDATI),20,18,COURSE_ROWS_FETCHED
+PRG-0074,Ders Planı ve Yapısı Tezsiz,4045,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4045,2026 (2026-2027 PSİKOLOJİ (TEZSİZ) YÜKSEK LİSANS MÜFREDATI),18,16,COURSE_ROWS_FETCHED
+PRG-0079,Ders Planı ve Yapısı Tezli,4162,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4162,2026 (2026-2027 STRATEJİK PAZLAMA .ve MARKA YÖN. TEZLİ),35,33,COURSE_ROWS_FETCHED
+PRG-0079,Ders Planı ve Yapısı Tezsiz,4163,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4163,2026 (2026-2027 STRATEJİK PAZARLAMA ve MARKA YÖNETİMİ TEZSİZ),21,19,COURSE_ROWS_FETCHED
+PRG-0085,Ders Planı ve Yapısı Tezli,4154,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4154,2026 (2026-2027 ULUSLARARASI İLİŞKİLER MÜFREDATI TEZLİ),51,49,COURSE_ROWS_FETCHED
+PRG-0085,Ders Planı ve Yapısı Tezsiz,4155,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4155,2026 (2026-2027 ULUSLARARASI İLİŞKİLER MÜFREDATI TEZSİZ),50,48,COURSE_ROWS_FETCHED
+PRG-0094,Ders Planı ve Yapısı Tezli,4152,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4152,2026 (2026-2027 ENDÜSTRİ MÜHENDİSLİĞİ YÜKSEK LİSANS TEZLİ - TR),73,71,COURSE_ROWS_FETCHED
+PRG-0094,Ders Planı ve Yapısı Tezsiz,4153,https://obs.dogus.edu.tr/oibs/bologna/progCourses.aspx?lang=tr&curSunit=4153,2026 (2026-2027 ENDÜSTRİ MÜHENDİSLİĞİ YÜKSEK LİSANS TR - TEZSİZ),75,73,COURSE_ROWS_FETCHED
