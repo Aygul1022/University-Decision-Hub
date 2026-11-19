@@ -1,5 +1,5 @@
 // Instructor list (instructors.html) and instructor detail (instructor-detail.html?id=<InstructorId>).
-// Requires js/shared/api.js, js/shared/departments.js and js/shared/navbar.js.
+// Requires js/shared/api.js and js/shared/navbar.js.
 (function () {
   const main = document.querySelector("main[data-page]");
   if (!main) return;
@@ -12,70 +12,32 @@
     status.hidden = !text;
   }
 
-  let departmentNames = new Map();
   const compareNames = new Intl.Collator("tr");
+  const departmentNames = new Map();
 
-  function labelKey(name) {
+  function staffNameKey(name) {
     return name.normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("tr");
   }
 
-  // Official catalogue aliases for staff search. Keep the underlying IDs for every match.
-  const aliases = new Map(Object.entries({
-    "Bilgisayar Mühendisliği": "Computer Engineering",
-    "Bilgisayar Mühendisliği (İngilizce)": "Computer Engineering",
-    "İktisat (İngilizce)": "Economics",
-    "İktisat (Türkçe)": "İktisat",
-    "Psikoloji (İngilizce)": "Psychology",
-    "Psikoloji (Türkçe)": "Psikoloji",
-    "Endüstri Mühendisliği (İngilizce)": "Industrial Engineering",
-    "Endüstri Mühendisliği (Türkçe)": "Endüstri Mühendisliği",
-    "Makine Mühendisliği (İngilizce)": "Mechanical Engineering",
-    "Makine Mühendisliği (Türkçe)": "Makine Mühendisliği",
-    "Grafik (İngilizce)": "Graphics",
-    "Grafik Bölümü (İngilizce)": "Graphics",
-    "İşletme (Türkçe)": "İşletme",
-    "İşletme (İngilizce)": "Business Administration",
-    "Dış Ticaret (Türkçe)": "Dış Ticaret",
-    "Dış Ticaret (İngilizce)": "Foreign Trade",
-    "Elektrik- Elektronik Mühendisliği": "Elektrik-Elektronik Mühendisliği",
-    "Elektronik Teknolojisi Programı": "Elektronik Teknolojisi",
-    "Halkla İlişkiler Tanıtım": "Halkla İlişkiler ve Tanıtım",
-    "Kurumsal Bilişim Uzmanlığı Pr.": "Kurumsal Bilişim Uzmanlığı",
-    "Mahkeme Büro Hizmetleri (Adalet)": "Mahkeme Büro Hizmetleri",
-    "Robotik ve Yapay Zeka": "Robotik ve Yapay Zekâ",
-    "Turizm ve Otel İşletmeci Programı": "Turizm ve Otel İşletmeciliği",
-    "Çocuk Gelişimi Programı": "Çocuk Gelişimi",
-    "İnternet Ağ ve Teknolojileri": "İnternet ve Ağ Teknolojileri",
-    "Görsel İletişim Tasarım": "Görsel İletişim Tasarımı",
-  }).map(([name, label]) => [labelKey(name), label]));
-  const sharedUnits = new Map([
-    [labelKey("İktisat"), ["İktisat", "Economics"]],
-    [labelKey("Makine Mühendisliği"), ["Makine Mühendisliği", "Mechanical Engineering"]],
-    [labelKey("İşletme"), ["İşletme", "Business Administration"]],
-  ]);
-
   async function loadDepartmentNames() {
-    const departments = await Departments.load();
-    const internationalRelationsFaculties = new Set(departments
-      .filter(({ departmentName }) => labelKey(departmentName) === labelKey("International Relations"))
-      .map(({ facultyId }) => facultyId));
-    const entries = departments.map(({ departmentId, departmentName, facultyId }) => {
-      const key = labelKey(departmentName);
-      // A combined faculty staff record belongs in both language filters.
-      const shared = key.match(/^(.+) \((?:türkçe\s*(?:\/|-)\s*ingilizce|ingilizce\s*(?:\/|-)\s*türkçe)\)$/u);
-      let labels = shared ? sharedUnits.get(shared[1]) : undefined;
-      // Keep the institute's separate Turkish graduate programme.
-      if (key === labelKey("Uluslararası İlişkiler") && internationalRelationsFaculties.has(facultyId)) {
-        labels = ["International Relations"];
+    try {
+      const response = await fetch(Site.url("data/official-staff-departments.json"));
+      if (!response.ok) return [];
+      for (const [name, labels] of Object.entries(await response.json())) {
+        departmentNames.set(staffNameKey(name), labels);
       }
-      return { departmentId, labels: labels || [aliases.get(key) || departmentName] };
-    });
-    departmentNames = new Map(entries.map(({ departmentId, labels }) => [departmentId, labels.join(" · ")]));
-    return entries;
+      return [...new Set([...departmentNames.values()].flat())].sort(compareNames.compare);
+    } catch {
+      return [];
+    }
+  }
+
+  function staffDepartments(instructor) {
+    return departmentNames.get(staffNameKey(instructor.fullName)) || [];
   }
 
   function departmentLabel(instructor) {
-    return departmentNames.get(instructor.departmentId) || "";
+    return staffDepartments(instructor).join(" · ");
   }
 
   // ---------------------------------------------------------------- list page
@@ -87,20 +49,9 @@
     const departmentStatus = main.querySelector("[data-department-status]");
     let latestRequest = 0;
 
-    const departmentsByLabel = new Map();
-    for (const { departmentId, labels } of await loadDepartmentNames()) {
-      for (const label of labels) {
-        const key = labelKey(label);
-        if (!departmentsByLabel.has(key)) departmentsByLabel.set(key, { label, ids: new Set() });
-        departmentsByLabel.get(key).ids.add(departmentId);
-      }
-    }
-    const options = [...departmentsByLabel].sort(([, a], [, b]) => compareNames.compare(a.label, b.label));
-    for (const [key, { label }] of options) {
-      const option = document.createElement("option");
-      option.value = key;
-      option.textContent = label;
-      departmentSelect.appendChild(option);
+    const options = await loadDepartmentNames();
+    for (const label of options) {
+      departmentSelect.appendChild(new Option(label, label));
     }
     if (options.length === 0) {
       departmentSelect.disabled = true;
@@ -132,25 +83,21 @@
 
     async function search() {
       const query = form.elements.query.value.trim();
-      const selected = departmentsByLabel.get(departmentSelect.value);
-      const filtered = Boolean(query || selected);
+      const department = departmentSelect.value;
+      const filtered = Boolean(query || department);
+      const params = new URLSearchParams();
+      if (query) params.set("query", query);
 
       const request = ++latestRequest;
       count.hidden = true;
       showStatus("Loading academic staff…", false);
 
       try {
-        const ids = selected ? [...selected.ids] : [null];
-        const matches = await Promise.all(ids.map((id) => {
-          const params = new URLSearchParams();
-          if (query) params.set("query", query);
-          if (id !== null) params.set("departmentId", id);
-          return apiFetch("/api/instructors" + (filtered ? "?" + params : ""));
-        }));
-        if (request !== latestRequest) return; // a newer search has started
-        const instructors = matches.length === 1 ? matches[0] : [...new Map(matches.flat()
-          .map((instructor) => [instructor.instructorId, instructor])).values()]
-          .sort((a, b) => compareNames.compare(a.fullName, b.fullName) || a.instructorId - b.instructorId);
+        const matches = await apiFetch("/api/instructors" + (query ? "?" + params : ""));
+        if (request !== latestRequest) return;
+        const instructors = department
+          ? matches.filter(instructor => staffDepartments(instructor).includes(department))
+          : matches;
         renderList(instructors);
 
         if (instructors.length === 0) {
