@@ -26,7 +26,7 @@
   const programmeSelect = form.elements.programmeId;
   const programmeHint = form.querySelector("[data-programme-hint]");
   const programmeRetry = form.querySelector("[data-programme-retry]");
-  const programmeLabels = new Map();
+  const programmesById = new Map();
   let profile;
   let departmentRequest = 0;
   let programmeRequest = 0;
@@ -60,7 +60,7 @@
       fullName: profile.fullName,
       email: profile.email,
       department: profile.departmentName ?? (profile.departmentId == null ? "Not selected" : "Department " + profile.departmentId),
-      programme: savedProgrammeLabel(),
+      programme: savedProgrammeDetails(),
       studyYear: profile.isGraduate ? "Graduate" : profile.studyYear == null ? "Not selected" : "Year " + profile.studyYear,
     };
     for (const element of summary.querySelectorAll("[data-profile-value]")) {
@@ -82,22 +82,22 @@
     return value === "" ? null : Number(value);
   }
 
-  function programmeLabel(programme) {
-    const details = [programme.degreeLevel, programme.instructionLanguage].filter(Boolean).join(", ");
-    return programme.programmeName + (details ? " (" + details + ")" : "");
+  function programmeDetails(programme) {
+    const details = [programme?.degreeLevel, programme?.instructionLanguage].filter(Boolean).join(", ");
+    return details ? "(" + details + ")" : "";
   }
 
-  function savedProgrammeLabel() {
+  function savedProgrammeDetails() {
     const { programmeId, programmeName } = profile;
     if (programmeId == null) return "Not selected";
-    return programmeLabels.get(programmeId) ?? programmeName ?? "Programme " + programmeId;
+    return programmeDetails(programmesById.get(programmeId)) || (programmeName ?? "Programme " + programmeId);
   }
 
   async function fetchProgrammes(departmentId) {
     const programmes = await apiFetch("/api/programmes?departmentId=" + encodeURIComponent(departmentId));
     if (!Array.isArray(programmes)) throw new Error("Invalid programme list.");
     for (const programme of programmes) {
-      programmeLabels.set(programme.programmeId, programmeLabel(programme));
+      programmesById.set(programme.programmeId, programme);
     }
     return programmes;
   }
@@ -105,11 +105,11 @@
   async function loadSummaryProgramme() {
     const displayedProfile = profile;
     const { departmentId, programmeId } = displayedProfile;
-    if (departmentId == null || programmeId == null || programmeLabels.has(programmeId)) return;
+    if (departmentId == null || programmeId == null || programmesById.has(programmeId)) return;
     try {
       await fetchProgrammes(departmentId);
       if (profile === displayedProfile && !summary.hidden) {
-        summaryProgramme.textContent = savedProgrammeLabel();
+        summaryProgramme.textContent = savedProgrammeDetails();
       }
     } catch {
       // Keep the programme name from the saved profile when catalogue details are unavailable.
@@ -117,12 +117,22 @@
   }
 
   function setProgrammeOptions(programmes, selectedId) {
-    const options = programmes.map(programme =>
-      new Option(programmeLabel(programme), String(programme.programmeId))
-    );
+    const labels = programmes.map(programme => programmeDetails(programme) || programme.programmeName);
+    const counts = new Map();
+    for (const label of labels) {
+      counts.set(label, (counts.get(label) ?? 0) + 1);
+    }
+    const options = programmes.map((programme, index) => {
+      const label = labels[index];
+      // Distinguish separate programmes that share a degree and language.
+      const optionLabel = counts.get(label) > 1 && label !== programme.programmeName
+        ? label + " — " + programme.programmeName
+        : label;
+      return new Option(optionLabel, String(programme.programmeId));
+    });
     // Keep the saved ID visible while loading or if the catalogue cannot supply its name.
     if (selectedId != null && !programmes.some(programme => programme.programmeId === selectedId)) {
-      options.push(new Option(savedProgrammeLabel(), String(selectedId)));
+      options.push(new Option(savedProgrammeDetails(), String(selectedId)));
     }
     programmeSelect.replaceChildren(new Option("Not selected", ""), ...options);
     programmeSelect.value = selectedId ?? "";
