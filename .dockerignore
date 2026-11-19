@@ -1,0 +1,16 @@
+**
+!Dockerfile
+!Backend/
+!Backend/UniversityDecisionHub.Api/
+!Backend/UniversityDecisionHub.Api/**
+!Frontend/
+!Frontend/**
+!DataBase/
+!DataBase/Imports/
+!DataBase/Imports/catalog.ready.json
+**/bin/**
+**/obj/**
+**/appsettings*.json
+**/secrets.json
+**/.env*
+**/*.private.*

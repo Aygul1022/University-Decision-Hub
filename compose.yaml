@@ -1,0 +1,66 @@
+name: udh-demo
+
+x-demo: &demo
+  image: udh-demo:2026-11-19
+  build:
+    context: .
+    dockerfile: Dockerfile
+  environment: &environment
+    ASPNETCORE_ENVIRONMENT: Development
+    DOTNET_ENVIRONMENT: Development
+    ASPNETCORE_URLS: http://+:8080
+    ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=UniversityDecisionHub;Username=udh;Password=${UDH_POSTGRES_PASSWORD:?Run Initialize-DockerDemo.ps1 first}"
+    Jwt__Key: "${UDH_JWT_KEY:?Run Initialize-DockerDemo.ps1 first}"
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: UniversityDecisionHub
+      POSTGRES_USER: udh
+      POSTGRES_PASSWORD: "${UDH_POSTGRES_PASSWORD:?Run Initialize-DockerDemo.ps1 first}"
+    volumes:
+      - demo-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U udh -d UniversityDecisionHub"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    restart: unless-stopped
+
+  migrate:
+    <<: *demo
+    entrypoint: ["./migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  catalogue:
+    <<: *demo
+    # Existing importer accepts loopback hosts only. Share only the dedicated
+    # demo DB's network namespace; do not relax the application import guard.
+    network_mode: service:db
+    environment:
+      <<: *environment
+      ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=UniversityDecisionHub;Username=udh;Password=${UDH_POSTGRES_PASSWORD:?Run Initialize-DockerDemo.ps1 first}"
+    command: ["import-catalog", "/app/catalog/catalog.ready.json", "--apply"]
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+
+  app:
+    <<: *demo
+    ports:
+      - "127.0.0.1:${UDH_HTTP_PORT:-5160}:8080"
+    depends_on:
+      catalogue:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  demo-postgres:

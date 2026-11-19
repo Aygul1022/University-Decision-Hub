@@ -69,16 +69,42 @@ const Site = (function () {
     const brand = link("", Site.url("index.html"), "navbar-brand");
     brand.setAttribute("aria-label", "University Decision Hub home");
     const logo = element("img");
-    logo.src = Site.url("assets/hub-logo.svg");
+    logo.src = Site.url("assets/hub-book-logo.png");
     logo.alt = "HUB";
     logo.width = 94;
     logo.height = 49;
     brand.appendChild(logo);
-    inner.appendChild(brand);
+
 
     const nav = element("nav");
     nav.setAttribute("aria-label", "Main");
-    nav.style.display = "contents";
+    const drawer = element("dialog", "navbar-drawer");
+    drawer.id = "site-navigation";
+    drawer.setAttribute("aria-label", "Site navigation");
+    const close = element("button", "navbar-close", "Close menu");
+    close.type = "button";
+    drawer.appendChild(close);
+    const toggle = element("button", "navbar-toggle");
+    toggle.type = "button";
+    toggle.setAttribute("aria-label", "Open navigation menu");
+    toggle.setAttribute("aria-controls", drawer.id);
+    toggle.setAttribute("aria-expanded", "false");
+    for (let i = 0; i < 3; i++) toggle.appendChild(element("span"));
+    inner.appendChild(toggle);
+    toggle.addEventListener("click", () => {
+      drawer.showModal();
+      toggle.setAttribute("aria-expanded", "true");
+    });
+    close.addEventListener("click", () => drawer.close());
+    drawer.addEventListener("click", (event) => {
+      if (event.target !== drawer) return;
+      const bounds = drawer.getBoundingClientRect();
+      if (event.clientX > bounds.right || event.clientY > bounds.bottom || event.clientX < bounds.left || event.clientY < bounds.top) drawer.close();
+    });
+    drawer.addEventListener("close", () => {
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.focus();
+    });
     const links = element("ul", "navbar-links");
     for (const entry of LINKS) {
       const anchor = link(entry.label, entry.membersOnly ? Site.membersUrl(entry.path) : Site.url(entry.path));
@@ -86,7 +112,8 @@ const Site = (function () {
       links.appendChild(listItem(anchor));
     }
     nav.appendChild(links);
-    inner.appendChild(nav);
+    drawer.appendChild(nav);
+    header.appendChild(drawer);
 
     const account = element("ul", "navbar-account");
     const user = Session.user;
@@ -108,6 +135,7 @@ const Site = (function () {
       account.appendChild(listItem(link("Register", Site.url("Pages/auth/register.html"), "navbar-register")));
     }
     inner.appendChild(account);
+    inner.appendChild(brand);
 
     document.body.prepend(header);
   }

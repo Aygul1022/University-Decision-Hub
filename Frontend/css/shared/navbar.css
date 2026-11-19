@@ -106,3 +106,26 @@
   font-weight: 700;
   vertical-align: middle;
 }
+
+/* Persistent account actions and an accessible left-side navigation drawer. */
+.navbar { background:#fcf9f6; color:#442238; border-bottom:1px solid #eadfe5; }
+.navbar-inner,.home-body .navbar-inner { max-width:none; padding:16px 28px; flex-wrap:nowrap; gap:18px; }
+.navbar-toggle { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:5px; width:44px; height:44px; flex-shrink:0; background:#fff !important; border:1px solid #eadde2; border-radius:12px; cursor:pointer; box-shadow:0 6px 20px #44223812; }
+.navbar-toggle span { display:block; width:19px; height:2px; border-radius:2px; background:#991a35; }
+.navbar-account { margin-left:auto; flex-wrap:nowrap; gap:8px; }
+.navbar-account .navbar-register { background:#991a35; color:white; border-radius:8px; }
+.navbar-account .navbar-register:hover { background:#75152b; color:white; }
+.navbar-brand { flex-shrink:0; }
+.navbar-brand img,.home-body .navbar-brand img { width:140px; height:56px; object-fit:contain; filter:none; }
+.navbar :focus-visible { outline:2px solid #991a35; outline-offset:4px; }
+.navbar-drawer { position:fixed; inset:0 auto 0 0; margin:0; padding:28px 22px; width:min(320px,85vw); height:100dvh; max-height:100dvh; max-width:85vw; background:#fcf9f6; color:#442238; border:0; border-right:1px solid #eadfe5; box-shadow:12px 0 50px #29132824; }
+.navbar-drawer[open] { display:flex; flex-direction:column; gap:36px; animation:drawer-enter 220ms ease-out; }
+.navbar-drawer::backdrop { background:#25162766; }
+.navbar-close { align-self:flex-end; padding:10px 14px; border:1px solid #dfced6; border-radius:8px; background:transparent; cursor:pointer; }
+.navbar-drawer .navbar-links { flex-direction:column; align-items:stretch; gap:12px; }
+.navbar-drawer .navbar-links a { padding:16px; border-radius:10px; }
+@keyframes drawer-enter { from { transform:translateX(-100%); } to { transform:translateX(0); } }
+@media(max-width:600px) { .navbar-inner,.home-body .navbar-inner { padding:12px; gap:8px; } .navbar-brand img,.home-body .navbar-brand img { width:100px; height:44px; } .navbar-account { gap:2px; } .navbar-account a,.navbar-account button { padding:8px; font-size:.85rem; } .navbar-account .navbar-user { max-width:105px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .navbar-role { display:none; } }
+@media(prefers-reduced-motion:reduce) { .navbar-drawer[open] { animation:none; } }
+.navbar .navbar-close { background:#991a35; color:#fff; border-color:#991a35; font-weight:600; }
+.navbar .navbar-close:hover { background:#75152b; }
