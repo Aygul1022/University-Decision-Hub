@@ -85,7 +85,7 @@
       instructorStatus.textContent = "Choose a course to see academic staff from its faculty.";
       return;
     }
-    instructorStatus.textContent = "Loading academic staff for this course?";
+    instructorStatus.textContent = "Loading academic staff for this course...";
 
     try {
       const course = await apiFetch("/api/courses/" + courseId);
@@ -103,13 +103,13 @@
         addOption(instructorSelect, instructor.instructorId, label);
       }
       if (!instructorIds.size) {
-        instructorStatus.textContent = "No academic staff are listed for this course?s faculty.";
+        instructorStatus.textContent = "No academic staff are listed for this course's faculty.";
         return;
       }
 
       instructorSelect.disabled = false;
       instructorPicker.hidden = false;
-      instructorStatus.textContent = "Showing academic staff from the selected course?s faculty.";
+      instructorStatus.textContent = "Showing academic staff from the selected course's faculty.";
       if (typeof SearchableSelect !== "undefined") {
         SearchableSelect.enhance(instructorSelect, {
           placeholder: "Search by name or title",
@@ -237,7 +237,7 @@
     }
 
     if (!instructorIds.has(values.instructorId)) {
-      showMessage("Choose an academic staff member from the selected course?s faculty.");
+      showMessage("Choose an academic staff member from the selected course's faculty.");
       return;
     }
 
