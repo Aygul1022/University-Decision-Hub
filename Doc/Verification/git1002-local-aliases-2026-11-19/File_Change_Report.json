@@ -1,0 +1,62 @@
+{
+  "counts": {
+    "faculties": 9,
+    "departments": 135,
+    "instructors": 456,
+    "programmes": 104,
+    "courses": 9347,
+    "programmeCourses": 12593
+  },
+  "packageSha256": "ee9b2edfdd4b7dff34dc4c7917da1bbf629a8bfa96ad74ab748b6e6e07262256",
+  "aliases": [
+    {
+      "officialCourseCode": "GİT 1002",
+      "localCourseCode": "GİT 1002-0",
+      "courseKey": "CRS-DOU-B9423D9526C039D81F082152",
+      "courseName": "Yaratıcı Fotoğraf",
+      "bolognaCourseId": "4404534",
+      "departmentKey": "DEP-0076",
+      "programmeKey": "PRG-0031",
+      "decision": "USER_APPROVED_TEMPORARY_ALIAS"
+    },
+    {
+      "officialCourseCode": "GİT 1002",
+      "localCourseCode": "GİT 1002-1",
+      "courseKey": "CRS-DOU-9CBAC2B66D7620BD6819F70D",
+      "courseName": "Reklamcılık Tarihi",
+      "bolognaCourseId": "4404573",
+      "departmentKey": "DEP-0076",
+      "programmeKey": "PRG-0031",
+      "decision": "USER_APPROVED_TEMPORARY_ALIAS"
+    }
+  ],
+  "newCurricula": [
+    {
+      "curriculumKey": "CUR-DOU-151FD16FD28D7168FA28962C",
+      "programmeKey": "PRG-0031",
+      "courseKey": "CRS-DOU-9CBAC2B66D7620BD6819F70D",
+      "catalogueYear": "2026",
+      "semester": 4,
+      "recommendedStudyYear": null,
+      "courseCredit": null,
+      "ects": 5,
+      "isElective": true
+    },
+    {
+      "curriculumKey": "CUR-DOU-7649FFCC4AADA28799EE22A3",
+      "programmeKey": "PRG-0031",
+      "courseKey": "CRS-DOU-9CBAC2B66D7620BD6819F70D",
+      "catalogueYear": "2026",
+      "semester": 8,
+      "recommendedStudyYear": null,
+      "courseCredit": null,
+      "ects": 5,
+      "isElective": true
+    }
+  ],
+  "preservation": "All prior rows and keys preserved; only the approved CourseCode changed.",
+  "databaseWritesPerformedByThisScript": false,
+  "migrationCreated": false,
+  "messageSent": false,
+  "workbook": "Historical workbook unchanged; use updated JSON/CSV and decision note."
+}

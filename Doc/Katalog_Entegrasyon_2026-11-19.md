@@ -1,5 +1,7 @@
 # Güncel katalog entegrasyonu — 19 Kasım 2026
 
+**Sonraki paket değişikliği:** Kullanıcı onayıyla GİT 1002 için geçici `-0` / `-1` yerel kodları hazırlandı ve 19 Kasım 2026 18:12 +03:00'da yerel PostgreSQL'de doğrulandı. Güncel dosyalar/veritabanı 9.347 ders / 12.593 müfredat bağlantısı içerir. Tam alan farkı ve tekrar grubu sıfır; ikinci aktarım 0 ekleme / 22.644 değişmeyen kayıt verdi. Kullanıcılar/yorumlar korundu. Aşağıdaki 9.346/12.591 sayılı kanıt önceki sürüme aittir; ortak demo ayrıca teyit bekler. [Karar, eşleştirme ve aktarım sırası](GIT1002_Gecici_Yerel_Kod_Karari_2026-11-19.md).
+
 Bu dal veri, kaynak kanıtları ve belgeleri içerir. Uygulama kodu değiştirilmedi. Temel sürüm `feature/democontrol @ 5b79729`'dur. Ortak dala birleştirme yapılmadı.
 
 ## Dosyalar ve aktarım

@@ -54784,7 +54784,7 @@
     {
       "courseKey": "CRS-DOU-B9423D9526C039D81F082152",
       "departmentKey": "DEP-0076",
-      "courseCode": "GİT 1002",
+      "courseCode": "GİT 1002-0",
       "courseName": "Yaratıcı Fotoğraf"
     },
     {
@@ -60498,6 +60498,12 @@
       "departmentKey": "DEP-0097",
       "courseCode": "IKY 589",
       "courseName": "Yüksek Lisans Projesi"
+    },
+    {
+      "courseKey": "CRS-DOU-9CBAC2B66D7620BD6819F70D",
+      "departmentKey": "DEP-0076",
+      "courseCode": "GİT 1002-1",
+      "courseName": "Reklamcılık Tarihi"
     }
   ],
   "programmeCourses": [
@@ -199000,6 +199006,28 @@
       "recommendedStudyYear": null,
       "courseCredit": 3,
       "ects": 6,
+      "isElective": true
+    },
+    {
+      "curriculumKey": "CUR-DOU-151FD16FD28D7168FA28962C",
+      "programmeKey": "PRG-0031",
+      "courseKey": "CRS-DOU-9CBAC2B66D7620BD6819F70D",
+      "catalogueYear": "2026",
+      "semester": 4,
+      "recommendedStudyYear": null,
+      "courseCredit": null,
+      "ects": 5,
+      "isElective": true
+    },
+    {
+      "curriculumKey": "CUR-DOU-7649FFCC4AADA28799EE22A3",
+      "programmeKey": "PRG-0031",
+      "courseKey": "CRS-DOU-9CBAC2B66D7620BD6819F70D",
+      "catalogueYear": "2026",
+      "semester": 8,
+      "recommendedStudyYear": null,
+      "courseCredit": null,
+      "ects": 5,
       "isElective": true
     }
   ]

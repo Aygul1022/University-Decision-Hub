@@ -1,0 +1,15 @@
+{
+  "checkedAtIstanbul": "2026-11-19 18:12:09 +03:00",
+  "target": "local UniversityDecisionHub:5432",
+  "databaseApplied": true,
+  "privateBackupReadable": true,
+  "remainingFieldDifferences": 0,
+  "duplicateGroups": 0,
+  "preExistingRowsPreserved": true,
+  "accountsAndReviewsPreserved": true,
+  "newMigrationsApplied": false,
+  "httpBrowserTested": false,
+  "sharedDemoVerified": false,
+  "gitPublication": "Tracked by the branch Git history; database evidence is independent of publication.",
+  "packageSha256": "ee9b2edfdd4b7dff34dc4c7917da1bbf629a8bfa96ad74ab748b6e6e07262256"
+}

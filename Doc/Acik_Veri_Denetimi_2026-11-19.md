@@ -1,5 +1,7 @@
 # Açık veri maddelerinin kontrolü — 19 Kasım 2026
 
+**Sonraki karar:** GİT 1002'nin ertelenmesi kullanıcı tarafından geçici yerel kod çözümüyle değiştirildi: Yaratıcı Fotoğraf `GİT 1002-0`, Reklamcılık Tarihi `GİT 1002-1`. Dosyalar güncel ve yerel PostgreSQL uygulaması doğrulandı; resmî kod teyidi ve ortak demo kontrolü bekliyor. Aşağıdaki denetim tarihsel kanıttır. [Yeni karar ve gerçek veritabanı kanıtı](GIT1002_Gecici_Yerel_Kod_Karari_2026-11-19.md).
+
 Bu kontrol katalog JSON'unu, veritabanını veya uygulama kodunu değiştirmedi. 104 programlı paket ve önceki yerel entegrasyon sonucu korunur. Sunum çalışması yapılmadı.
 
 ## Sami'nin son mesajı
