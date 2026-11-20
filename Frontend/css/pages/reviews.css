@@ -42,6 +42,48 @@
   margin-top: 18px;
 }
 
+.review-pagination {
+  justify-content: center;
+  gap: 8px;
+}
+
+.page-number,
+.page-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0 8px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-red);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+a.page-number:hover,
+a.page-arrow:hover {
+  background: var(--color-red-soft);
+  color: var(--color-red-dark);
+}
+
+.page-number.current {
+  border-color: var(--color-red);
+  background: var(--color-red);
+  color: var(--color-white);
+}
+
+.page-arrow.disabled {
+  color: var(--color-muted);
+  opacity: 0.5;
+}
+
+.page-gap {
+  padding: 0 4px;
+}
+
 .review-results {
   display: grid;
   gap: 12px;
@@ -60,6 +102,12 @@
 
 .review-catalog-status {
   margin: 12px 0 0;
+}
+
+.review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .review-text {

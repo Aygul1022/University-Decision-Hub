@@ -175,30 +175,120 @@
     button.type = "button";
     button.setAttribute("aria-label", "View review for " + courseTitle(review));
     button.addEventListener("click", () => showDetail(review.reviewId));
-    article.append(button);
+    const actions = textElement("div", "review-actions", "");
+    actions.append(button);
+    // Only a convenience: hiding the button protects nothing. The server checks the Administrator role itself.
+    if (isAdministrator) {
+      const deleteButton = textElement("button", "button secondary", "Delete");
+      deleteButton.type = "button";
+      deleteButton.setAttribute("aria-label", "Delete review for " + courseTitle(review));
+      deleteButton.addEventListener("click", () => deleteReview(review, deleteButton));
+      actions.append(deleteButton);
+    }
+    article.append(actions);
     return article;
   }
 
-  function setPageLink(selector, page, available) {
-    const link = pagination.querySelector(selector);
-    link.hidden = !available;
-    if (!available) return;
+  const deleting = new Set();
+  async function deleteReview(review, deleteButton) {
+    if (deleting.has(review.reviewId)) return;
+    if (!window.confirm("Delete this review permanently? This cannot be undone.")) return;
+
+    deleting.add(review.reviewId);
+    deleteButton.disabled = true;
+    deleteButton.textContent = "Deleting…";
+    try {
+      // 204 with an empty body: apiFetch answers null for it.
+      await apiFetch("/api/reviews/" + review.reviewId, { method: "DELETE" });
+      deleting.delete(review.reviewId);
+      await loadReviews("Review deleted.", true);
+    } catch (error) {
+      deleting.delete(review.reviewId);
+      if (error.status === 401) return redirectToLogin();
+      if (error.status === 404) {
+        await loadReviews("This review no longer exists.", true);
+        return;
+      }
+      deleteButton.disabled = false;
+      deleteButton.textContent = "Delete";
+      if (error.status === 403) {
+        setNotice(status, "Only administrators can delete reviews.", true);
+      } else if (error.status === 0) {
+        setNotice(status, "The review was not deleted: " + error.message + " Try again.", true);
+      } else {
+        setNotice(status, "The review was not deleted. " + (error.message || "Try again."), true);
+      }
+    }
+  }
+
+  const DEFAULT_PAGE_SIZE = 10;
+
+  function pageLink(label, page, className, ariaLabel) {
+    const link = textElement("a", className, label);
     const query = new URLSearchParams(params);
     query.set("page", page);
     link.href = Site.url(pageUrl(query));
+    if (ariaLabel) link.setAttribute("aria-label", ariaLabel);
+    return link;
   }
 
-  async function loadReviews(message = "") {
+  // Previous arrow, numbered pages (1, the last page and the pages around the current one, with … for gaps), next arrow.
+  function renderPagination(page, lastPage) {
+    const items = [];
+    const previousLabel = "Previous page";
+    const nextLabel = "Next page";
+
+    if (page > 1) {
+      items.push(pageLink("‹", Math.min(page - 1, lastPage), "page-arrow", previousLabel));
+    } else {
+      const arrow = textElement("span", "page-arrow disabled", "‹");
+      arrow.setAttribute("aria-label", previousLabel);
+      arrow.setAttribute("aria-disabled", "true");
+      items.push(arrow);
+    }
+
+    const wanted = new Set([1, lastPage, page - 2, page - 1, page, page + 1, page + 2]);
+    let previous = 0;
+    for (const number of [...wanted].filter((n) => n >= 1 && n <= lastPage).sort((x, y) => x - y)) {
+      if (number - previous > 1) items.push(textElement("span", "page-gap", "…"));
+      if (number === page) {
+        const current = textElement("span", "page-number current", String(number));
+        current.setAttribute("aria-current", "page");
+        items.push(current);
+      } else {
+        items.push(pageLink(String(number), number, "page-number", "Page " + number));
+      }
+      previous = number;
+    }
+
+    if (page < lastPage) {
+      items.push(pageLink("›", page + 1, "page-arrow", nextLabel));
+    } else {
+      const arrow = textElement("span", "page-arrow disabled", "›");
+      arrow.setAttribute("aria-label", nextLabel);
+      arrow.setAttribute("aria-disabled", "true");
+      items.push(arrow);
+    }
+
+    pagination.replaceChildren(...items);
+  }
+
+  async function loadReviews(message = "", stepBackIfEmpty = false) {
     try {
-      const suffix = params.size ? "?" + params.toString() : "";
+      const query = new URLSearchParams(params);
+      if (!query.has("pageSize")) query.set("pageSize", String(DEFAULT_PAGE_SIZE));
+      const suffix = "?" + query.toString();
       const { items, totalCount, page, pageSize } = await apiFetch("/api/reviews" + suffix);
-      results.replaceChildren(...items.map(renderReview));
       const lastPage = Math.max(1, Math.ceil(totalCount / pageSize));
+      // The last review of the last page was deleted: show the new last page, keeping every filter.
+      if (stepBackIfEmpty && !items.length && totalCount > 0 && page > lastPage) {
+        params.set("page", String(lastPage));
+        window.history.replaceState(null, "", Site.url(pageUrl(params)));
+        return loadReviews(message);
+      }
+      results.replaceChildren(...items.map(renderReview));
       pagination.hidden = lastPage <= 1 && page <= 1;
-      setPageLink("[data-previous-page]", Math.min(page - 1, lastPage), page > 1);
-      setPageLink("[data-next-page]", page + 1, page < lastPage && page < 100000);
-      pagination.querySelector("[data-page-number]").textContent =
-        page <= lastPage ? "Page " + page + " of " + lastPage : "Page " + page;
+      renderPagination(page, lastPage);
       const resultsMessage = items.length
         ? totalCount + (totalCount === 1 ? " review found." : " reviews found.")
         : totalCount ? "There are no reviews on this page." : "No reviews match your filters.";
