@@ -592,75 +592,9 @@
       "departmentCode": null
     },
     {
-      "departmentKey": "DEP-0098",
-      "facultyKey": "FAC-003",
-      "departmentName": "Dış Ticaret (Türkçe)",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0099",
-      "facultyKey": "FAC-003",
-      "departmentName": "Dış Ticaret (İngilizce)",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0100",
-      "facultyKey": "FAC-003",
-      "departmentName": "Elektronik Teknolojisi Programı",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0101",
-      "facultyKey": "FAC-003",
-      "departmentName": "Halkla İlişkiler Tanıtım",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0102",
-      "facultyKey": "FAC-003",
-      "departmentName": "Kurumsal Bilişim Uzmanlığı Pr.",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0103",
-      "facultyKey": "FAC-003",
-      "departmentName": "Mahkeme Büro Hizmetleri",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0104",
-      "facultyKey": "FAC-003",
-      "departmentName": "Robotik ve Yapay Zeka",
-      "departmentCode": null
-    },
-    {
       "departmentKey": "DEP-0105",
       "facultyKey": "FAC-003",
       "departmentName": "Sosyal Hizmetler",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0106",
-      "facultyKey": "FAC-003",
-      "departmentName": "Turizm ve Otel İşletmeci Programı",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0107",
-      "facultyKey": "FAC-003",
-      "departmentName": "Çocuk Gelişimi Programı",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0108",
-      "facultyKey": "FAC-003",
-      "departmentName": "Çocuk Gelişimİ",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0109",
-      "facultyKey": "FAC-003",
-      "departmentName": "İnternet ve Ağ Teknolojileri",
       "departmentCode": null
     },
     {
@@ -670,45 +604,9 @@
       "departmentCode": null
     },
     {
-      "departmentKey": "DEP-0111",
-      "facultyKey": "FAC-004",
-      "departmentName": "Bilgisayar Mühendisliği",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0112",
-      "facultyKey": "FAC-004",
-      "departmentName": "Elektrik- Elektronik Mühendisliği",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0113",
-      "facultyKey": "FAC-004",
-      "departmentName": "Endüstri Mühendisliği (Türkçe)",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0114",
-      "facultyKey": "FAC-004",
-      "departmentName": "Endüstri Mühendisliği (İngilizce)",
-      "departmentCode": null
-    },
-    {
       "departmentKey": "DEP-0115",
       "facultyKey": "FAC-004",
       "departmentName": "Makine Mühendisliği (Türkçe / İngilizce)",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0116",
-      "facultyKey": "FAC-004",
-      "departmentName": "Makine Mühendisliği (Türkçe)",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0117",
-      "facultyKey": "FAC-004",
-      "departmentName": "Makine Mühendisliği (İngilizce)",
       "departmentCode": null
     },
     {
@@ -721,18 +619,6 @@
       "departmentKey": "DEP-0119",
       "facultyKey": "FAC-005",
       "departmentName": "Grafik (İngilizce)",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0120",
-      "facultyKey": "FAC-005",
-      "departmentName": "Grafik Bölümü (İngilizce)",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0121",
-      "facultyKey": "FAC-005",
-      "departmentName": "Görsel İletişim Tasarım",
       "departmentCode": null
     },
     {
@@ -784,39 +670,9 @@
       "departmentCode": null
     },
     {
-      "departmentKey": "DEP-0130",
-      "facultyKey": "FAC-008",
-      "departmentName": "Uluslararası ilişkiler",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0131",
-      "facultyKey": "FAC-008",
-      "departmentName": "Uluslararası İlişkiler",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0132",
-      "facultyKey": "FAC-008",
-      "departmentName": "İktisat (Türkçe)",
-      "departmentCode": null
-    },
-    {
       "departmentKey": "DEP-0133",
       "facultyKey": "FAC-008",
       "departmentName": "İktisat (İngilizce / Türkçe)",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0134",
-      "facultyKey": "FAC-008",
-      "departmentName": "İşletme (Türkçe)",
-      "departmentCode": null
-    },
-    {
-      "departmentKey": "DEP-0086",
-      "facultyKey": "FAC-008",
-      "departmentName": "Psikoloji",
       "departmentCode": null
     },
     {
@@ -54784,7 +54640,7 @@
     {
       "courseKey": "CRS-DOU-B9423D9526C039D81F082152",
       "departmentKey": "DEP-0076",
-      "courseCode": "GİT 1002",
+      "courseCode": "GİT 1002-0",
       "courseName": "Yaratıcı Fotoğraf"
     },
     {
@@ -60498,6 +60354,12 @@
       "departmentKey": "DEP-0097",
       "courseCode": "IKY 589",
       "courseName": "Yüksek Lisans Projesi"
+    },
+    {
+      "courseKey": "CRS-DOU-9CBAC2B66D7620BD6819F70D",
+      "departmentKey": "DEP-0076",
+      "courseCode": "GİT 1002-1",
+      "courseName": "Reklamcılık Tarihi"
     }
   ],
   "programmeCourses": [
@@ -199000,6 +198862,28 @@
       "recommendedStudyYear": null,
       "courseCredit": 3,
       "ects": 6,
+      "isElective": true
+    },
+    {
+      "curriculumKey": "CUR-DOU-151FD16FD28D7168FA28962C",
+      "programmeKey": "PRG-0031",
+      "courseKey": "CRS-DOU-9CBAC2B66D7620BD6819F70D",
+      "catalogueYear": "2026",
+      "semester": 4,
+      "recommendedStudyYear": null,
+      "courseCredit": null,
+      "ects": 5,
+      "isElective": true
+    },
+    {
+      "curriculumKey": "CUR-DOU-7649FFCC4AADA28799EE22A3",
+      "programmeKey": "PRG-0031",
+      "courseKey": "CRS-DOU-9CBAC2B66D7620BD6819F70D",
+      "catalogueYear": "2026",
+      "semester": 8,
+      "recommendedStudyYear": null,
+      "courseCredit": null,
+      "ects": 5,
       "isElective": true
     }
   ]
