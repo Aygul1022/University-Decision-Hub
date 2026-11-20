@@ -129,3 +129,6 @@
 @media(prefers-reduced-motion:reduce) { .navbar-drawer[open] { animation:none; } }
 .navbar .navbar-close { background:#991a35; color:#fff; border-color:#991a35; font-weight:600; }
 .navbar .navbar-close:hover { background:#75152b; }
+
+/* The current page keeps its cream text on the bordeaux highlight (the menu text is dark otherwise). */
+.navbar .navbar-links a[aria-current="page"] { color:var(--color-cream); }
