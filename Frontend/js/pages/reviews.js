@@ -221,18 +221,63 @@
     }
   }
 
-  function setPageLink(selector, page, available) {
-    const link = pagination.querySelector(selector);
-    link.hidden = !available;
-    if (!available) return;
+  const DEFAULT_PAGE_SIZE = 10;
+
+  function pageLink(label, page, className, ariaLabel) {
+    const link = textElement("a", className, label);
     const query = new URLSearchParams(params);
     query.set("page", page);
     link.href = Site.url(pageUrl(query));
+    if (ariaLabel) link.setAttribute("aria-label", ariaLabel);
+    return link;
+  }
+
+  // Previous arrow, numbered pages (1, the last page and the pages around the current one, with … for gaps), next arrow.
+  function renderPagination(page, lastPage) {
+    const items = [];
+    const previousLabel = "Previous page";
+    const nextLabel = "Next page";
+
+    if (page > 1) {
+      items.push(pageLink("‹", Math.min(page - 1, lastPage), "page-arrow", previousLabel));
+    } else {
+      const arrow = textElement("span", "page-arrow disabled", "‹");
+      arrow.setAttribute("aria-label", previousLabel);
+      arrow.setAttribute("aria-disabled", "true");
+      items.push(arrow);
+    }
+
+    const wanted = new Set([1, lastPage, page - 2, page - 1, page, page + 1, page + 2]);
+    let previous = 0;
+    for (const number of [...wanted].filter((n) => n >= 1 && n <= lastPage).sort((x, y) => x - y)) {
+      if (number - previous > 1) items.push(textElement("span", "page-gap", "…"));
+      if (number === page) {
+        const current = textElement("span", "page-number current", String(number));
+        current.setAttribute("aria-current", "page");
+        items.push(current);
+      } else {
+        items.push(pageLink(String(number), number, "page-number", "Page " + number));
+      }
+      previous = number;
+    }
+
+    if (page < lastPage) {
+      items.push(pageLink("›", page + 1, "page-arrow", nextLabel));
+    } else {
+      const arrow = textElement("span", "page-arrow disabled", "›");
+      arrow.setAttribute("aria-label", nextLabel);
+      arrow.setAttribute("aria-disabled", "true");
+      items.push(arrow);
+    }
+
+    pagination.replaceChildren(...items);
   }
 
   async function loadReviews(message = "", stepBackIfEmpty = false) {
     try {
-      const suffix = params.size ? "?" + params.toString() : "";
+      const query = new URLSearchParams(params);
+      if (!query.has("pageSize")) query.set("pageSize", String(DEFAULT_PAGE_SIZE));
+      const suffix = "?" + query.toString();
       const { items, totalCount, page, pageSize } = await apiFetch("/api/reviews" + suffix);
       const lastPage = Math.max(1, Math.ceil(totalCount / pageSize));
       // The last review of the last page was deleted: show the new last page, keeping every filter.
@@ -243,10 +288,7 @@
       }
       results.replaceChildren(...items.map(renderReview));
       pagination.hidden = lastPage <= 1 && page <= 1;
-      setPageLink("[data-previous-page]", Math.min(page - 1, lastPage), page > 1);
-      setPageLink("[data-next-page]", page + 1, page < lastPage && page < 100000);
-      pagination.querySelector("[data-page-number]").textContent =
-        page <= lastPage ? "Page " + page + " of " + lastPage : "Page " + page;
+      renderPagination(page, lastPage);
       const resultsMessage = items.length
         ? totalCount + (totalCount === 1 ? " review found." : " reviews found.")
         : totalCount ? "There are no reviews on this page." : "No reviews match your filters.";
