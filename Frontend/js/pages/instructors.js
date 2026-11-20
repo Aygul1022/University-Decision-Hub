@@ -1,5 +1,5 @@
 // Instructor list (instructors.html) and instructor detail (instructor-detail.html?id=<InstructorId>).
-// Requires js/shared/api.js, js/shared/departments.js and js/shared/navbar.js.
+// Requires js/shared/api.js and js/shared/navbar.js.
 (function () {
   const main = document.querySelector("main[data-page]");
   if (!main) return;
@@ -12,15 +12,32 @@
     status.hidden = !text;
   }
 
-  let departmentNames = new Map();
+  const compareNames = new Intl.Collator("tr");
+  const departmentNames = new Map();
+
+  function staffNameKey(name) {
+    return name.normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("tr");
+  }
 
   async function loadDepartmentNames() {
-    const departments = await Departments.load();
-    departmentNames = new Map(departments.map((department) => [department.departmentId, department.departmentName]));
+    try {
+      const response = await fetch(Site.url("data/official-staff-departments.json"));
+      if (!response.ok) return [];
+      for (const [name, labels] of Object.entries(await response.json())) {
+        departmentNames.set(staffNameKey(name), labels);
+      }
+      return [...new Set([...departmentNames.values()].flat())].sort(compareNames.compare);
+    } catch {
+      return [];
+    }
+  }
+
+  function staffDepartments(instructor) {
+    return departmentNames.get(staffNameKey(instructor.fullName)) || [];
   }
 
   function departmentLabel(instructor) {
-    return departmentNames.get(instructor.departmentId) || "";
+    return staffDepartments(instructor).join(" · ");
   }
 
   // ---------------------------------------------------------------- list page
@@ -32,9 +49,11 @@
     const departmentStatus = main.querySelector("[data-department-status]");
     let latestRequest = 0;
 
-    const departmentCount = await Departments.fillSelect(departmentSelect);
-    await loadDepartmentNames();
-    if (departmentCount === 0) {
+    const options = await loadDepartmentNames();
+    for (const label of options) {
+      departmentSelect.appendChild(new Option(label, label));
+    }
+    if (options.length === 0) {
       departmentSelect.disabled = true;
       departmentStatus.textContent = "Department filtering is unavailable. Search by name instead.";
       departmentStatus.hidden = false;
@@ -63,20 +82,22 @@
     }
 
     async function search() {
-      const params = new URLSearchParams();
       const query = form.elements.query.value.trim();
-      const departmentId = form.elements.departmentId.value.trim();
+      const department = departmentSelect.value;
+      const filtered = Boolean(query || department);
+      const params = new URLSearchParams();
       if (query) params.set("query", query);
-      if (departmentId) params.set("departmentId", departmentId);
-      const filtered = params.toString() !== "";
 
       const request = ++latestRequest;
       count.hidden = true;
       showStatus("Loading academic staff…", false);
 
       try {
-        const instructors = await apiFetch("/api/instructors" + (filtered ? "?" + params : ""));
-        if (request !== latestRequest) return; // a newer search has started
+        const matches = await apiFetch("/api/instructors" + (query ? "?" + params : ""));
+        if (request !== latestRequest) return;
+        const instructors = department
+          ? matches.filter(instructor => staffDepartments(instructor).includes(department))
+          : matches;
         renderList(instructors);
 
         if (instructors.length === 0) {
