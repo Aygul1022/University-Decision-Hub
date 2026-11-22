@@ -34,7 +34,14 @@
   const success = document.querySelector("[data-success]");
   const readLink = document.querySelector("[data-read-reviews]");
 
+  const courseSelect = form.elements.courseId;
+  const instructorSelect = form.elements.instructorId;
+  const instructorPicker = form.querySelector("[data-instructor-picker]");
+  const instructorStatus = form.querySelector("#instructor-status");
   const courses = new Map();
+  let departmentsById;
+  let instructors;
+  let staffRequest = 0;
   const instructorIds = new Set();
 
   let ready = false;
@@ -64,6 +71,61 @@
     return fields.join(" ") || error.message || "The request failed.";
   }
 
+  async function loadCourseStaff() {
+    const request = ++staffRequest;
+    const courseId = Number(courseSelect.value);
+    instructorIds.clear();
+    instructorSelect.replaceChildren(new Option("Choose an academic staff member", ""));
+    instructorSelect.disabled = true;
+    instructorPicker.hidden = true;
+    form.elements.attendanceConfirmed.checked = false;
+    if (typeof SearchableSelect !== "undefined") SearchableSelect.refresh(instructorSelect);
+
+    if (!courses.has(courseId)) {
+      instructorStatus.textContent = "Choose a course to see academic staff from its faculty.";
+      return;
+    }
+    instructorStatus.textContent = "Loading academic staff for this course...";
+
+    try {
+      const course = await apiFetch("/api/courses/" + courseId);
+      if (request !== staffRequest) return;
+      const facultyId = departmentsById.get(course.departmentId)?.facultyId;
+      if (facultyId == null) {
+        instructorStatus.textContent = "The faculty for this course could not be identified.";
+        return;
+      }
+
+      for (const instructor of instructors) {
+        if (departmentsById.get(instructor.departmentId)?.facultyId !== facultyId) continue;
+        instructorIds.add(instructor.instructorId);
+        const label = [instructor.academicTitle, instructor.fullName].filter(Boolean).join(" ");
+        addOption(instructorSelect, instructor.instructorId, label);
+      }
+      if (!instructorIds.size) {
+        instructorStatus.textContent = "No academic staff are listed for this course's faculty.";
+        return;
+      }
+
+      instructorSelect.disabled = false;
+      instructorPicker.hidden = false;
+      instructorStatus.textContent = "Showing academic staff from the selected course's faculty.";
+      if (typeof SearchableSelect !== "undefined") {
+        SearchableSelect.enhance(instructorSelect, {
+          placeholder: "Search by name or title",
+          noun: "academic staff",
+        });
+      }
+    } catch (error) {
+      if (request !== staffRequest) return;
+      if (error.status === 401) {
+        redirectToLogin();
+        return;
+      }
+      instructorStatus.textContent = "Academic staff could not be loaded. Select the course again to retry.";
+    }
+  }
+
   async function load() {
     try {
       const profile = await apiFetch("/api/auth/me");
@@ -86,14 +148,17 @@
         return;
       }
 
-      const [curriculum, instructors] = await Promise.all([
+      const [curriculum, staff, departments] = await Promise.all([
         apiFetch("/api/programmes/" + profile.programmeId + "/courses"),
         apiFetch("/api/instructors"),
+        apiFetch("/api/departments"),
       ]);
 
-      if (!Array.isArray(curriculum) || !Array.isArray(instructors)) {
+      if (![curriculum, staff, departments].every(Array.isArray)) {
         throw new Error("The course or academic staff list could not be read.");
       }
+      instructors = staff;
+      departmentsById = new Map(departments.map(department => [department.departmentId, department]));
 
       // Historical curriculum entries may refer to the same course.
       for (const entry of curriculum) {
@@ -110,27 +175,8 @@
         );
       }
 
-      for (const instructor of instructors) {
-        instructorIds.add(instructor.instructorId);
-
-        const label = [instructor.academicTitle, instructor.fullName]
-          .filter(Boolean)
-          .join(" ");
-
-        addOption(
-          form.elements.instructorId,
-          instructor.instructorId,
-          label
-        );
-      }
-
       if (!courses.size) {
         showStatus("No courses have been added for your programme yet.", true);
-        return;
-      }
-
-      if (!instructorIds.size) {
-        showStatus("No academic staff members are available yet.", true);
         return;
       }
 
@@ -153,11 +199,9 @@
           placeholder: "Search by course code or name",
           noun: "courses",
         });
-        SearchableSelect.enhance(form.elements.instructorId, {
-          placeholder: "Search by name or title",
-          noun: "academic staff",
-        });
       }
+      courseSelect.addEventListener("change", loadCourseStaff);
+      loadCourseStaff();
 
       ready = true;
       showStatus("");
@@ -193,7 +237,7 @@
     }
 
     if (!instructorIds.has(values.instructorId)) {
-      showMessage("Choose an academic staff member.");
+      showMessage("Choose an academic staff member from the selected course's faculty.");
       return;
     }
 
